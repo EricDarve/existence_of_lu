@@ -71,10 +71,10 @@ We begin with a few classical results that will serve as reference for the later
 
 \section{Classical results} \label{sec:classical}
 
-The theorems establish that any matrix can be permuted to have an LU factorization with unit triangular factors.
+We begin by recalling standard existence results involving permutations. These theorems correspond to Gaussian elimination with partial and full pivoting.
 
-\begin{theorem} \label{thm:row_permutation}
-    Consider matrix $A$ of size $n$. There exist a row permutation matrix $P$ such that $PA = LU$ where $L$ is unit lower triangular and $U$ is upper triangular.
+\begin{theorem}[Partial Pivoting] \label{thm:row_permutation}
+    For any square matrix $A$ of size $n$, there exists a permutation matrix $P$ such that $PA = LU$, where $L$ is unit lower triangular and $U$ is upper triangular.
 \end{theorem}
 
 \begin{proof}
@@ -124,21 +124,21 @@ The theorems establish that any matrix can be permuted to have an LU factorizati
 \end{proof}
 
 \begin{corollary} \label{cor:col_permutation}
-    Consider matrix $A$ of size $n$. There exist a column permutation matrix $Q$ such that $AQ = LU$ where $L$ is lower triangular and $U$ is unit upper triangular.
+    For any square matrix $A$ of size $n$, there exists a permutation matrix $Q$ such that $AQ = LU$, where $L$ is lower triangular and $U$ is unit upper triangular.
 \end{corollary}
 
 \begin{proof}
 Apply \Cref{thm:row_permutation} to $A^T$.    
 \end{proof}
 
-\begin{definition}
-    Matrix $A$ of size $m \by n$ is said to have a rank revealing LU factorization if $A = LU$ where $L$ is lower triangular of size $m \by r$, $U$ is upper triangular of size $r \by n$, and $r = \rk(A)$.
+\begin{definition} \label{def:rank_revealing}
+    A matrix $A$ of size $m \by n$ is said to have a \emph{rank revealing LU factorization} if it can be written as $A = LU$, where $L$ is a lower triangular matrix of size $m \by r$, $U$ is an upper triangular matrix of size $r \by n$, and $r = \rk(A)$.
 \end{definition}
 
-If we use both row and column permutations, we can always obtain a rank revealing LU factorization.
+If we allow both row and column permutations, we can always obtain such a factorization.
 
-\begin{theorem} \label{thm:row_column_permutation}
-    Consider matrix $A$ of size $n$. There exist a row permutation matrix $P$ and a column permutation matrix $Q$ such that $PAQ = LU$ is a rank revealing LU factorization.
+\begin{theorem}[Full Pivoting] \label{thm:row_column_permutation}
+    For any matrix $A$ of size $m \by n$, there exist a row permutation matrix $P$ and a column permutation matrix $Q$ such that $PAQ = LU$ is a rank revealing LU factorization.
 \end{theorem}
 
 \begin{proof}
@@ -172,10 +172,10 @@ If we use both row and column permutations, we can always obtain a rank revealin
     From \Cref{lem:schur_zero} and \Cref{cor:schur_zero}, we can also prove that the remaining Schur complement is zero after $r$ steps of the LU factorization.
 \end{proof}
 
-We now consider LU factorizations without permutations. The simplest result requires that all leading principal minors are non-singular.
+We now consider LU factorizations without permutations. The fundamental result states that factorization is possible if and only if the matrix is \emph{strongly non-singular} (i.e., all leading principal minors are non-zero).
 
 \begin{proposition} \label{prop:sufficient}
-    Consider an invertible matrix $A$ of size $n$. Matrix $A$ has an LU factorization if and only if
+    Let $A$ be a non-singular matrix of size $n$. $A$ has an LU factorization if and only if all its leading principal submatrices are non-singular:
     \[
     \rk(A[1:k,1:k]) = k, \quad k = 1, \ldots, n
     \]
@@ -212,40 +212,42 @@ We now consider LU factorizations without permutations. The simplest result requ
 
 \section{General necessary and sufficient condition for the existence of an LU factorization} \label{sec:main}
 
-We now discuss the core of this paper: the necessary and sufficient conditions for the existence of an LU factorization without permutations. We start with an illustrative example that will preview the main result.
+We now address the central question of this paper: determining the necessary and sufficient conditions for the existence of an LU factorization without permutations. We begin with two illustrative examples that motivate the general result.
 
-Consider matrix
+Consider the matrix:
 \[
 A = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}
 \]
-Matrix $A$ does not have an LU factorization. We prove this by contradiction. Assume $A = LU$. Then $l_{11} u_{11} = 0$. Assume $l_{11} = 0$. Then $l_{11} u_{12} = 0 = 1$. Contradiction. Assume $u_{11} = 0$. Then $l_{21} u_{11} = 0 = 1$. Contradiction.
+This matrix does not admit an LU factorization. We prove this by contradiction. Suppose $A = LU$. Then the diagonal entry satisfies $a_{11} = l_{11} u_{11} = 0$. This implies that either $l_{11} = 0$ or $u_{11} = 0$.
+\begin{itemize}
+    \item If $l_{11} = 0$, then $a_{12} = l_{11} u_{12} = 0$, which contradicts $a_{12} = 1$.
+    \item If $u_{11} = 0$, then $a_{21} = l_{21} u_{11} = 0$, which contradicts $a_{21} = 1$.
+\end{itemize}
 
-Consider now
+However, a zero pivot does not always preclude factorization. Consider the singular matrix:
 \[
 A = \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & 1 \\ 0 & 1 & 0 \end{pmatrix}
 \]
-This matrix in fact has an LU factorization. We can find it using the following procedure, which we will detail later on for the general case. Surprisingly the process involves row and column permutations. However the final result remains an LU factorization without the permutations.
-
-Now, perform a cyclic shift of the rows: (1,2,3) $\to$ (2,3,1) and permute column 1 and 3:
-\[ PAQ = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{pmatrix} 
+Despite the zero principal minors, this matrix \emph{does} have an LU factorization. We can derive it by permuting $A$ into a factorizable form and then reversing the permutations. Apply a cyclic row shift $(1,2,3) \to (2,3,1)$ via $P$ and swap columns 1 and 3 via $Q$:
+\[ 
+PAQ = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{pmatrix} 
 = \begin{pmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \end{pmatrix}
 \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{pmatrix}
 \]
-But surprisingly we have:
+We can recover a factorization for $A$ by writing $A = P^{-1} (PAQ) Q^{-1}$:
 \[
-A = P^{-1} \begin{pmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \end{pmatrix}
-\begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{pmatrix} Q^{-1} =
+A = P^{-1} \left[ \begin{pmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \end{pmatrix}
+\begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{pmatrix} \right] Q^{-1} =
 \begin{pmatrix} 0 & 0 \\ 1 & 0 \\ 0 & 1 \end{pmatrix}
 \begin{pmatrix} 0 & 0 & 1 \\ 0 & 1 & 0 \end{pmatrix}
 \]
-This is valid rank revealing LU factorization of $A$. Similarly:
+This yields a valid, rank-revealing LU factorization with no pivoting. Another valid LU factorization is:
 \[
 A = \begin{pmatrix} 0 & 0 \\ 0 & 1 \\ 1 & 0 \end{pmatrix}
 \begin{pmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix}
 \]
-is another valid rank revealing LU factorization of $A$.
 
-We can generalize this example. Consider any $B=LU$ and:
+We can generalize this result using block matrices. Let $0_n$ denote the $n \times n$ zero matrix. If $B$ and $C$ are factorizable matrices such that $B=LU$ and $C=LU$, we can construct larger factorizable matrices $A$ as follows:
 \[
 A = \begin{pmatrix}
     0_n & 0_n & 0_n \\
@@ -263,7 +265,7 @@ A = \begin{pmatrix}
     0_n & U & 0_n
 \end{pmatrix}
 \]
-If $C=LU$ then:
+Alternatively, using the factorization of $C$:
 \[
 A =
 \begin{pmatrix}
@@ -276,8 +278,9 @@ A =
     0_n & 0_n & U
 \end{pmatrix}
 \]
+These examples demonstrate that the existence of a factorization is linked to the relationship between the ranks (or nullities) of specific sub-blocks. We formalize this observation in \Cref{prop:rank}, which provides a necessary and sufficient condition for the existence of an LU factorization.
 
-Of course, this is not true for all matrices. We will show that \Cref{prop:rank} below is a necessary and sufficient condition for the existence of an LU factorization. The proof will rely on constructing a $P$ and $Q$ such that $B = P^{-1} AQ^{-1}$. $B[1:r,1:r]$ will satisfy the conditions of \Cref{prop:sufficient} where $r = \rk(A) = \rk(B)$. Therefore $B = LU$. From this, we will deduce a rank-revealing LU factorization of $A = (PL)(UQ)$, where $PL$ is lower triangular with $r$ columns, and $UQ$ is upper triangular with $r$ rows.
+The proof strategy will involve constructing permutations $P$ and $Q$ such that the core block $B[1:r,1:r]$ satisfies the sufficiency conditions of \Cref{prop:sufficient}.
 
 \begin{property}\label{prop:rank}
     Matrix $A$ is square of size $n$. For all $k = 1, \ldots, n$:
@@ -286,6 +289,10 @@ Of course, this is not true for all matrices. We will show that \Cref{prop:rank}
         \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl(A[1:k,:]^T)    
     \end{equation}
 \end{property}
+
+\subsection{Rank theorems}
+
+We recall rank theorems that will be useful in the proof of \Cref{thm:main}.
 
 \begin{theorem} \label{thm:rank-nullity}
     The rank-nullity theorem states that for any matrix $A$ of size $m \times n$:
@@ -316,6 +323,10 @@ We now state Sylvester's inequality for the rank of a product of matrices.
     Use \Cref{lem:rank} and \Cref{thm:rank-nullity}.
 \end{proof}
 
+\subsection{Necessary condition}
+
+We show that \Cref{prop:rank} is a necessary condition for the existence of an LU factorization.
+
 Assume that $A$, a square matrix of size $n$, has an LU factorization:
 \[ A = LU \]
 Then:
@@ -336,7 +347,9 @@ Using \Cref{thm:rank-nullity}, we get:
 \]
 So \Cref{prop:rank} is a necessary condition for the existence of an LU factorization.
 
-We will prove the following theorem:
+\subsection{Sufficient condition}
+
+We will now prove the main theorem:
 \begin{theorem} \label{thm:main}
     Matrix $A$ satisfies \Cref{prop:rank} if and only if it has an LU factorization.
 \end{theorem}
@@ -424,29 +437,29 @@ We will prove the following theorem:
 We now prove a stronger theorem. Please compare this result with \Cref{thm:row_column_permutation}.
 
 \begin{theorem} \label{thm:main2}
-    Matrix $A$ is of size $n$ and rank $r \le n$. If $A$ satisfies \Cref{prop:rank}, then there exist a row permutation $P_r$ and column permutation $P_c$ such that:
+    Let $A$ be a matrix of size $n$ with rank $r \le n$. If $A$ satisfies \Cref{prop:rank}, then there exist a row permutation $P_r$ and a column permutation $P_c$ such that the matrix
     \[ B = P_r^{-1} A P_c^{-1} \]
-    with $B[1:k,1:k]$, $1 \le k \le r$, non-singular. $B[1:r,1:r]$ has an LU factorization:
-    \[ B[1:r,1:r] = L_r U_r \]
-    and:
+    has strongly non-singular leading principal submatrices $B[1:k,1:k]$ for $1 \le k \le r$. Consequently, the leading principal block admits an LU factorization $B[1:r,1:r] = L_r U_r$.
+    
+    Define the rank-revealing factors of $B$ as:
     \[
-    B = \begin{pmatrix} B[:,1:r] U_r^{-1}
-    \end{pmatrix}
-    \begin{pmatrix}
-        L_r^{-1} B[1:r,:]
-    \end{pmatrix} = L_B U_B
+    L_B = \begin{pmatrix} L_r \\ B[r+1:n, 1:r] U_r^{-1} \end{pmatrix} 
+    \quad \text{and} \quad
+    U_B = \begin{pmatrix} U_r & L_r^{-1} B[1:r, r+1:n] \end{pmatrix}
     \]
-    is its rank revealing LU factorization. Then:
-    \[ A = (P_r L_B) (U_B P_c) = L U \]
-    is a rank revealing factorization of $A$. Moreover, we have the following stronger sparsity results. If $e_{i_0} = P_r e_i$, then for $L$:
+    Then $B = L_B U_B$. Furthermore, $A$ admits a rank-revealing factorization
+    \[ A = L U \]
+    where $L = P_r L_B$ and $U = U_B P_c$.
+    
+    Moreover, we have the following sparsity results for $L$. Let $i_0$ be the row index in $A$ corresponding to the logical row index $i$ in $B$ (i.e., $e_{i_0} = P_r e_i$). Then:
     \begin{itemize}
-        \item If $i \le r$, then $i_0 \ge i$ and $L[i_0,i+1:] = 0$.
-        \item If $i > r$, then $i_0 \le i$ and $L[i_0,\min(r,i_0):] = 0$.
+        \item If $i \le r$, then $i_0 \ge i$ and $L[i_0, i+1:] = 0$.
+        \item If $i > r$, then $i_0 \le i$ and $L[i_0, \min(r, i_0):] = 0$.
     \end{itemize}
-    We have similar results for $U$. If $e_{j_0} = P_c^T e_j$, then:
+    Similarly for $U$, let $j_0$ be the column index in $A$ corresponding to the logical column index $j$ in $B$ (i.e., $e_{j_0} = P_c^T e_j$). Then:
     \begin{itemize}
-        \item If $j \le r$, then $j_0 \ge j$ and $U[j+1:,j_0] = 0$.
-        \item If $j > r$, then $j_0 \le j$ and $U[\min(r,j_0):,j_0] = 0$.
+        \item If $j \le r$, then $j_0 \ge j$ and $U[j+1:, j_0] = 0$.
+        \item If $j > r$, then $j_0 \le j$ and $U[\min(r, j_0):, j_0] = 0$.
     \end{itemize}
 \end{theorem}
 
@@ -506,27 +519,28 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
 
 \section{Unit triangular factors} \label{sec:unit_triangular}
 
-We now prove results for unit triangular factors. Please compare with \Cref{thm:row_permutation}.
+We now examine the specific case where one of the factors is required to be unit triangular. The following result should be compared with \Cref{thm:row_permutation}.
 
 \begin{theorem} \label{thm:main_unit_lower}
-    Matrix $A$ is of size $n$ and rank $r \le n$. $A$ satisfies, for all $k = 1, \ldots, n$:
+    Let $A$ be a matrix of size $n$ and rank $r \le n$. $A$ has an LU factorization $A = LU$ where $L$ is unit lower triangular if and only if for all $k = 1, \ldots, n$:
     \begin{equation}
         \label{eq:cond_unit_lower}
         \nl(A[1:k,1:k]) = \nl(A[:,1:k])
     \end{equation}
-    if and only if $A$ has an LU factorization $A = LU$ where $L$ is unit lower triangular.
     
-    If $A$ satisfies \Cref{eq:cond_unit_lower}, then there exist a column permutation $P_c$ such that:
-    \[
-    B = A P_c^{-1}
-    \]
-    $B$ has an LU factorization: $B = L_B U_B$ where $L_B$ is unit lower triangular. Then:
+    \noindent\textbf{Construction:} If $A$ satisfies \Cref{eq:cond_unit_lower}, there exists a column permutation $P_c$ such that the matrix $B = A P_c^{-1}$ admits a factorization $B = L_B U_B$ where $L_B$ is unit lower triangular. Consequently,
     \[ A = L_B (U_B P_c) = L U \]
-    is an LU factorization of $A$ where $L=L_B$ is unit lower triangular. 
+    is a valid factorization of $A$ with $L=L_B$ being unit lower triangular.
     
-    We also have that row $j$ of $B$ (or row $j$ of $A$ since the rows are not permuted) is a linear combination of the previous rows if and only if column $j$ of $B$ is a linear combination of the previous columns.
+    \noindent\textbf{Structure:} For the matrix $B$ constructed above, row $j$ is a linear combination of the previous rows if and only if column $j$ is a linear combination of the previous columns.
     
-    Assume $e_{j_0} = P_c^T e_j$. If row $j$ of $B$ is a linear combination of the previous rows, then $j_0 \le j$. We have $L[:,j] = e_j$, $U[j,:] = 0$, and $U[j_0:,j_0] = 0$. If row $j$ of $B$ is linearly independent of the previous rows then $j_0 \ge j$ and $U[j+1:,j_0] = 0$.
+    \noindent\textbf{Sparsity:} Let $j_0$ be the column index in $A$ corresponding to the logical column index $j$ in $B$ (i.e., $e_{j_0} = P_c^T e_j$). The factors exhibit the following sparsity patterns:
+    \begin{itemize}
+        \item \textbf{Dependent Case:} If row $j$ of $B$ is a linear combination of the previous rows, then $j_0 \le j$. Furthermore:
+        \[ L[:,j] = e_j, \quad U[j,:] = 0, \quad \text{and} \quad U[j_0:, j_0] = 0 \]
+        \item \textbf{Independent Case:} If row $j$ of $B$ is linearly independent of the previous rows, then $j_0 \ge j$. Furthermore:
+        \[ U[j+1:, j_0] = 0 \]
+    \end{itemize}
 \end{theorem}
 
 \begin{proof}
