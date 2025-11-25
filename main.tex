@@ -16,15 +16,27 @@
 \newtheorem{proposition}{Proposition}
 \newtheorem{definition}{Definition}
 
+\usepackage{biblatex}
+\addbibresource{ref.bib}
+
+\usepackage{hyperref}
 \usepackage{cleveref}
 % Define new name property for cleveref
 \crefname{property}{Property}{Properties}
 
+\title{Necessary and Suﬃcient Conditions for the Existence of an LU Factorization}
+\author{Eric Darve}
+\date{\today}
+
 \begin{document}
 
-Notations:
+\maketitle
 
-\medskip
+\begin{abstract}
+    We investigate the necessary and sufficient conditions for the existence of an LU factorization for a given matrix $A$. We establish a condition relating the nullity of the submatrices of $A$ to the existence of the factorization. Finally, we extend these results to unit lower and upper triangular factorizations.
+\end{abstract}
+
+\section*{Notations}
 
 \begin{tabular}{ll}
     \toprule
@@ -42,6 +54,14 @@ Notations:
 \end{tabular}
 
 \medskip
+
+This paper is concerned with proving necessary and sufficient conditions for the existence of an LU factorization of a matrix $A$. It extends the work of~\cite{okunev_necessary_2005} with new results and simpler proofs.
+
+We begin with a few classical results that will serve as reference for the later sections.
+
+\section{Classical results}
+
+The theorems establish that any matrix can be permuted to have an LU factorization with unit triangular factors.
 
 \begin{theorem} \label{thm:row_permutation}
     Consider matrix $A$ of size $n$. There exist a row permutation matrix $P$ such that $PA = LU$ where $L$ is unit lower triangular and $U$ is upper triangular.
@@ -105,6 +125,8 @@ Apply \Cref{thm:row_permutation} to $A^T$.
     Matrix $A$ of size $m \by n$ is said to have a rank revealing LU factorization if $A = LU$ where $L$ is lower triangular of size $m \by r$, $U$ is upper triangular of size $r \by n$, and $r = \rk(A)$.
 \end{definition}
 
+If we use both row and column permutations, we can always obtain a rank revealing LU factorization.
+
 \begin{theorem}
     Consider matrix $A$ of size $n$. There exist a row permutation matrix $P$ and a column permutation matrix $Q$ such that $PAQ = LU$ is a rank revealing LU factorization.
 \end{theorem}
@@ -140,6 +162,8 @@ Apply \Cref{thm:row_permutation} to $A^T$.
     From \Cref{lem:schur_zero} and \Cref{cor:schur_zero}, we can also prove that the remaining Schur complement is zero after $r$ steps of the LU factorization.
 \end{proof}
 
+We now consider LU factorizations without permutations. The simplest result requires that all leading principal minors are non-singular.
+
 \begin{proposition} \label{prop:sufficient}
     Consider matrix $A$ of size $n$ such that
     \[
@@ -172,6 +196,10 @@ Apply \Cref{thm:row_permutation} to $A^T$.
     \]
     and $S = A_{22} - A_{21} a_{11}^{-1} A_{12}$ is the Schur complement. $L$ and $U$ are full rank. So $D$ satisfies the condition of the theorem. Consequently, $S$ also satisfies the condition of the theorem and is of size $n-1$. By the induction hypothesis, $S$ has an LU factorization. Therefore $A$ also has an LU factorization.
 \end{proof}
+
+\section{General necessary and sufficient condition for the existence of an LU factorization}
+
+We now discuss the core of this paper: the necessary and sufficient conditions for the existence of an LU factorization without permutations. We start with an illustrative example that will preview the main result.
 
 Consider matrix
 \[
@@ -460,6 +488,8 @@ We now prove the stronger theorem:
     As before, we have also proved that this process must terminate after $r$ steps where $r = \rk(A)$. So the LU factorization of $B$ is rank revealing.
 \end{proof}
 
+\section{Unit triangular factors}
+
 We now prove results for unit triangular factors.
 
 \begin{theorem} \label{thm:main_unit_lower}
@@ -555,7 +585,7 @@ We now prove results for unit triangular factors.
 
 \appendix
 
-\section{Ancillary Results}
+\section{Ancillary results}
 
 We prove a few additional results that are helpful in the main proofs.
 
@@ -605,5 +635,7 @@ We prove a few additional results that are helpful in the main proofs.
 \begin{proof}
     Consider $A^T = U^T L^T$. Apply \Cref{lem:schur_zero}.
 \end{proof}
+
+\printbibliography
 
 \end{document}
