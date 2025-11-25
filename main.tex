@@ -1,0 +1,609 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools,booktabs}
+
+\DeclareMathOperator{\rk}{rank}
+\DeclareMathOperator{\nl}{null}
+\DeclareMathOperator{\spn}{span}
+
+\newcommand{\by}{\times}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{property}{Property}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+
+\usepackage{cleveref}
+% Define new name property for cleveref
+\crefname{property}{Property}{Properties}
+
+\begin{document}
+
+Notations:
+
+\medskip
+
+\begin{tabular}{ll}
+    \toprule
+    $\rk(A)$ & Rank of matrix $A$ \\
+    $\nl(A)$ & Dimension of the null space of matrix $A$ \\
+    $A^T$ & Transpose of matrix $A$ \\
+    $a_{ij}$ & Entry $(i,j)$ of matrix $A$ \\
+    $A[:,i]$ & Column $i$ of matrix $A$ \\
+    $A[i,:]$ & Row $i$ of matrix $A$ \\
+    $A[i:j,k:l]$ & Submatrix of $A$ with rows from $i$ to $j$ and columns from $k$ to $l$ \\
+    $A[i:j,k:]$ & Submatrix of $A$ with rows from $i$ to $j$ and columns from $k$ to the end \\    
+    $e_i$ & $i$-th vector of the standard basis \\
+    $I_n$ & Identity matrix of size $n$ \\
+    \bottomrule
+\end{tabular}
+
+\medskip
+
+\begin{theorem} \label{thm:row_permutation}
+    Consider matrix $A$ of size $n$. There exist a row permutation matrix $P$ such that $PA = LU$ where $L$ is unit lower triangular and $U$ is upper triangular.
+\end{theorem}
+
+\begin{proof}
+    This is a classical result. We can prove it by induction on $n$. The result is true for $n=1$.
+    
+    Assume it is true for $n-1$. If $a_{11} \neq 0$, then consider:
+    \[ 
+    A = LDU
+    \]
+    where
+    \[
+    L = \begin{pmatrix}
+        1 & 0 \\
+        a_{11}^{-1} A_{21} & I
+    \end{pmatrix}, \quad
+    D = \begin{pmatrix}
+        1 & 0 \\
+        0 & S
+    \end{pmatrix}, \quad
+    U = \begin{pmatrix}
+        a_{11} & A_{12} \\
+        0 & I
+    \end{pmatrix}
+    \]
+    We can apply the induction hypothesis to $S$. The result for $A$ follows.
+    
+    If $a_{11} = 0$, we have two cases.
+    
+    Case 1: column 1 of $A$ is non-zero. We can find the smallest $i$ such that $A[i,1] \neq 0$. Pivot row 1 and $i$. Denote by $B = \Pi_i A$ the permuted matrix (with $\Pi_i^2 = I$). Since $b_{11} \neq 0$, $B$ has an LU factorization. This proves the result for $A$.
+    
+    Case 2: column 1 of $A$ is zero. We choose:
+    \[ 
+    A = I D U
+    \]
+    where
+    \[
+    D = \begin{pmatrix}
+        1 & 0 \\
+        0 & S
+    \end{pmatrix}, \quad
+    U = \begin{pmatrix}
+        0 & A_{12} \\
+        0 & I
+    \end{pmatrix}
+    \]
+    We can apply the induction hypothesis to $S$. The result for $A$ follows.
+\end{proof}
+
+\begin{corollary}
+    Consider matrix $A$ of size $n$. There exist a column permutation matrix $Q$ such that $AQ = LU$ where $L$ is lower triangular and $U$ is unit upper triangular.
+\end{corollary}
+
+\begin{proof}
+Apply \Cref{thm:row_permutation} to $A^T$.    
+\end{proof}
+
+\begin{definition}
+    Matrix $A$ of size $m \by n$ is said to have a rank revealing LU factorization if $A = LU$ where $L$ is lower triangular of size $m \by r$, $U$ is upper triangular of size $r \by n$, and $r = \rk(A)$.
+\end{definition}
+
+\begin{theorem}
+    Consider matrix $A$ of size $n$. There exist a row permutation matrix $P$ and a column permutation matrix $Q$ such that $PAQ = LU$ is a rank revealing LU factorization.
+\end{theorem}
+
+\begin{proof}
+    This is also a classical result. We can prove it by induction on $n$. The result is true for $n=1$.
+    
+    Assume it is true for $n-1$. If $a_{11} \neq 0$, then consider:
+    \[ 
+    A = LDU
+    \]
+    where
+    \[
+    L = \begin{pmatrix}
+        a_{11} & 0 \\
+        A_{21} & I
+    \end{pmatrix}, \quad
+    D = \begin{pmatrix}
+        a_{11}^{-1} & 0 \\
+        0 & S
+    \end{pmatrix}, \quad
+    U = \begin{pmatrix}
+        a_{11} & A_{12} \\
+        0 & I
+    \end{pmatrix}
+    \]
+    $S$ has rank $r-1$ if $r = \rk(A)$. We can apply the induction hypothesis to $S$. The result for $A$ then follows.
+    
+    If $a_{11} = 0$, we have two cases. If $A$ is 0, we pick $L=U=0$. Otherwise we have some $i$ and $j$ such that $a_{ij} \neq 0$. We can permute row 1 and $i$ and column 1 and $j$. Denote by $B = \Pi_i A \Pi_j$ the permuted matrix. Since $b_{11} \neq 0$, $B$ has a rank revealing LU factorization. This proves the result for $A$.
+
+    We have also proved that this process must terminate after $r$ steps where $r = \rk(A)$. So the LU factorization of $B$ is rank revealing.
+
+    From \Cref{lem:schur_zero} and \Cref{cor:schur_zero}, we can also prove that the remaining Schur complement is zero after $r$ steps of the LU factorization.
+\end{proof}
+
+\begin{proposition} \label{prop:sufficient}
+    Consider matrix $A$ of size $n$ such that
+    \[
+    \rk(A[1:k,1:k]) = k, \quad k = 1, \ldots, n
+    \]
+    Then $A$ has an LU factorization: $A = LU$.
+\end{proposition}
+
+\begin{proof}
+    We prove the result by induction on $n$. The result is true for $n=1$.
+    
+    Assume it is true for $n-1$. By assumption, $a_{11} \neq 0$. We then have the factorization:
+    \[ 
+    A = LDU
+    \]
+    where
+    \[
+    L = \begin{pmatrix}
+        a_{11} & 0 \\
+        A_{21} & I
+    \end{pmatrix}, \quad
+    D = \begin{pmatrix}
+        a_{11}^{-1} & 0 \\
+        0 & S
+    \end{pmatrix}, \quad
+    U = \begin{pmatrix}
+        a_{11} & A_{12} \\
+        0 & I
+    \end{pmatrix}
+    \]
+    and $S = A_{22} - A_{21} a_{11}^{-1} A_{12}$ is the Schur complement. $L$ and $U$ are full rank. So $D$ satisfies the condition of the theorem. Consequently, $S$ also satisfies the condition of the theorem and is of size $n-1$. By the induction hypothesis, $S$ has an LU factorization. Therefore $A$ also has an LU factorization.
+\end{proof}
+
+Consider matrix
+\[
+A = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}
+\]
+Matrix $A$ does not have an LU factorization. We prove this by contradiction. Assume $A = LU$. Then $l_{11} u_{11} = 0$. Assume $l_{11} = 0$. Then $l_{11} u_{12} = 0 = 1$. Contradiction. Assume $u_{11} = 0$. Then $l_{21} u_{11} = 0 = 1$. Contradiction.
+
+Consider now
+\[
+A = \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & 1 \\ 0 & 1 & 0 \end{pmatrix}
+\]
+This matrix in fact has an LU factorization. We can find it using the following procedure, which we will detail later on for the general case. Surprisingly the process involves row and column permutations. However the final result remains an LU factorization without the permutations.
+
+Now, perform a cyclic shift of the rows: (1,2,3) $\to$ (2,3,1) and permute column 1 and 3:
+\[ PAQ = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{pmatrix} 
+= \begin{pmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \end{pmatrix}
+\begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{pmatrix}
+\]
+But surprisingly we have:
+\[
+A = P^{-1} \begin{pmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \end{pmatrix}
+\begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{pmatrix} Q^{-1} =
+\begin{pmatrix} 0 & 0 \\ 1 & 0 \\ 0 & 1 \end{pmatrix}
+\begin{pmatrix} 0 & 0 & 1 \\ 0 & 1 & 0 \end{pmatrix}
+\]
+This is valid rank revealing LU factorization of $A$. Similarly:
+\[
+A = \begin{pmatrix} 0 & 0 \\ 0 & 1 \\ 1 & 0 \end{pmatrix}
+\begin{pmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix}
+\]
+is another valid rank revealing LU factorization of $A$.
+
+We can generalize this example. Consider any $B=LU$ and:
+\[
+A = \begin{pmatrix}
+    0_n & 0_n & 0_n \\
+    0_n & 0_n & C \\
+    0_n & B & D
+\end{pmatrix}
+=
+\begin{pmatrix}
+    0_n & 0_n \\
+    C & 0_n \\
+    D & L
+\end{pmatrix}
+\begin{pmatrix}
+    0_n & 0_n & I_n \\
+    0_n & U & 0_n
+\end{pmatrix}
+\]
+If $C=LU$ then:
+\[
+A =
+\begin{pmatrix}
+    0_n & 0_n \\
+    0_n & L \\
+    I_n & 0_n
+\end{pmatrix}
+\begin{pmatrix}
+    0_n & B & D \\
+    0_n & 0_n & U
+\end{pmatrix}
+\]
+
+Of course, this is not true for all matrices. We will show that \Cref{prop:rank} below is a necessary and sufficient condition for the existence of an LU factorization. The proof will rely on constructing a $P$ and $Q$ such that $B = P^{-1} AQ^{-1}$. $B[1:r,1:r]$ will satisfy the conditions of \Cref{prop:sufficient} where $r = \rk(A) = \rk(B)$. Therefore $B = LU$. From this, we will deduce a rank-revealing LU factorization of $A = (PL)(UQ)$, where $PL$ is lower triangular with $r$ columns, and $UQ$ is upper triangular with $r$ rows.
+
+\begin{property}\label{prop:rank}
+    Matrix $A$ is square of size $n$. For all $k = 1, \ldots, n$:
+    \begin{equation}
+        \label{eq:cond1}
+        \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl(A[1:k,:]^T)    
+    \end{equation}
+\end{property}
+
+\begin{theorem} \label{thm:rank-nullity}
+    The rank-nullity theorem states that for any matrix $A$ of size $m \times n$:
+\[
+    \rk(A) + \nl(A) = n
+\]
+\end{theorem}
+
+\begin{lemma}\label{lem:rank}
+    Consider $A = BC$. Then:
+\[
+    \rk(A) \le \min(\rk(B), \rk(C)), \quad
+    \rk(B) + \rk(C) - k \le \rk(A)
+\]
+    where $k$ is the number of columns of $B$ and rows of $C$. 
+\end{lemma}
+
+\begin{corollary}\label{cor:nullity}
+    If $A$, $B$, and $C$ are square matrices then:
+\[
+    \nl(A) \le \nl(B) + \nl(C)
+\]
+\end{corollary}
+
+\begin{proof}
+    Use \Cref{lem:rank} and \Cref{thm:rank-nullity}.
+\end{proof}
+
+Assume that $A$, a square matrix of size $n$, has an LU factorization:
+\[ A = LU \]
+Then:
+\begin{align*}
+    A[1:k,:] &= L[1:k,1:k] U[1:k,:], \\
+    A[:,1:k] &= L[:,1:k] U[1:k,1:k], \\
+    A[1:k,1:k] &= L[1:k,1:k] U[1:k,1:k]
+\end{align*}
+Using \Cref{lem:rank} and \Cref{cor:nullity}, we have:
+\begin{align*}
+    \rk(A[1:k,:]) &\le \rk(L[1:k,1:k]), \\
+    \rk(A[:,1:k]) &\le \rk(U[1:k,1:k]), \\
+    \nl(A[1:k,1:k]) &\le \nl(L[1:k,1:k]) + \nl(U[1:k,1:k])
+\end{align*}
+Using \Cref{thm:rank-nullity}, we get:
+\[
+\nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl(A[1:k,:]^T)    
+\]
+So \Cref{prop:rank} is a necessary condition for the existence of an LU factorization.
+
+We will prove the following theorem:
+\begin{theorem} \label{thm:main}
+    Matrix $A$ satisfies \Cref{prop:rank} if and only if it has an LU factorization.
+\end{theorem}
+
+\begin{proof}
+    We prove the result by induction on the size of $A$. The result is true for $n=1$.
+    
+    Assume it is true for size $n-1$.
+    
+    Assume $a_{11} \neq 0$. We have the factorization:
+    \[ 
+    A = LDU
+    \]
+    where
+    \[
+    L = \begin{pmatrix}
+        a_{11} & 0 \\
+        A_{21} & I
+    \end{pmatrix}, \quad
+    D = \begin{pmatrix}
+        a_{11}^{-1} & 0 \\
+        0 & S
+    \end{pmatrix}, \quad
+    U = \begin{pmatrix}
+        a_{11} & A_{12} \\
+        0 & I
+    \end{pmatrix}
+    \]
+    Since $L$ and $U$ are full rank, $D$ satisfies \Cref{prop:rank}. Consequently, $S$ also satisfies \Cref{prop:rank} and is of size $n-1$.     Moreover $S$ has rank $r-1$ if $r = \rk(A)$. By the induction hypothesis, $S$ has an LU factorization. The result for $A$ follows.
+    
+    Assume $a_{11} = 0$. From \Cref{prop:rank}, we have either:
+    \begin{enumerate}
+        \item $A[:,1] = 0$, or
+        \item $A[1,:] = 0$
+        \item both.
+    \end{enumerate}
+    
+    Case 1: $A[:,1] = 0$. We can find the smallest $j$ such that $A[1,j] \neq 0$. Pivot column 1 and $j$. Denote by $B = A \Pi_j$ the permuted matrix (with $\Pi_j^2 = I$). We prove that $B$ satisfies \Cref{prop:rank}.
+    
+    Consider $k < j$. We have
+    \begin{equation} \label{eq:1}
+        \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl(A[1:k,:]^T)   
+    \end{equation}
+    Since column 1 of $A$ is zero, we have:
+    \[
+    \nl(A[1:k,1:k]) = \nl(A[1:k,2:k]) + 1
+    \]
+    We have
+    \[
+    \nl(B[1:k,2:k]) = \nl(A[1:k,2:k])
+    \]
+    Since the only non-zero entry in row 1 of $B[1:k,1:k]$ is in column 1 we have
+    \[
+    \nl(B[1:k,1:k]) = \nl(B[1:k,2:k]) = \nl(A[1:k,2:k]) = \nl(A[1:k,1:k]) - 1
+    \]
+    By a similar reasoning, we have
+    \[
+    \nl(B[:,1:k]) = \nl(A[:,1:k]) - 1
+    \]
+    The column pivoting does not affect the rank of the rows, so
+    \[
+    \nl(B[1:k,:]^T) = \nl(A[1:k,:]^T)
+    \]
+    Therefore $B$ satisfies \Cref{prop:rank} for $k < j$.
+    
+    For $k \ge j$, the pivoting does not affect the ranks in \Cref{eq:1}, so $B$ also satisfies \Cref{prop:rank} for $k \ge j$.
+    
+    So $B$ satisfies \Cref{prop:rank}.
+    
+    Since $b_{11} \neq 0$, $B$ has an LU factorization: $B = LU$. Column $j$ of $B$ is zero. If column $j$ of $U$ is non-zero, we can zero it out without affecting any column in $LU$. So we can assume that column $j$ of $U$ is zero. We have:
+    \[ A = B \Pi_j = L U \Pi_j \]
+    and $U \Pi_j$ is still upper triangular because $\Pi_j$ only permutes column 1 and $j$. Therefore $A$ has an LU factorization.
+    
+    Case 2: $A[1,:] = 0$. Consider $B = A^T$. $B$ corresponds to Case 1, so $B$ has an LU factorization: $B = L U$. Therefore:
+    \[ A = B^T = U^T L^T \]
+    is an LU factorization of $A$.
+    
+    Case 3: If $A$ is 0, it has an LU factorization with $L=U=0$. Let's denote by $j$ the smallest index such that column $j$ is non zero. Let's denote by $i > 1$ the smallest index such that $a_{ij} \neq 0$. Let's pivot column 1 and $j$ and denote by $B = A \Pi_j$ the permuted matrix. $B$ satisfies Case 2, so it has an LU factorization: $B = L U$. Column $j$ of $U$ is zero. Therefore:
+    \[ A = B \Pi_j = L U \Pi_j \]
+    is an LU factorization of $A$.
+
+    We have also proved that this process must terminate after $r$ steps where $r = \rk(A)$. So the LU factorization of $B$ is rank revealing.
+\end{proof}
+
+We now prove the stronger theorem:
+\begin{theorem} \label{thm:main2}
+    Matrix $A$ is of size $n$ and rank $r \le n$. If $A$ satisfies \Cref{prop:rank}, then there exist a row permutation $P_r$ and column permutation $P_c$ such that:
+    \[ B = P_r^{-1} A P_c^{-1} \]
+    with $B[1:k,1:k]$, $1 \le k \le r$, non-singular. $B[1:r,1:r]$ has an LU factorization:
+    \[ B[1:r,1:r] = L_r U_r \]
+    and:
+    \[
+    B = \begin{pmatrix} B[:,1:r] U_r^{-1}
+    \end{pmatrix}
+    \begin{pmatrix}
+        L_r^{-1} B[1:r,:]
+    \end{pmatrix} = L_B U_B
+    \]
+    is its rank revealing LU factorization. Then:
+    \[ A = (P_r L_B) (U_B P_c) = L U \]
+    is a rank revealing factorization of $A$. Moreover, we have the following stronger sparsity results. If $e_{i_0} = P_r e_i$, then for $L$:
+    \begin{itemize}
+        \item If $i \le r$, then $i_0 \ge i$ and $L[i_0,i+1:] = 0$.
+        \item If $i > r$, then $i_0 \le i$ and $L[i_0,\min(r,i_0):] = 0$.
+    \end{itemize}
+    We have similar results for $U$. If $e_{j_0} = P_c^T e_j$, then:
+    \begin{itemize}
+        \item If $j \le r$, then $j_0 \ge j$ and $U[j+1:,j_0] = 0$.
+        \item If $j > r$, then $j_0 \le j$ and $U[\min(r,j_0):,j_0] = 0$.
+    \end{itemize}
+\end{theorem}
+
+\begin{proof}
+    We follow a proof similar to the one for \Cref{thm:main}.
+    
+    We do an induction on the size of $A$. The result is true for $n=1$.
+    
+    Assume it is true for size $n-1$. If $a_{11} \neq 0$, we have the factorization:
+    \[ 
+    A = LDU
+    \]
+    where
+    \[
+    L = \begin{pmatrix}
+        a_{11} & 0 \\
+        A_{21} & I
+    \end{pmatrix}, \quad
+    D = \begin{pmatrix}
+        a_{11}^{-1} & 0 \\
+        0 & S
+    \end{pmatrix}, \quad
+    U = \begin{pmatrix}
+        a_{11} & A_{12} \\
+        0 & I
+    \end{pmatrix}
+    \]
+    We apply the induction hypothesis to $S$. We can define $P_r$ and $P_c$ in terms of the permutations for $S$:
+    \[ P_r = \begin{pmatrix}
+        1 & 0 \\
+        0 & P_{r,S}
+    \end{pmatrix}, \quad
+    P_c = \begin{pmatrix}
+        1 & 0 \\
+        0 & P_{c,S}
+    \end{pmatrix}
+    \]
+    The sparsity results follow directly from the induction hypothesis.
+    
+    Assume $a_{11} = 0$. From \Cref{prop:rank}, we have either:
+    \begin{enumerate}
+        \item $A[:,1] = 0$, or
+        \item $A[1,:] = 0$
+        \item both.
+    \end{enumerate}
+    
+    Case 1: $A[:,1] = 0$. As before, we can find the smallest $j$ such that $A[1,j] \neq 0$. We pivot column 1 and $j$. Denote by $B_0 = A \Pi_j$ the permuted matrix. $B_0$ satisfies \Cref{prop:rank} and $b_{11} \neq 0$. So $B_0$ has an LU factorization with the sparsity pattern of \Cref{thm:main2}. Since column $j$ of $B_0$ is zero, column $j$ of $U_{B_0}$ is zero. We define
+    \[ P_c = P_{c,B} \Pi_j, \quad U = U_B \Pi_j \]
+    $\Pi_j$ swaps columns 1 and $j$ of $U_{B_0}$. We have $e_1 = \Pi_j^T e_j$ and column $j$ of $U_{B_0}$ is zero. We also have a $j_0$ such that $e_j = P_{c,B}^T e_{j_0}$ and $e_1 = P_c^T e_{j_0}$, with $j_0 > r$. Since column 1 of $U$ is zero and the other columns of $U$ have the sparsity pattern of \Cref{thm:main2}, $U$ also satisfies the sparsity pattern of \Cref{thm:main2}.
+    
+    Case 2: $A[1,:] = 0$. Consider $B = A^T$. $B$ corresponds to Case 1 and satisfies the sparsity pattern of \Cref{thm:main2}. So $A$ also satisfies the sparsity pattern of \Cref{thm:main2}.
+    
+    Case 3: If $A = 0$, it has an LU factorization. In that case we pick $L=U=0$ as the factors. If $A \neq 0$, let's denote by $j$ the smallest index such that column $j$ is non zero. Let's denote by $i > 1$ the smallest index such that $a_{ij} \neq 0$. Let's pivot column 1 and $j$ and denote by $B = A \Pi_j$ the permuted matrix. $B$ satisfies Case 2, so it has an LU factorization: $B = L U$ with the sparsity pattern of \Cref{thm:main2}. Following a reasoning analogous to Case 1, we can show that $A$ also satisfies the sparsity pattern of \Cref{thm:main2}.
+
+    As before, we have also proved that this process must terminate after $r$ steps where $r = \rk(A)$. So the LU factorization of $B$ is rank revealing.
+\end{proof}
+
+We now prove results for unit triangular factors.
+
+\begin{theorem} \label{thm:main_unit_lower}
+    Matrix $A$ is of size $n$ and rank $r \le n$. $A$ satisfies, for all $k = 1, \ldots, n$:
+    \begin{equation}
+        \label{eq:cond_unit_lower}
+        \nl(A[1:k,1:k]) = \nl(A[:,1:k])
+    \end{equation}
+    if and only if $A$ has an LU factorization $A = LU$ where $L$ is unit lower triangular.
+    
+    If $A$ satisfies \Cref{eq:cond_unit_lower}, then there exist a column permutation $P_c$ such that:
+    \[
+    B = A P_c^{-1}
+    \]
+    $B$ has an LU factorization: $B = L_B U_B$ where $L_B$ is unit lower triangular. Then:
+    \[ A = L_B (U_B P_c) = L U \]
+    is an LU factorization of $A$ where $L=L_B$ is unit lower triangular. 
+    
+    We also have that row $j$ of $B$ (or row $j$ of $A$ since the rows are not permuted) is a linear combination of the previous rows if and only if column $j$ of $B$ is a linear combination of the previous columns.
+    
+    Assume $e_{j_0} = P_c^T e_j$. If row $j$ of $B$ is a linear combination of the previous rows, then $j_0 \le j$. We have $L[:,j] = e_j$, $U[j,:] = 0$, and $U[j_0:,j_0] = 0$. If row $j$ of $B$ is linearly independent of the previous rows then $j_0 \ge j$ and $U[j+1:,j_0] = 0$.
+\end{theorem}
+
+\begin{proof}
+    We first prove that if $A=LU$ with $L$ unit lower triangular, then $A$ satisfies \Cref{eq:cond_unit_lower}. $U$ trivially satisfies \Cref{eq:cond_unit_lower} since it is upper triangular. Since $L[1:k,1:k]$ is full rank, $A$ also satisfies \Cref{eq:cond_unit_lower}.
+    
+    We follow a proof similar to the one for \Cref{thm:main2}. We do an induction on the size of $A$. The result is true for $n=1$.
+    
+    Assume it is true for size $n-1$. If $a_{11} \neq 0$, we verify that the result is true by the induction hypothesis.
+    
+    Assume $a_{11} = 0$. From \Cref{eq:cond_unit_lower}, we have $A[1,:] = 0$.
+    
+    Case 1: If row 1 of $A$ is non-zero, we can use the same steps as in the proof as \Cref{thm:main2} with a column permutation to prove the result by induction. In addition, this shows that if $e_{j_0} = P_c^T e_j$ and if row $j$ of $B$ is linearly independent of the previous rows then $j_0 \ge j$ and $U[j+1:,j_0] = 0$.
+    
+    Case 2: If row 1 of $A$ is zero, we cannot use the same proof as \Cref{thm:main2} because we can no longer permute rows. However, since row 1 of $A$ is zero, we can define:
+    \[ 
+    A = IDU
+    \]
+    with
+    \[
+    D = \begin{pmatrix}
+        1 & 0 \\
+        0 & S
+    \end{pmatrix}, \quad
+    U = \begin{pmatrix}
+        0 & 0 \\
+        0 & I
+    \end{pmatrix}
+    \]
+    $D$ satisfies
+    \[
+    \nl(D[1:k,1:k]) = \nl(A[1:k,1:k]) - 1
+    = \nl(A[:,1:k]) - 1 = \nl(D[:,1:k])
+    \]
+    $D$ satisfies \Cref{eq:cond_unit_lower}. By the induction hypothesis, we can find a column permutation $P_{c,S}$ such that $S P_{c,S}^{-1}$ has an LU factorization with unit lower triangular factor.
+    
+    This also proves that row $j$ of $B$ is a linear combination of the previous rows if and only if column $j$ of $B$ is a linear combination of the previous columns. Moreover, if $e_{j_0} = P_c^T e_j$ and row $j$ of $B$ is a linear combination of the previous rows, then $j_0 \le j$. We have $L[:,j] = e_j$, $U[j,:] = 0$, and $U[j_0:,j_0] = 0$.
+    
+    Note that the step above with $D$ is not a valid step in \Cref{thm:main2}. Indeed:
+    \begin{align*}
+        \nl(D[1:k,1:k]) & = \nl(A[1:k,1:k]) - 1 \\
+        \nl(D[:,1:k]) &= \nl(A[:,1:k]) - 1 \\
+        \nl(D[1:k,:]^T) &= \nl(A[1:k,:]^T) - 1
+    \end{align*}
+    So that \Cref{prop:rank} may not be satisfied by $D$.
+\end{proof}
+
+\begin{corollary} \label{corr:main_unit_lower}
+    Matrix $A$ is of size $n$ and rank $r \le n$. $A$ satisfies, for all $k = 1, \ldots, n$:
+    \begin{equation}
+        \label{eq:cond_unit_upper}
+        \nl(A[1:k,1:k]) = \nl(A[1:k,:])
+    \end{equation}
+    if and only if $A$ has an LU factorization $A = LU$ where $U$ is unit lower triangular.
+    
+    If $A$ satisfies \Cref{eq:cond_unit_upper}, then there exist a row permutation $P_r$ such that:
+    \[
+    B = P_r^{-1} A
+    \]
+    $B$ has an LU factorization: $B = L_B U_B$ where $U_B$ is unit upper triangular. Then:
+    \[ A = (P_r L_B) U_B = L U
+    \]
+    is an LU factorization of $A$ where $U=U_B$ is unit upper triangular. 
+    
+    We also have that column $i$ of $B$ (or column $i$ of $A$ since the columns are not permuted) is a linear combination of the previous columns if and only if row $i$ of $B$ is a linear combination of the previous rows.
+    
+    Assume $e_{i_0} = P_r e_i$. If column $i$ of $B$ is a linear combination of the previous columns, then $i_0 \le i$. We have $U[i,:] = e_i$, $L[:,i] = 0$, and $L[i_0,i_0:] = 0$. If column $i$ of $B$ is linearly independent of the previous columns then $i_0 \ge i$ and $L[i_0,i+1:] = 0$.
+\end{corollary}
+
+\begin{proof}
+    Consider $B = A^T$. Apply \Cref{thm:main_unit_lower}.    
+\end{proof}
+
+\appendix
+
+\section{Ancillary Results}
+
+We prove a few additional results that are helpful in the main proofs.
+
+\begin{lemma} \label{lem:oblique}
+    Assume that $x \in S = \spn\{x_1,\dots,x_r\}$. Denote by $X = [x_1, \ldots, x_r]$. Assume that $X[1:r,:]$ is non-singular. Then:
+    \[ x = X X[1:r,:]^{-1} x[1:r] \]
+\end{lemma}
+
+\begin{proof}
+    Since the submatrix $X[1:r,:]$ is non-singular, any vector $x \in S$ is uniquely determined by its first $r$ entries. Let $P$ be the oblique projection onto $S$ along the subspace of vectors with the first $r$ entries equal to zero. The projection matrix is given by:
+    \[ P = X (Y^T X)^{-1} Y^T \]
+    where the range of $Y$ is the orthogonal complement of the null space of $P$. Specifically, we set:
+    \[ Y = \begin{pmatrix}
+        I_r \\ 0
+    \end{pmatrix} \]
+    Since $x \in S$, we have $x = Px$. Substituting the expressions for $P$ and $Y$, we obtain:
+    \[ x = X (Y^T X)^{-1} Y^T x = X (X[1:r,:])^{-1} x[1:r] \]
+\end{proof}
+
+\begin{lemma} \label{lem:schur_zero}
+    Consider a matrix $A$ of size $n \by k$, $k \le n$. Assume that the rank of $A$ is $k-1$ and that column $k$ is linearly dependent on the previous columns. If $A$ has an LU factorization $A = LU$ with $u_{kk} = 1$, then column $k$ of $L$ is 0.
+\end{lemma}
+
+\begin{proof}
+    Decompose $L$ and $U$ in blocks:
+\[
+    L = \begin{pmatrix}
+        L_{11} & 0 \\
+        L_{21} & l_{kk} \\
+    \end{pmatrix}, \quad
+    U = \begin{pmatrix}
+        U_{11} & u_{1k} \\
+        0 & 1 \\
+    \end{pmatrix}
+\]
+    where $L_{11}$ is of size $(k-1) \by (k-1)$, $U_{11}$ is of size $(k-1) \by (k-1)$, $L_{21}$ is of size $(n-k+1) \by (k-1)$, and $u_{1k}$ is of size $(k-1) \by 1$. Then:
+\[
+    l_{kk} = A[k:,k] - A[k:,1:k] A[1:k,1:k]^{-1} A[1:k,k]
+\]
+    By \Cref{lem:oblique}, since column $k$ of $A$ is linearly dependent on the previous columns, we have: $l_{kk} = 0$.
+\end{proof}
+
+\begin{corollary} \label{cor:schur_zero}
+    Consider a matrix $A$ of size $k \by n$, $k \le n$. Assume that the rank of $A$ is $k-1$ and that row $k$ is linearly dependent on the previous rows. If $A$ has an LU factorization $A = LU$ with $l_{kk} = 1$, then row $k$ of $U$ is 0.
+\end{corollary}
+
+\begin{proof}
+    Consider $A^T = U^T L^T$. Apply \Cref{lem:schur_zero}.
+\end{proof}
+
+\end{document}
