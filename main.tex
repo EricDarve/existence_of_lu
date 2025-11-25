@@ -568,7 +568,7 @@ Please compare the result below with \Cref{cor:col_permutation}.
         \label{eq:cond_unit_upper}
         \nl(A[1:k,1:k]) = \nl(A[1:k,:])
     \end{equation}
-    if and only if $A$ has an LU factorization $A = LU$ where $U$ is unit lower triangular.
+    if and only if $A$ has an LU factorization $A = LU$ where $U$ is unit upper triangular.
     
     If $A$ satisfies \Cref{eq:cond_unit_upper}, then there exist a row permutation $P_r$ such that:
     \[
@@ -628,7 +628,7 @@ We prove a few additional results that are helpful in the main proofs.
 \]
     where $L_{11}$ is of size $(k-1) \by (k-1)$, $U_{11}$ is of size $(k-1) \by (k-1)$, $L_{21}$ is of size $(n-k+1) \by (k-1)$, and $u_{1k}$ is of size $(k-1) \by 1$. Then:
 \[
-    l_{kk} = A[k:,k] - A[k:,1:k] A[1:k,1:k]^{-1} A[1:k,k]
+    l_{kk} = A[k:,k] - A[k:,1:k-1] A[1:k-1,1:k-1]^{-1} A[1:k-1,k]
 \]
     By \Cref{lem:oblique}, since column $k$ of $A$ is linearly dependent on the previous columns, we have: $l_{kk} = 0$.
 \end{proof}
