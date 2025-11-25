@@ -33,8 +33,24 @@
 \maketitle
 
 \begin{abstract}
-    We investigate the necessary and sufficient conditions for the existence of an LU factorization for a given matrix $A$. We establish a condition relating the nullity of the submatrices of $A$ to the existence of the factorization. Finally, we extend these results to unit lower and upper triangular factorizations.
+    We establish necessary and sufficient conditions for the existence of an LU factorization $A=LU$ for an arbitrary square matrix $A$, including singular and rank-deficient cases, without the use of row or column permutations. We prove that such a factorization exists if and only if the nullity of every leading principal submatrix is bounded by the sum of the nullities of the corresponding leading column and row blocks. While building upon the work of Okunev and Johnson, we present simpler, constructive proofs based on induction. Furthermore, we extend these results to characterize rank-revealing factorizations, providing explicit sparsity bounds for the factors $L$ and $U$. Finally, we derive analogous necessary and sufficient conditions for the existence of factorizations constrained to have unit lower or unit upper triangular factors.
 \end{abstract}
+
+It is well-known that for any square matrix $A$, there exists a permutation of rows (and potentially columns) such that an LU factorization exists. Specifically, the factorization $PA = LU$, where $P$ is a permutation matrix, $L$ is unit lower triangular, and $U$ is upper triangular, is guaranteed to exist for any matrix $A$~\cite{higham_gaussian_2011,lu_numerical_2021}.
+
+However, the existence of an LU factorization for a matrix $A$ \emph{without} permutations---that is, $A = LU$---is not guaranteed. A classical result states that for a non-singular matrix, such a factorization exists if and only if all its leading principal minors are non-zero. When the matrix is singular or when leading principal minors vanish, the situation becomes significantly more complex. The standard conditions involving determinants are no longer sufficient to characterize the existence of the factorization.
+
+This paper addresses the necessary and sufficient conditions for the existence of an LU factorization for an arbitrary matrix $A$, without imposing restrictions on its rank or invertibility. We extend the seminal work of Okunev and Johnson~\cite{okunev_necessary_2005}, who established rank-based conditions for this problem (see also~\cite{dopico_multiple_2006} for a discussion on multiple factorizations of singular matrices). Other perspectives on factorizations and their existence in general algebraic structures or specific contexts can be found in~\cite{nagarajan_products_1999,johnson_inherited_1989,jeffrey_lu_2010}.
+
+The contributions of this paper are threefold. First, we formulate the necessary and sufficient condition using the \emph{nullity} of the leading principal submatrices relative to the nullity of the corresponding column and row blocks. Specifically, we prove that an LU factorization exists if and only if for all $k$:
+\[
+\nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl(A[1:k,:]^T)
+\]
+Second, we provide new, simpler proofs of these results. Unlike previous algebraic derivations, our proofs are constructive and rely on induction, explicitly building the factorization by handling the singular cases via internal permutations that preserve the triangular structure. Finally, we extend these results to characterize rank-revealing factorizations, providing tight sparsity bounds for the factors, and we derive analogous conditions for factorizations requiring unit lower or unit upper triangular factors.
+
+The remainder of the paper is organized as follows. \Cref{sec:classical} reviews classical results regarding factorizations with permutations. \Cref{sec:main} presents the main theorem and the derivation of the nullity condition. \Cref{thm:main2} strengthens this result by characterizing rank-revealing factorizations. Finally, \Cref{sec:unit_triangular} discusses the specific requirements for unit triangular factors.
+
+We begin with a few classical results that will serve as reference for the later sections.
 
 \section*{Notations}
 
@@ -53,13 +69,7 @@
     \bottomrule
 \end{tabular}
 
-\medskip
-
-This paper is concerned with proving necessary and sufficient conditions for the existence of an LU factorization of a matrix $A$. It extends the work of~\cite{okunev_necessary_2005} with new results and simpler proofs.
-
-We begin with a few classical results that will serve as reference for the later sections.
-
-\section{Classical results}
+\section{Classical results} \label{sec:classical}
 
 The theorems establish that any matrix can be permuted to have an LU factorization with unit triangular factors.
 
@@ -165,15 +175,18 @@ If we use both row and column permutations, we can always obtain a rank revealin
 We now consider LU factorizations without permutations. The simplest result requires that all leading principal minors are non-singular.
 
 \begin{proposition} \label{prop:sufficient}
-    Consider matrix $A$ of size $n$ such that
+    Consider an invertible matrix $A$ of size $n$. Matrix $A$ has an LU factorization if and only if
     \[
     \rk(A[1:k,1:k]) = k, \quad k = 1, \ldots, n
     \]
-    Then $A$ has an LU factorization: $A = LU$.
 \end{proposition}
 
 \begin{proof}
-    We prove the result by induction on $n$. The result is true for $n=1$.
+    We prove that the condition is necessary. Assume $A = LU$:
+    \[ \det(A) = \prod_{i=1}^n l_{ii} u_{ii} \]
+    and $\det(A) \neq 0$. So, $l_{ii} \neq 0$ and $u_{ii} \neq 0$ for all $i$. Therefore: $\rk(A[1:k,1:k]) = k$, $k = 1, \ldots, n$.
+
+    We prove that the condition is sufficient. We prove the result by induction on $n$. The result is true for $n=1$.
     
     Assume it is true for $n-1$. By assumption, $a_{11} \neq 0$. We then have the factorization:
     \[ 
@@ -197,7 +210,7 @@ We now consider LU factorizations without permutations. The simplest result requ
     and $S = A_{22} - A_{21} a_{11}^{-1} A_{12}$ is the Schur complement. $L$ and $U$ are full rank. So $D$ satisfies the condition of the theorem. Consequently, $S$ also satisfies the condition of the theorem and is of size $n-1$. By the induction hypothesis, $S$ has an LU factorization. Therefore $A$ also has an LU factorization.
 \end{proof}
 
-\section{General necessary and sufficient condition for the existence of an LU factorization}
+\section{General necessary and sufficient condition for the existence of an LU factorization} \label{sec:main}
 
 We now discuss the core of this paper: the necessary and sufficient conditions for the existence of an LU factorization without permutations. We start with an illustrative example that will preview the main result.
 
@@ -491,7 +504,7 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
     As before, we have also proved that this process must terminate after $r$ steps where $r = \rk(A)$. So the LU factorization of $B$ is rank revealing.
 \end{proof}
 
-\section{Unit triangular factors}
+\section{Unit triangular factors} \label{sec:unit_triangular}
 
 We now prove results for unit triangular factors. Please compare with \Cref{thm:row_permutation}.
 
