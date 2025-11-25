@@ -24,7 +24,7 @@
 % Define new name property for cleveref
 \crefname{property}{Property}{Properties}
 
-\title{Necessary and Suﬃcient Conditions for the Existence of an LU Factorization}
+\title{Necessary and Sufficient Conditions for the Existence of an LU Factorization}
 \author{Eric Darve}
 \date{\today}
 
@@ -113,7 +113,7 @@ The theorems establish that any matrix can be permuted to have an LU factorizati
     We can apply the induction hypothesis to $S$. The result for $A$ follows.
 \end{proof}
 
-\begin{corollary}
+\begin{corollary} \label{cor:col_permutation}
     Consider matrix $A$ of size $n$. There exist a column permutation matrix $Q$ such that $AQ = LU$ where $L$ is lower triangular and $U$ is unit upper triangular.
 \end{corollary}
 
@@ -127,7 +127,7 @@ Apply \Cref{thm:row_permutation} to $A^T$.
 
 If we use both row and column permutations, we can always obtain a rank revealing LU factorization.
 
-\begin{theorem}
+\begin{theorem} \label{thm:row_column_permutation}
     Consider matrix $A$ of size $n$. There exist a row permutation matrix $P$ and a column permutation matrix $Q$ such that $PAQ = LU$ is a rank revealing LU factorization.
 \end{theorem}
 
@@ -281,6 +281,8 @@ Of course, this is not true for all matrices. We will show that \Cref{prop:rank}
 \]
 \end{theorem}
 
+We now state Sylvester's inequality for the rank of a product of matrices.
+
 \begin{lemma}\label{lem:rank}
     Consider $A = BC$. Then:
 \[
@@ -406,7 +408,8 @@ We will prove the following theorem:
     We have also proved that this process must terminate after $r$ steps where $r = \rk(A)$. So the LU factorization of $B$ is rank revealing.
 \end{proof}
 
-We now prove the stronger theorem:
+We now prove a stronger theorem. Please compare this result with \Cref{thm:row_column_permutation}.
+
 \begin{theorem} \label{thm:main2}
     Matrix $A$ is of size $n$ and rank $r \le n$. If $A$ satisfies \Cref{prop:rank}, then there exist a row permutation $P_r$ and column permutation $P_c$ such that:
     \[ B = P_r^{-1} A P_c^{-1} \]
@@ -490,7 +493,7 @@ We now prove the stronger theorem:
 
 \section{Unit triangular factors}
 
-We now prove results for unit triangular factors.
+We now prove results for unit triangular factors. Please compare with \Cref{thm:row_permutation}.
 
 \begin{theorem} \label{thm:main_unit_lower}
     Matrix $A$ is of size $n$ and rank $r \le n$. $A$ satisfies, for all $k = 1, \ldots, n$:
@@ -520,7 +523,7 @@ We now prove results for unit triangular factors.
     
     Assume it is true for size $n-1$. If $a_{11} \neq 0$, we verify that the result is true by the induction hypothesis.
     
-    Assume $a_{11} = 0$. From \Cref{eq:cond_unit_lower}, we have $A[1,:] = 0$.
+    Assume $a_{11} = 0$. From \Cref{eq:cond_unit_lower}, we have $A[:,1] = 0$.
     
     Case 1: If row 1 of $A$ is non-zero, we can use the same steps as in the proof as \Cref{thm:main2} with a column permutation to prove the result by induction. In addition, this shows that if $e_{j_0} = P_c^T e_j$ and if row $j$ of $B$ is linearly independent of the previous rows then $j_0 \ge j$ and $U[j+1:,j_0] = 0$.
     
@@ -556,6 +559,8 @@ We now prove results for unit triangular factors.
     \end{align*}
     So that \Cref{prop:rank} may not be satisfied by $D$.
 \end{proof}
+
+Please compare the result below with \Cref{cor:col_permutation}.
 
 \begin{corollary} \label{corr:main_unit_lower}
     Matrix $A$ is of size $n$ and rank $r \le n$. $A$ satisfies, for all $k = 1, \ldots, n$:
