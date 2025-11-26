@@ -9,12 +9,12 @@
 
 \newcommand{\by}{\times}
 
-\newtheorem{theorem}{Theorem}
-\newtheorem{property}{Property}
-\newtheorem{lemma}{Lemma}
-\newtheorem{corollary}{Corollary}
-\newtheorem{proposition}{Proposition}
-\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{property}[theorem]{Property}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
 
 \usepackage[url=false]{biblatex}
 \AtEveryBibitem{\clearfield{urldate}}
@@ -169,7 +169,7 @@ If we allow both row and column permutations, we can always obtain such a factor
     
     We have also proved that this process must terminate after $r$ steps where $r = \rk(A)$. So the LU factorization of $B$ is rank revealing.
     
-    From \Cref{lem:schur_zero} and \Cref{cor:schur_zero}, we can also prove that the remaining Schur complement is zero after $r$ steps of the LU factorization.
+    From \Cref{lem:schur_zero} and \Cref{cor:schur_zero} (see \Cref{sec:appendix} in the Appendix), we can also prove that the remaining Schur complement is zero after $r$ steps of the LU factorization.
 \end{proof}
 
 We now consider LU factorizations without permutations. The fundamental result states that factorization is possible if and only if the matrix is \emph{strongly non-singular} (i.e., all leading principal minors are non-zero).
@@ -318,7 +318,11 @@ We now state Sylvester's inequality for the rank of a product of matrices.
 \end{corollary}
 
 \begin{proof}
-    Use \Cref{lem:rank} and \Cref{thm:rank-nullity}.
+    Assume $A = BC$ where $A$, $B$, $C$ are $n \times n$ matrices. From \Cref{lem:rank}:
+    \[ \rk(A) \ge \rk(B) + \rk(C) - n \]
+    Using \Cref{thm:rank-nullity}, $\rk(M) = n - \nl(M)$:
+    \[ n - \nl(A) \ge (n - \nl(B)) + (n - \nl(C)) - n \]
+    Simplifying: $\nl(A) \le \nl(B) + \nl(C)$.
 \end{proof}
 
 \subsection{Necessary condition}
@@ -506,9 +510,9 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
         \item $A[:,1] = 0$, $A[1,:] = 0$.
     \end{enumerate}
     
-    Case 1: $A[:,1] = 0$. As for \Cref{thm:main}, we can find the smallest $j$ such that $A[1,j] \neq 0$. We pivot column 1 and $j$. Denote by $B_0 = A \Pi_j$ the permuted matrix. $B_0$ satisfies \Cref{prop:rank} and $b_{11} \neq 0$. So $B_0$ has an LU factorization with the sparsity pattern of \Cref{thm:main2}. Since column $j$ of $B_0$ is zero, column $j$ of $U_{B_0}$ is zero. We define
+    Case 1: $A[:,1] = 0$. As for \Cref{thm:main}, we can find the smallest $j$ such that $A[1,j] \neq 0$. We pivot column 1 and $j$. Denote by $B = A \Pi_j$ the permuted matrix. $B$ satisfies \Cref{prop:rank} and $b_{11} \neq 0$. So $B$ has an LU factorization with the sparsity pattern of \Cref{thm:main2}. Since column $j$ of $B$ is zero, column $j$ of $U_{B}$ is zero. We define
     \[ P_c = P_{c,B} \Pi_j, \quad U = U_B \Pi_j \]
-    $\Pi_j$ swaps columns 1 and $j$ of $U_{B_0}$. We have $e_1 = \Pi_j^T e_j$ and column $j$ of $U_{B_0}$ is zero. We also have a $j_0$ such that $e_j = P_{c,B}^T e_{j_0}$ and $e_1 = P_c^T e_{j_0}$, with $j_0 > r$. Since column 1 of $U$ is zero and the other columns of $U$ have the sparsity pattern of \Cref{thm:main2}, $U$ also satisfies the sparsity pattern of \Cref{thm:main2}.
+    $\Pi_j$ swaps columns 1 and $j$ of $U_{B}$. We have $e_1 = \Pi_j^T e_j$ and column $j$ of $U_{B}$ is zero. We also have a $j_0$ such that $e_j = P_{c,B}^T e_{j_0}$ and $e_1 = P_c^T e_{j_0}$. Note that since column $j$ of $B$ (which is column 1 of $A$) is zero, we are beyond the rank-revealing part and $j_0 > r$. Since column 1 of $U$ is zero and the other columns of $U$ have the sparsity pattern of \Cref{thm:main2}, $U$ also satisfies the sparsity pattern of \Cref{thm:main2}.
     
     Case 2: $A[1,:] = 0$. Consider $B = A^T$. $B$ corresponds to Case 1 and satisfies the sparsity pattern of \Cref{thm:main2}. So $A$ also satisfies the sparsity pattern of \Cref{thm:main2}.
     
@@ -522,7 +526,7 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
 We now examine the specific case where one of the factors is required to be unit triangular. The following result should be compared with \Cref{thm:row_permutation}.
 
 \begin{theorem} \label{thm:main_unit_lower}
-    Let $A$ be a matrix of size $n$ and rank $r \le n$. $A$ has an LU factorization $A = LU$ where $L$ is unit lower triangular if and only if for all $k = 1, \ldots, n$:
+    Let $A$ be a matrix of size $n$ and rank $r \le n$. $A$ has an LU factorization $A = LU$ where $L$ is square unit lower triangular if and only if for all $k = 1, \ldots, n$:
     \begin{equation}
         \label{eq:cond_unit_lower}
         \nl(A[1:k,1:k]) = \nl(A[:,1:k])
@@ -565,6 +569,9 @@ We now examine the specific case where one of the factors is required to be unit
         0 & S
     \end{pmatrix}, \quad
     U = \begin{pmatrix}
+        0 & A[1,2:n] \\
+        0 & I
+    \end{pmatrix} = \begin{pmatrix}
         0 & 0 \\
         0 & I
     \end{pmatrix}
@@ -589,7 +596,7 @@ We now examine the specific case where one of the factors is required to be unit
 
 We now state the corresponding result where $U$ is unit upper triangular. Please compare the result below with \Cref{cor:col_permutation}.
 
-\begin{corollary} \label{corr:main_unit_lower}
+\begin{corollary} \label{corr:main_unit_upper}
     Let $A$ be a matrix of size $n$ and rank $r \le n$. $A$ has an LU factorization $A = LU$ where $U$ is unit upper triangular if and only if for all $k = 1, \ldots, n$:
     \begin{equation}
         \label{eq:cond_unit_upper}
@@ -625,7 +632,7 @@ Furthermore, we defined and characterized rank-revealing LU factorizations witho
 
 \appendix
 
-\section{Ancillary results}
+\section{Appendix} \label{sec:appendix}
 
 We prove a few additional results that are helpful in the main proofs.
 
