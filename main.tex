@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
-\usepackage{mathtools,booktabs}
+\usepackage{booktabs}
 
 \DeclareMathOperator{\rk}{rank}
 \DeclareMathOperator{\nl}{null}
@@ -9,20 +9,30 @@
 
 \newcommand{\by}{\times}
 
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{property}[theorem]{Property}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{definition}[theorem]{Definition}
-
 \usepackage[url=false]{biblatex}
 \AtEveryBibitem{\clearfield{urldate}}
 \addbibresource{ref.bib}
 
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{property}{Property}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{definition}{Definition}[section]
+
 \usepackage{hyperref}
 \usepackage{cleveref}
-\crefname{property}{Property}{Properties}
+
+\Crefname{property}{Property}{Properties}
+\crefname{property}{property}{properties}
+\Crefname{corollary}{Corollary}{Corollaries}
+\crefname{corollary}{corollary}{corollaries}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{lemma}{lemma}{lemmas}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefname{proposition}{proposition}{propositions}
+\Crefname{theorem}{Theorem}{Theorems}
+\crefname{theorem}{theorem}{theorems}
 
 \title{Necessary and Sufficient Conditions for the Existence of an LU Factorization}
 \author{Eric Darve}
