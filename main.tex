@@ -454,12 +454,12 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
     Moreover, we have the following sparsity results for $L$. Let $i_0$ be the row index in $A$ corresponding to the logical row index $i$ in $B$ (i.e., $e_{i_0} = P_r e_i$). Then:
     \begin{itemize}
         \item If $i \le r$, then $i_0 \ge i$ and $L[i_0, i+1:] = 0$.
-        \item If $i > r$, then $i_0 \le i$ and $L[i_0, \min(r+1, i_0):] = 0$.
+        \item If $i > r$, then $i_0 \le i$; if $i_0 \le r$, then $L[i_0,i_0:] = 0$.
     \end{itemize}
     Similarly for $U$, let $j_0$ be the column index in $A$ corresponding to the logical column index $j$ in $B$ (i.e., $e_{j_0} = P_c^T e_j$). Then:
     \begin{itemize}
         \item If $j \le r$, then $j_0 \ge j$ and $U[j+1:, j_0] = 0$.
-        \item If $j > r$, then $j_0 \le j$ and $U[\min(r+1, j_0):, j_0] = 0$.
+        \item If $j > r$, then $j_0 \le j$; if $j_0 \le r$, then $U[j_0:, j_0] = 0$.
     \end{itemize}
 \end{theorem}
 
