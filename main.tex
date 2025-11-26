@@ -1,4 +1,7 @@
 \documentclass{article}
+
+\usepackage[nomargin,inline,marginclue,draft]{fixme}
+
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
@@ -45,6 +48,8 @@
 \begin{abstract}
     We establish necessary and sufficient conditions for the existence of an LU factorization $A=LU$ for an arbitrary square matrix $A$, including singular and rank-deficient cases, without the use of row or column permutations. We prove that such a factorization exists if and only if the nullity of every leading principal submatrix is bounded by the sum of the nullities of the corresponding leading column and row blocks. While building upon the work of Okunev and Johnson, we present simpler, constructive proofs based on induction. Furthermore, we extend these results to characterize rank-revealing factorizations, providing explicit sparsity bounds for the factors $L$ and $U$. Finally, we derive analogous necessary and sufficient conditions for the existence of factorizations constrained to have unit lower or unit upper triangular factors.
 \end{abstract}
+
+\listoffixmes
 
 It is well-known that for any square matrix $A$, there exists a permutation of rows (and potentially columns) such that an LU factorization exists. Specifically, the factorization $PA = LU$, where $P$ is a permutation matrix, $L$ is unit lower triangular, and $U$ is upper triangular, is guaranteed to exist for any matrix $A$~\cite{higham_gaussian_2011,lu_numerical_2021}.
 
@@ -234,6 +239,8 @@ This matrix does not admit an LU factorization. We prove this by contradiction. 
     \item If $u_{11} = 0$, then $a_{21} = l_{21} u_{11} = 0$, which contradicts $a_{21} = 1$.
 \end{itemize}
 
+In this special case, we have $A^2 = I$ and $A$ is a permutation matrix. So we note that $A A = I \cdot I$ is the factorization of \Cref{thm:row_permutation} with $P = A$, $L = I$, and $U = I$.
+
 However, a zero pivot does not always preclude factorization. Consider the singular matrix:
 \[
 A = \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & 1 \\ 0 & 1 & 0 \end{pmatrix}
@@ -288,7 +295,8 @@ A =
     0_n & 0_n & U
 \end{pmatrix}
 \]
-These examples demonstrate that the existence of a factorization is linked to the relationship between the ranks (or nullities) of specific sub-blocks. We formalize this observation in \Cref{prop:rank}. We will show that \Cref{prop:rank} below is a necessary and sufficient condition for the existence of an LU factorization. The proof will rely on constructing a $P$ and $Q$ such that $B = P^{-1} AQ^{-1}$. $B[1:r,1:r]$ will satisfy the conditions of \Cref{prop:sufficient} where $r = \rk(A) = \rk(B)$. Therefore $B = LU$. From this, we will deduce a rank-revealing LU factorization of $A = (PL)(UQ)$, where $PL$ is lower triangular with $r$ columns, and $UQ$ is upper triangular with $r$ rows.
+
+These examples demonstrate that the existence of a factorization is linked to the relationship between the ranks (or nullities) of specific sub-blocks. We formalize this observation in \Cref{prop:rank}. We will show that \Cref{prop:rank} below is a necessary and sufficient condition for the existence of an LU factorization.
 
 \begin{property}\label{prop:rank}
     Matrix $A$ is square of size $n$. For all $k = 1, \ldots, n$:
@@ -297,6 +305,31 @@ These examples demonstrate that the existence of a factorization is linked to th
         \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl(A[1:k,:]^T)    
     \end{equation}
 \end{property}
+
+We informally describe the main strategy before stating the results formally. The primary obstacle to constructing an LU factorization is the occurrence of a zero pivot. Standard Gaussian elimination resolves this by permuting rows (partial pivoting) or both rows and columns (full pivoting) to bring a non-zero entry to the diagonal.
+
+However, arbitrary permutations destroy the triangular structure required for the specific factorization $A=LU$. If we write the permuted factorization as $P A Q = L U$, recovering $A$ yields $A = (P^{-1} L) (U Q^{-1})$. In general, $P^{-1} L$ is not lower triangular and $U Q^{-1}$ is not upper triangular.
+
+To maintain the triangular factors of $A$, we must restrict our pivoting strategy. We rely on the observation (detailed in \Cref{sec:appendix}) that a zero column (or row) in the Schur complement corresponds to a column (or row) in the original matrix that is linearly dependent on the preceding columns (or rows).
+
+Our constructive proof effectively “sorts” the matrix indices. Whenever we encounter a zero pivot, the condition in \Cref{prop:rank} guarantees that at least one of the following two scenarios must hold:
+\begin{enumerate}
+    \item The current column in the Schur complement is zero (the column is linearly dependent). We permute this column to rightward.
+    \item The current row in the Schur complement is zero (the row is linearly dependent). We permute this row downward.
+\end{enumerate}
+
+Crucially, because we only permute \emph{zero} columns or rows (relative to the active Schur complement), the triangular structure of the resulting factors is preserved. When we reverse these permutations, the factor $P^{-1} L$ remains lower triangular and $U Q^{-1}$ remains upper triangular.
+
+Condition \eqref{eq:cond1} is the precise safeguard that ensures we never reach a “dead end” where the pivot is zero but neither the column nor the row can be safely permuted away (i.e., a case where the rank has not been exhausted, but the leading block is rank-deficient in a way that blocks factorization).
+
+Consequently, this process produces a rank-revealing factorization where the indices are partitioned based on linear independence:
+\begin{itemize}
+    \item \textbf{Linearly Independent Vectors:} If a column $j_0$ of $A$ is linearly independent of the previous columns, it is retained (or moved) into the leading rank-$r$ block ($j \le r$).
+    \item \textbf{Linearly Dependent Vectors:} If a column $j_0$ of $A$ is linearly dependent on the previous columns, it is deferred to the trailing block ($j > r$).
+\end{itemize}
+A symmetric logic applies to the rows of $A$.
+
+We now provide the formal proof of the main results, \Cref{thm:main,thm:main2}.
 
 \subsection{Rank theorems}
 
@@ -531,7 +564,11 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
     As in \Cref{thm:main}, we have also proved that this process must terminate after $r$ steps where $r = \rk(A)$. So the LU factorization of $B$ is rank revealing.
 \end{proof}
 
+\fxnote{Add a Python code of the algorithm to compute the LU factorization with the required pivoting strategy. The algorithm only fails if the matrix does not satisfy \Cref{prop:rank}.}
+
 \section{Unit triangular factors} \label{sec:unit_triangular}
+
+\fxnote{Explain the difference with the previous row pivoting strategy to get a unit lower triangular factor; the previous result requires a row pivoting in order to get a unit lower triangular factor; here we require a column pivoting; this column pivoting only works under restricted conditions. For a general matrix, it's not possible to do column pivoting only to get a unit lower triangular factor. Only row pivoting allows that. Provide counterexamples to illustrate this. The main difference of course is that we get an LU factorization while the classical result only provides an LUP factorization.}
 
 We now examine the specific case where one of the factors is required to be unit triangular. The following result should be compared with \Cref{thm:row_permutation}.
 
@@ -644,53 +681,63 @@ Furthermore, we defined and characterized rank-revealing LU factorizations witho
 
 \section{Appendix} \label{sec:appendix}
 
-We prove a few additional results that are helpful in the main proofs.
+We prove a few additional results that are helpful in the main proofs. For additional background on connections between the LU factorization, Schur complements, and oblique projections, please refer to \cite{Ouellette_1981,Zhang_2006,Householder_2013}.
+
+\begin{lemma} \label{lem:oblique_projection}
+    Denote by $X$ and $Y$ two matrices of size $n \by k$. Assume that $X$ is full rank and that $Y^T X$ is non-singular. Define:
+    \[ P = X (Y^T X)^{-1} Y^T \]
+    Then $P$ is the oblique projection onto the range of $X$ along the orthogonal complement of the range of $Y$.
+\end{lemma}
+
+\begin{proof}
+    We have:
+    \[ P X = X (Y^T X)^{-1} Y^T X = X \]
+    So the range of $P$ contains the range of $X$. Since $\rk(P) \le k$ and $\rk(X)=k$, the range of $P$ is exactly the range of $X$.
+    
+    Consider $v$ in the orthogonal complement of the range of $Y$ (i.e., $Y^T v = 0$). We have:
+    \[ P v = X (Y^T X)^{-1} Y^T v = 0 \]
+    Thus, the null space of $P$ contains the orthogonal complement of the range of $Y$. By the rank-nullity theorem, the dimensions match, so the null space of $P$ is exactly the orthogonal complement of the range of $Y$.
+\end{proof}
+
+\begin{lemma} \label{lem:oblique_projection_specific}
+    Denote by $X = [x_1, \ldots, x_k]$ a rank $k$ matrix. Consider the oblique projection $P_o(X)$ onto
+    \[ S = \spn\{ x_1,\dots,x_k \} \]
+    along the subspace of vectors with the first $k$ entries equal to zero. Assume that $X[1:k,:]$ is non-singular. Then:
+    \[ P_o(X) = X (X[1:k,:])^{-1} Y^T \]
+    where
+    \[ Y = \begin{pmatrix}
+        I_k \\ 0
+    \end{pmatrix} \]
+\end{lemma}
+
+\begin{proof}
+    In \Cref{lem:oblique_projection}, set $Y$ as
+    \[ Y = \begin{pmatrix}
+        I_k \\ 0
+    \end{pmatrix} \]
+    The range of $Y$ is the span of the first $k$ standard basis vectors. Its orthogonal complement is exactly the subspace of vectors with the first $k$ entries equal to zero.
+\end{proof}
+
+Denote by $Q_o(X) = I - P_o(X)$ the oblique projection onto the subspace of vectors with the first $k$ entries equal to zero along $S=\spn(X)$.
+
+Consider the state of the matrix at the beginning of step $k$ of the LU factorization algorithm (after $k-1$ columns have been eliminated). The Schur complement can be interpreted in terms of the oblique projection $Q_o$. Specifically, from \Cref{lem:oblique_projection_specific} applied to the first $k-1$ columns, we have:
+\[ S^o_k = A[:,k:] - A[:,1:k-1] A[1:k-1,1:k-1]^{-1} A[1:k-1,k:] 
+= Q_o(A[:,1:k-1]) \; A[:,k:]
+\]
+The standard Schur complement $S_k$ corresponds to the bottom block of this projected matrix: $S_k = S^o_k[k:,:]$.
 
 \begin{lemma} \label{lem:oblique}
-    Assume that $x \in S = \spn\{x_1,\dots,x_r\}$. Denote by $X = [x_1, \ldots, x_r]$. Assume that $X[1:r,:]$ is non-singular. Then:
-    \[ x = X X[1:r,:]^{-1} x[1:r] \]
+    If column $j$ of $A$ (where $j \ge k$) is linearly dependent on columns $1$ to $k-1$ of $A$, then column $j - k + 1$ of $S^o_k$ is zero.
 \end{lemma}
 
 \begin{proof}
-    Since the submatrix $X[1:r,:]$ is non-singular, any vector $x \in S$ is uniquely determined by its first $r$ entries. Let $P$ be the oblique projection onto $S$ along the subspace of vectors with the first $r$ entries equal to zero. The projection matrix is given by:
-    \[ P = X (Y^T X)^{-1} Y^T \]
-    where the range of $Y$ is the orthogonal complement of the null space of $P$. Specifically, we set:
-    \[ Y = \begin{pmatrix}
-        I_r \\ 0
-    \end{pmatrix} \]
-    Since $x \in S$, we have $x = Px$. Substituting the expressions for $P$ and $Y$, we obtain:
-    \[ x = X (Y^T X)^{-1} Y^T x = X (X[1:r,:])^{-1} x[1:r] \]
-\end{proof}
-
-\begin{lemma} \label{lem:schur_zero}
-    Consider a matrix $A$ of size $n \by k$, $k \le n$. Assume that $A[1:k-1,1:k-1]$ is non-singular and that column $k$ is linearly dependent on the previous columns. If $A$ has an LU factorization $A = LU$ with $u_{kk} = 1$, then column $k$ of $L$ is 0.
-\end{lemma}
-
-\begin{proof}
-    Decompose $L$ and $U$ in blocks:
-    \[
-    L = \begin{pmatrix}
-        L_{11} & 0 \\
-        L_{21} & c_k \\
-    \end{pmatrix}, \quad
-    U = \begin{pmatrix}
-        U_{11} & u_{1k} \\
-        0 & 1 \\
-    \end{pmatrix}
-    \]
-    where $L_{11}$ is of size $(k-1) \by (k-1)$, $U_{11}$ is of size $(k-1) \by (k-1)$, $L_{21}$ is of size $(n-k+1) \by (k-1)$, $u_{1k}$ is of size $(k-1) \by 1$, and $c_k$ is a column vector of size $(n-k+1) \by 1$. Then:
-    \[
-    c_k = A[k:,k] - A[k:,1:k-1] A[1:k-1,1:k-1]^{-1} A[1:k-1,k]
-    \]
-    By \Cref{lem:oblique}, since column $k$ of $A$ is linearly dependent on the previous columns, we have $c_k = 0$.
-\end{proof}
-
-\begin{corollary} \label{cor:schur_zero}
-    Consider a matrix $A$ of size $k \by n$, $k \le n$. Assume that $A[1:k-1,1:k-1]$ is non-singular and that row $k$ is linearly dependent on the previous rows. If $A$ has an LU factorization $A = LU$ with $l_{kk} = 1$, then row $k$ of $U$ is 0.
-\end{corollary}
-
-\begin{proof}
-    Consider $A^T = U^T L^T$. Apply \Cref{lem:schur_zero}.
+    Since column $j$ of $A$ is linearly dependent on columns $1$ to $k-1$, we have:
+    \[ A[:,j] \in \spn\{ A[:,1], \ldots, A[:,k-1] \} \]
+    Let $X = A[:,1:k-1]$. Then $A[:,j] \in \spn(X)$. By definition of the projection $P_o(X)$:
+    \[ P_o(X) A[:,j] = A[:,j] \]
+    Therefore:
+    \[ Q_o(X) A[:,j] = (I - P_o(X)) A[:,j] = 0 \]
+    Since $S^o_k$ is formed by applying $Q_o(X)$ to the columns $A[:,k:]$, the column corresponding to $A[:,j]$ is zero.
 \end{proof}
 
 \printbibliography
