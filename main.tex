@@ -646,7 +646,7 @@ We prove a few additional results that are helpful in the main proofs.
 \end{proof}
 
 \begin{lemma} \label{lem:schur_zero}
-    Consider a matrix $A$ of size $n \by k$, $k \le n$. Assume that the rank of $A$ is $k-1$ and that column $k$ is linearly dependent on the previous columns. If $A$ has an LU factorization $A = LU$ with $u_{kk} = 1$, then column $k$ of $L$ is 0.
+    Consider a matrix $A$ of size $n \by k$, $k \le n$. Assume that $A[1:k-1,1:k-1]$ is non-singular and that column $k$ is linearly dependent on the previous columns. If $A$ has an LU factorization $A = LU$ with $u_{kk} = 1$, then column $k$ of $L$ is 0.
 \end{lemma}
 
 \begin{proof}
@@ -654,22 +654,22 @@ We prove a few additional results that are helpful in the main proofs.
     \[
     L = \begin{pmatrix}
         L_{11} & 0 \\
-        L_{21} & l_{kk} \\
+        L_{21} & c_k \\
     \end{pmatrix}, \quad
     U = \begin{pmatrix}
         U_{11} & u_{1k} \\
         0 & 1 \\
     \end{pmatrix}
     \]
-    where $L_{11}$ is of size $(k-1) \by (k-1)$, $U_{11}$ is of size $(k-1) \by (k-1)$, $L_{21}$ is of size $(n-k+1) \by (k-1)$, $u_{1k}$ is of size $(k-1) \by 1$, and $l_{kk}$ is a column vector of size $(n-k+1) \by 1$. Then:
+    where $L_{11}$ is of size $(k-1) \by (k-1)$, $U_{11}$ is of size $(k-1) \by (k-1)$, $L_{21}$ is of size $(n-k+1) \by (k-1)$, $u_{1k}$ is of size $(k-1) \by 1$, and $c_k$ is a column vector of size $(n-k+1) \by 1$. Then:
     \[
-    l_{kk} = A[k:,k] - A[k:,1:k-1] A[1:k-1,1:k-1]^{-1} A[1:k-1,k]
+    c_k = A[k:,k] - A[k:,1:k-1] A[1:k-1,1:k-1]^{-1} A[1:k-1,k]
     \]
-    By \Cref{lem:oblique}, since column $k$ of $A$ is linearly dependent on the previous columns, we have $l_{kk} = 0$.
+    By \Cref{lem:oblique}, since column $k$ of $A$ is linearly dependent on the previous columns, we have $c_k = 0$.
 \end{proof}
 
 \begin{corollary} \label{cor:schur_zero}
-    Consider a matrix $A$ of size $k \by n$, $k \le n$. Assume that the rank of $A$ is $k-1$ and that row $k$ is linearly dependent on the previous rows. If $A$ has an LU factorization $A = LU$ with $l_{kk} = 1$, then row $k$ of $U$ is 0.
+    Consider a matrix $A$ of size $k \by n$, $k \le n$. Assume that $A[1:k-1,1:k-1]$ is non-singular and that row $k$ is linearly dependent on the previous rows. If $A$ has an LU factorization $A = LU$ with $l_{kk} = 1$, then row $k$ of $U$ is 0.
 \end{corollary}
 
 \begin{proof}
