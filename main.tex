@@ -347,7 +347,7 @@ To maintain the triangular factors of $A$, we must restrict our pivoting strateg
 
 Our constructive proof effectively “sorts” the matrix indices. Whenever we encounter a zero pivot, the condition in \Cref{prop:rank} guarantees that at least one of the following two scenarios must hold:
 \begin{enumerate}
-    \item The current column in the Schur complement is zero (the column is linearly dependent). We permute this column to rightward.
+    \item The current column in the Schur complement is zero (the column is linearly dependent). We permute this column rightward.
     \item The current row in the Schur complement is zero (the row is linearly dependent). We permute this row downward.
 \end{enumerate}
 
@@ -361,6 +361,14 @@ Consequently, this process produces a rank-revealing factorization where the ind
     \item \textbf{Linearly Dependent Vectors:} If a column $j_0$ of $A$ is linearly dependent on the previous columns, it is deferred to the trailing block ($j > r$).
 \end{itemize}
 A symmetric logic applies to the rows of $A$.
+
+\subsection{Descriptive explanation}
+
+We can form a mental model of \Cref{prop:rank} by considering the following scenario which represents the class of matrices that have an LU factorization. Assume that the columns of $A$ correspond to producer points $j$ and the rows of $A$ correspond to sensor points $i$.
+
+We say the producer $j$ is \emph{observable} by the current sensor network $1:i$ if $A[1:i,j]$ adds new information (is linearly independent) relative to previous producers $A[1:i,1:j-1]$. Conversely, we say the sensor $i$ is \emph{informative} regarding the current producers $1:j$ if its measurement $A[i,1:j]$ is linearly independent of previous measurements $A[1:i-1,1:j]$.
+
+The existence of an LU factorization implies a compatibility between observability and informativeness. $A$ admits a factorization if and only if every “blind spot” (rank deficiency) in a leading block corresponds to a global redundancy. Specifically, if the interaction between the first $k$ sensors and $k$ producers is rank-deficient, this deficiency must be fully accounted for by producers that are globally redundant (dependent on previous columns) or sensors that are globally redundant (dependent on previous rows). The factorization is impossible only in the “crossed” scenario, or \emph{deadlock}: where producer $k$ carries a novel signal that current sensors miss (but future sensors see), while sensor $k$ performs a novel measurement that misses current signals (but sees future ones).
 
 We now provide the formal proof of the main results, \Cref{thm:main,thm:main2}.
 
