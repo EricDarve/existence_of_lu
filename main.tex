@@ -4,7 +4,10 @@
 
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
+\usepackage[english]{babel}
 \usepackage{booktabs,listings,xcolor}
+\usepackage{csquotes}
+\MakeOuterQuote{"}
 
 \lstdefinestyle{PythonStyle}{
     language=Python,
@@ -89,6 +92,8 @@ We say that a matrix $L$ is subordinate to a RAG $G$ if there exists a topologic
 Assume a matrix $A$ can be decomposed as $A = LU$. This implies that there is a RAG $G$ such that: (1) 1, 2, \dots, n is a topological ordering of $G$; (2) $L$ is subordinate to $G$; (3) $U$ is subordinate to $G^T$, where $G^T$ is a graph with the same vertices as $G$ but with the edges reversed. $U$ can be interpreted as propagating the information backward in $G$, while $L$ is propagating the information forward in $G$.
 
 We also note that $A = LU$ means that if $a_{ij} \neq 0$, then there exists an intermediate node $k$ ($k \le i$, $k \le j$) such that edges $k \to i$ and $k \to j$ are both present in $G$. This highlights $k$ as a common source of information for $i$ and $j$, and can be associated with covariance structures where correlations arise from common causes.
+
+Consequently, in applications where the index ordering carries physical significance (such as time in causal systems), reordering the rows and columns via permutations may be undesirable or strictly prohibited. Furthermore, from a general resource perspective, the LU factorization typically incurs a lower cost than alternative decompositions such as QR, SVD, the eigendecomposition, or the Schur decomposition. This cost advantage may extend beyond floating-point operations to include physical limitations, such as data transport or logistical constraints represented by the matrix entries. Finally, the LU factorization typically leads to sparser factors compared for example to other decompositions. These factors motivate the study of the existence of an LU factorization without permutations.
 
 \paragraph{Organization of paper.}
 The remainder of the paper is organized as follows. \Cref{sec:classical} reviews classical results regarding factorizations with permutations. \Cref{sec:main} presents the main theorem and the derivation of the nullity condition. \Cref{thm:main2} strengthens this result by characterizing rank-revealing factorizations. Finally, \Cref{sec:unit_triangular} discusses the specific requirements for unit triangular factors.
@@ -360,7 +365,7 @@ However, arbitrary permutations destroy the triangular structure required for th
 
 To maintain the triangular factors of $A$, we must restrict our pivoting strategy. We rely on the observation (detailed in \Cref{sec:appendix}) that a zero column (or row) in the Schur complement corresponds to a column (or row) in the original matrix that is linearly dependent on the preceding columns (or rows).
 
-Our constructive proof effectively “sorts” the matrix indices. Whenever we encounter a zero pivot, the condition in \Cref{prop:rank} guarantees that at least one of the following two scenarios must hold:
+Our constructive proof effectively "sorts" the matrix indices. Whenever we encounter a zero pivot, the condition in \Cref{prop:rank} guarantees that at least one of the following two scenarios must hold:
 \begin{enumerate}
     \item The current column in the Schur complement is zero (the column is linearly dependent). We permute this column rightward.
     \item The current row in the Schur complement is zero (the row is linearly dependent). We permute this row downward.
@@ -368,7 +373,7 @@ Our constructive proof effectively “sorts” the matrix indices. Whenever we e
 
 Crucially, because we only permute \emph{zero} columns or rows (relative to the active Schur complement), the triangular structure of the resulting factors is preserved. When we reverse these permutations, the factor $P^{-1} L$ remains lower triangular and $U Q^{-1}$ remains upper triangular.
 
-Condition~\eqref{eq:cond1} is the precise safeguard that ensures we never reach a “dead end” where the pivot is zero but neither the column nor the row can be safely permuted away (i.e., a case where the rank has not been exhausted, but the leading block is rank-deficient in a way that blocks factorization).
+Condition~\eqref{eq:cond1} is the precise safeguard that ensures we never reach a "dead end" where the pivot is zero but neither the column nor the row can be safely permuted away (i.e., a case where the rank has not been exhausted, but the leading block is rank-deficient in a way that blocks factorization).
 
 Consequently, this process produces a rank-revealing factorization where the indices are partitioned based on linear independence:
 \begin{itemize}
@@ -377,19 +382,18 @@ Consequently, this process produces a rank-revealing factorization where the ind
 \end{itemize}
 A symmetric logic applies to the rows of $A$.
 
-\subsubsection*{Descriptive explanation}
+\subsubsection*{Producer-sensor analogy}
 
-We can form a mental model of \Cref{prop:rank} by considering the following scenario which represents the class of matrices that have an LU factorization. Assume that the columns of $A$ correspond to producer points $j$ and the rows of $A$ correspond to sensor points $i$.
+We can form a mental model of \Cref{prop:rank} by considering the following scenario which represents the class of matrices that have an LU factorization. Assume the columns of $A$ correspond to producer points $j$ and the rows of $A$ correspond to sensor points $i$.
 
 We say the producer $j$ is \emph{observable} by the current sensor network $1:i$ if $A[1:i,j]$ adds new information (is linearly independent) relative to previous producers $A[1:i,1:j-1]$. Conversely, we say the sensor $i$ is \emph{informative} regarding the current producers $1:j$ if its measurement $A[i,1:j]$ is linearly independent of previous measurements $A[1:i-1,1:j]$.
 
-The existence of an LU factorization implies a compatibility between observability and informativeness. $A$ admits a factorization if and only if every “blind spot” (rank deficiency) in a leading block corresponds to a global redundancy. Specifically, if the interaction between the first $k$ sensors and $k$ producers is rank-deficient, this deficiency must be fully accounted for by producers that are globally redundant (dependent on previous columns) or sensors that are globally redundant (dependent on previous rows). The factorization is impossible only in the “crossed” scenario, or “deadlock”: where producer $k$ carries a novel signal that current sensors miss (but future sensors see), while sensor $k$ performs a novel measurement that misses current signals (but sees future ones).
+The existence of an LU factorization implies a compatibility between observability and informativeness. $A$ admits a factorization if and only if every "blind spot" (rank deficiency) in a leading block corresponds to a global redundancy. Specifically, if the interaction between the first $k$ sensors and $k$ producers is rank-deficient, this deficiency must be fully accounted for by producers that are globally redundant (dependent on previous columns) or sensors that are globally redundant (dependent on previous rows). The factorization is impossible only in the "crossed" scenario, or "deadlock": where producer $k$ carries a novel signal that current sensors miss (but future sensors see), while sensor $k$ performs a novel measurement that misses current signals (but sees future ones).
 
-\subsubsection*{Summary of results}
+The main existence results are summarized in \Cref{tab:main}.
 
-The main existence results are summarize in \Cref{tab:main}.
-
-\begin{table}
+\begin{table}[htbp]
+    \centering
     \begin{tabular}{llp{4cm}p{6cm}}
         \toprule
         Factorization Type & Equation & Conditions for Existence & Limitations \\
@@ -652,7 +656,39 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
 
 \section{Unit triangular factors}\label{sec:unit_triangular}
 
-\fxnote{Explain the difference with the previous row pivoting strategy to get a unit lower triangular factor; the previous result requires a row pivoting in order to get a unit lower triangular factor; here we require a column pivoting; this column pivoting only works under restricted conditions. For a general matrix, it's not possible to do column pivoting only to get a unit lower triangular factor. Only row pivoting allows that. Provide counterexamples to illustrate this. The main difference of course is that we get an LU factorization while the classical result only provides an LUP factorization.}
+We now discuss results where we require one of the factors to be unit triangular. Classical results consider the factorization with partial pivoting $PA = LU$ (\Cref{thm:row_permutation}). The row permutation $P$ allows us to obtain a unit lower triangular factor $L$. When a zero pivot is encountered, we perform a row pivoting to get a non zero pivot. If the entire column is equal to zero, we set the diagonal entry of $L$ to 1, the entries below to 0, and continue the factorization with the next column.
+
+We are interested in conditions for the existence of $A=LU$ where $L$ is unit lower triangular. As before, this requires internal permutations, but this time they can only be applied to the columns. The triangular unit structure of $L$ prevents row permutations. The condition on $A$ is more stringent than in the general LU case and we require
+\[
+    \nl(A[1:k,1:k]) = \nl(A[:,1:k])
+\]
+for all $k$.
+
+We note that, for a general matrix $A$, column pivoting in general is not sufficient to get a unit lower triangular factor. For example, consider the matrix
+\[
+    A = \begin{pmatrix}
+        0 & 0 \\
+        1 & 1
+    \end{pmatrix}
+\]
+No column pivoting works. However, row pivoting is sufficient to get a unit lower triangular factor.
+
+\Cref{tab:constraints} summarizes the constraints on the factorization, the condition (for all $k$), and the stringency of the condition.
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lp{5cm}p{7cm}}
+        \toprule
+        Constraint & Condition (for all $k$) & Stringency \\
+        \midrule
+        General LU & \raggedright $\nl(A_{11}) \le \nl(\text{Col}) + \nl(\text{Row})$ & Least stringent (allows mixed dependencies) \\
+        Unit Lower L & $\nl(A_{11}) = \nl(\text{Col})$ & Moderate (requires column dependencies) \\
+        Unit Upper U & $\nl(A_{11}) = \nl(\text{Row})$ & Moderate (requires row dependencies) \\
+        Unit L and Unit U & \raggedright Only possible if $A$ is strongly non-singular & Most stringent (impossible for singular $A$) \\
+        \bottomrule
+    \end{tabular}
+    \caption{Constraints on factorization, condition (for all $k$), and stringency of condition.}\label{tab:constraints}
+\end{table}
 
 We now examine the specific case where one of the factors is required to be unit triangular. The following result should be compared with \Cref{thm:row_permutation}.
 
@@ -678,10 +714,49 @@ We now examine the specific case where one of the factors is required to be unit
     \end{itemize}
 \end{theorem}
 
-\begin{proof}
-    We first prove that if $A=LU$ with $L$ unit lower triangular, then $A$ satisfies \Cref{eq:cond_unit_lower}. $U$ trivially satisfies \Cref{eq:cond_unit_lower} since it is upper triangular. Since $L[1:k,1:k]$ is full rank, $A$ also satisfies \Cref{eq:cond_unit_lower}.
+\begin{proof} \par
+    \textbf{Condition is necessary.} \quad Short proof: $U$ trivially satisfies \Cref{eq:cond_unit_lower} since it is upper triangular. Since $L[1:k,1:k]$ is full rank, $A$ also satisfies \Cref{eq:cond_unit_lower}.
 
-    We follow a proof similar to the one for \Cref{thm:main2}. We do an induction on the size of $A$. The result is true for $n=1$.
+    Direct proof: Assume that the matrix $A$ admits a factorization $A = LU$, where $L$ is a unit lower triangular matrix and $U$ is an upper triangular matrix.
+
+    We analyze the structure of the matrices for an arbitrary $k \in \{1, \dots, n\}$.
+    Because $U$ is upper triangular, the first $k$ columns of $A$ depend only on the first $k$ columns of $U$. Specifically, we can write the submatrices of $A$ as:
+
+    \begin{itemize}
+        \item Leading principal submatrix
+        \[ A[1:k, 1:k] = L[1:k, 1:k] \; U[1:k, 1:k] \]
+        \item Leading column block
+        \[ A[:, 1:k] = L[:, 1:k] \; U[1:k, 1:k] \]
+    \end{itemize}
+
+    Since $L$ is \textbf{unit} lower triangular, its diagonal entries are all 1. This implies that any leading principal submatrix of $L$ is invertible.
+    \begin{itemize}
+        \item Let $L_{kk} = L[1:k, 1:k]$. Because $\det(L_{kk}) = 1$, $L_{kk}$ is non-singular (full rank).
+        \item Let $L_{col} = L[:, 1:k]$. The top block of $L_{col}$ is $L_{kk}$. Since $L_{kk}$ is non-singular, the larger matrix $L_{col}$ must have full column rank (rank $k$).
+    \end{itemize}
+
+    We now compute the ranks of the submatrices of $A$ using the properties of $L$:
+    \begin{itemize}
+        \item For the principal submatrix: since $L_{kk}$ is non-singular, multiplying by it does not change the rank:
+        \[ \rk(A[1:k, 1:k]) = \rk(L_{kk} \cdot U[1:k, 1:k]) = \rk(U[1:k, 1:k]) \]
+        \item For the column block: since $L_{col}$ has full column rank, multiplying by it on the left preserves the rank of the matrix on the right:
+        \[ \rk(A[:, 1:k]) = \rk(L_{col} \cdot U[1:k, 1:k]) = \rk(U[1:k, 1:k]) \]
+    \end{itemize}
+
+    Comparing the results, we see that the ranks are identical:
+    \[ \rk(A[1:k, 1:k]) = \rk(A[:, 1:k]) \]
+
+    By the Rank-Nullity Theorem, for any matrix $M$ with $k$ columns, $\nl(M) = k - \rk(M)$. Since both $A[1:k, 1:k]$ and $A[:, 1:k]$ have exactly $k$ columns:
+    \begin{align*}
+        \nl(A[1:k, 1:k]) & = k - \rk(A[1:k, 1:k]) \\
+        \nl(A[:, 1:k])   & = k - \rk(A[:, 1:k])
+    \end{align*}
+
+    Therefore:
+    \[ \nl(A[1:k, 1:k]) = \nl(A[:, 1:k]) \]
+    This completes the proof that the condition is necessary.
+
+    \noindent\textbf{Condition is sufficient.} \quad We follow a proof similar to the one for \Cref{thm:main2}. We do an induction on the size of $A$. The result is true for $n=1$.
 
     Assume it is true for size $n-1$. If $a_{11} \neq 0$, we verify that the result is true by the induction hypothesis.
 
@@ -731,7 +806,7 @@ We now state the corresponding result where $U$ is unit upper triangular. Please
     Let $A$ be a matrix of size $n$ and rank $r \le n$. $A$ has an LU factorization $A = LU$ where $U$ is unit upper triangular if and only if for all $k = 1, \ldots, n$:
     \begin{equation}
         \label{eq:cond_unit_upper}
-        \nl(A[1:k,1:k]) = \nl(A[1:k,:])
+        \nl(A[1:k,1:k]) = \nl({A[1:k,:]}^T)
     \end{equation}
 
     \noindent\textbf{Construction:} If $A$ satisfies \Cref{eq:cond_unit_upper}, there exists a row permutation $P_r$ such that the matrix $B = P_r^{-1} A$ admits a factorization $B = L_B U_B$ where $U_B$ is unit upper triangular. Consequently,
@@ -827,6 +902,10 @@ The standard Schur complement $S_k$ corresponds to the bottom block of this proj
 \subsection{Python code for LU factorization with restricted pivoting}\label{sec:python_code}
 
 \lstinputlisting[style=PythonStyle, caption={LU factorization with restricted pivoting}, label={lst:lu_restricted_pivoting}]{algo1.py}
+
+\subsection{Python code for unit lower triangular LU factorization}
+
+\fxnote{Add code}
 
 \printbibliography
 
