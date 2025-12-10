@@ -1,13 +1,14 @@
 \documentclass{article}
 
-\usepackage[nomargin,inline,marginclue,draft]{fixme}
+% \usepackage[nomargin,inline,marginclue,draft]{fixme}
 
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage[english]{babel}
-\usepackage{booktabs,listings,xcolor}
+\usepackage{booktabs,listings}
 \usepackage{csquotes}
 \MakeOuterQuote{"}
+\usepackage{xcolor}
 
 \lstdefinestyle{PythonStyle}{
     language=Python,
@@ -53,7 +54,7 @@
 \Crefname{theorem}{Theorem}{Theorems}
 \crefname{theorem}{theorem}{theorems}
 
-\title{Necessary and Sufficient Conditions for the Existence of an LU Factorization}
+\title{Necessary and Sufficient Conditions for the Existence of an LU Factorization for Unsymmetric Rank Deficient Matrices}
 \author{Eric Darve}
 \date{\today}
 
@@ -65,7 +66,7 @@
     We establish necessary and sufficient conditions for the existence of an LU factorization $A=LU$ for an arbitrary square matrix $A$, including singular and rank-deficient cases, without the use of row or column permutations. We prove that such a factorization exists if and only if the nullity of every leading principal submatrix is bounded by the sum of the nullities of the corresponding leading column and row blocks. While building upon the work of Okunev and Johnson, we present simpler, constructive proofs based on induction. Furthermore, we extend these results to characterize rank-revealing factorizations, providing explicit sparsity bounds for the factors $L$ and $U$. Finally, we derive analogous necessary and sufficient conditions for the existence of factorizations constrained to have unit lower or unit upper triangular factors.
 \end{abstract}
 
-\listoffixmes
+% \listoffixmes
 
 It is well-known that for any square matrix $A$, there exists a permutation of rows (and potentially columns) such that an LU factorization exists. Specifically, the factorization $PA = LU$, where $P$ is a permutation matrix, $L$ is unit lower triangular, and $U$ is upper triangular, is guaranteed to exist for any matrix $A$~\cite{higham_gaussian_2011,lu_numerical_2021}.
 
@@ -905,7 +906,7 @@ The standard Schur complement $S_k$ corresponds to the bottom block of this proj
 
 \subsection{Python code for unit lower triangular LU factorization}
 
-\fxnote{Add code}
+\lstinputlisting[style=PythonStyle, caption={Unit lower triangular LU factorization with restricted pivoting}, label={lst:unit_lower_lu}]{algo2.py}
 
 \printbibliography
 
