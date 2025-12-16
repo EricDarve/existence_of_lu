@@ -2,7 +2,7 @@ import numpy as np
 
 def unit_lower_lu_factorization(A_in):
     """
-    Computes Unit Lower LU factorization A = L @ U using internal column permutations.
+    Computes Unit Lower LU factorization A = L @ U.
     """
     A = A_in.astype(float).copy()
     n = A.shape[0]

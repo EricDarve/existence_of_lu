@@ -2,7 +2,8 @@ import numpy as np
 
 def lu_factorization(A_in):
     """
-    Computes LU factorization A = L @ U using internal row and column permutations.
+    Computes LU factorization A = L @ U if it exists.
+    Returns None if it does not exist.
     """
     A = A_in.astype(float).copy()
     n = A.shape[0]
@@ -25,7 +26,7 @@ def lu_factorization(A_in):
             col_zero = np.allclose(A[k:, k], 0.0)
 
             if not row_zero and not col_zero:
-                print("Error: Pivot 0, but both row and col non-zero. Impossible.")
+                print("Error: Pivot 0, but both row and col non-zero.")
                 return None
             
             if not row_zero:
@@ -43,7 +44,6 @@ def lu_factorization(A_in):
                 j = k + 1 + np.argmax(~np.isclose(A[k, k+1:], 0.0))
                 swap_cols(k, j)
 
-        L[k, k] = 1.0
         L[k:, k] = A[k:, k] / A[k, k]
         U[k, k:] = A[k, k:]
         A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:])

@@ -43,7 +43,6 @@ def lu_factorization(A_in):
                 j = k + 1 + np.argmax(~np.isclose(A[k, k+1:], 0.0))
                 swap_cols(k, j)
 
-        L[k, k] = 1.0
         L[k:, k] = A[k:, k] / A[k, k]
         U[k, k:] = A[k, k:]
         A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:])
