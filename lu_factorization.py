@@ -65,9 +65,6 @@ if __name__ == "__main__":
 
     # 2. Pivot Needed Case (Pivot=0, Row!=0) -> Swap Col
     A2 = np.array([[0., 1.], [1., 1.]]) # Actually this is Error case row!=0 col!=0
-    # Wait, A2 as defined is [[0, 1], [1, 1]].
-    # Pivot 0. Row 0: [0, 1] -> Non-zero.
-    # Col 0: [0, 1] -> Non-zero.
     # Code should ERROR per logic: "if not row_zero and not col_zero: Error"
     print("\n--- Test 2 (Error Case) ---")
     if lu_factorization(A2) is None: print("PASS: Correctly returned None.")
