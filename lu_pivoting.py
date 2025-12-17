@@ -31,11 +31,8 @@ def lu_pivoting(A_in):
     return P, Q, L, U
 
 if __name__ == "__main__":
-    np.random.seed(42)    
-    print("Running Randomized Tests")
-    n_tests = 1000
-    n = 16
-    success = 0
+    np.random.seed(42)
+    n_tests = 1000; p = 0.2; n = 16; success = 0
     for _ in range(n_tests):
         A_rand = np.random.rand(n,n)
         res = lu_pivoting(A_rand)

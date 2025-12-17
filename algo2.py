@@ -5,22 +5,15 @@ def unit_lower_lu_factorization(A_in):
     L, U = np.eye(n), np.zeros_like(A)
     q = np.arange(n)
 
-    def swap_cols(k, j):
-        A[k:, [k, j]] = A[k:, [j, k]]
-        q[[k, j]] = q[[j, k]]
-        U[:k, [k, j]] = U[:k, [j, k]]
-
     for k in range(n):
+        j = k + np.argmax(~np.isclose(A[k, k:], 0.0))
         if np.isclose(A[k, k], 0.0):
             if not np.allclose(A[k+1:, k], 0.0):
                 print(f"Error: Pivot 0, but col non-zero.")
                 return None
-            
-            j = k + np.argmax(~np.isclose(A[k, k:], 0.0))
-            swap_cols(k, j)
-            if np.isclose(A[k, k], 0.0): continue
+            if np.isclose(A[k, j], 0.0): continue
 
-        L[k+1:, k] = A[k+1:, k] / A[k, k]
+        L[k+1:, k] = A[k+1:, j] / A[k, j]
         U[k, k:] = A[k, k:]
         A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:])
 
@@ -28,10 +21,16 @@ def unit_lower_lu_factorization(A_in):
     return L, U @ Q.T
 
 if __name__ == "__main__":
-    A = np.array([[0, 0, 0], [0, 0, 1], [0, 0, 1]], dtype=float)
-    print("A =\n", A)
-    L, U = unit_lower_lu_factorization(A)
-    if L is not None and U is not None: 
-        print(f"A = LU? {np.allclose(A, L @ U)}")
-        print(f"L Unit Lower? {np.allclose(L, np.tril(L)) and np.allclose(np.diag(L), 1.0)}")
-        print(f"U Upper? {np.allclose(U, np.triu(U))}")        
+    np.random.seed(42)
+    n_tests = 1000; p = 0.2; n = 16; success = 0
+    for _ in range(n_tests):
+        L_gen = np.tril(np.random.rand(n,n)<p, -1).astype(float) + np.eye(n)
+        U_gen = np.triu(np.random.rand(n,n)<p).astype(float)
+        A_rand = L_gen @ U_gen
+        res = unit_lower_lu_factorization(A_rand)
+        if (res 
+            and np.allclose(A_rand, res[0] @ res[1])
+            and np.allclose(res[0], np.tril(res[0])) 
+            and np.allclose(np.diag(res[0]), 1.0)
+            and np.allclose(res[1], np.triu(res[1]))): success += 1
+    print(f"PASS: {success}/{n_tests} tests passed.")      
