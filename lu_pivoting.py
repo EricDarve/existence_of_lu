@@ -1,34 +1,28 @@
 import numpy as np
-
 def lu_pivoting(A_in):
-    """
-    Computes LU factorization P @ A @ Q = L @ U using full pivoting.
-    """
     A = A_in.astype(float).copy()
     n = A.shape[0]
     L, U = np.zeros_like(A), np.zeros_like(A)
     p, q = np.arange(n), np.arange(n)
 
     def swap_rows(k, i):
-        A[[k, i], :] = A[[i, k], :]
+        A[[k, i], k:] = A[[i, k], k:]
         p[[k, i]] = p[[i, k]]
         L[[k, i], :k] = L[[i, k], :k]
 
     def swap_cols(k, j):
-        A[:, [k, j]] = A[:, [j, k]]
+        A[k:, [k, j]] = A[k:, [j, k]]
         q[[k, j]] = q[[j, k]]
         U[:k, [k, j]] = U[:k, [j, k]]
 
     for k in range(n):
-        if np.allclose(A[k:, k:], 0.0): break
-
         idx_max = np.argmax(np.abs(A[k:, k:]))
         i_local, j_local = np.unravel_index(idx_max, A[k:, k:].shape)
         i_max, j_max = k + i_local, k + j_local
-
         swap_rows(k, i_max)
         swap_cols(k, j_max)
 
+        if np.isclose(A[k, k], 0.0): break
         L[k:, k] = A[k:, k] / A[k, k]
         U[k, k:] = A[k, k:]
         A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:])
@@ -38,7 +32,7 @@ def lu_pivoting(A_in):
 
 if __name__ == "__main__":
     np.random.seed(42)    
-    print(f"\n--- Running Randomized Tests ---")
+    print("Running Randomized Tests")
     n_tests = 1000
     n = 16
     success = 0

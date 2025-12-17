@@ -1,30 +1,24 @@
 import numpy as np
-
 def unit_lower_lu_factorization(A_in):
-    """
-    Computes Unit Lower LU factorization A = L @ U.
-    """
     A = A_in.astype(float).copy()
     n = A.shape[0]
     L, U = np.eye(n), np.zeros_like(A)
     q = np.arange(n)
 
     def swap_cols(k, j):
-        A[:, [k, j]] = A[:, [j, k]]
+        A[k:, [k, j]] = A[k:, [j, k]]
         q[[k, j]] = q[[j, k]]
         U[:k, [k, j]] = U[:k, [j, k]]
 
     for k in range(n):
         if np.isclose(A[k, k], 0.0):
             if not np.allclose(A[k+1:, k], 0.0):
-                print(f"Error: Zero pivot at k={k} but column {k} not zero.")
+                print(f"Error: Pivot 0, but col non-zero.")
                 return None
             
-            if not np.allclose(A[k, k+1:], 0.0):
-                j = k + 1 + np.argmax(~np.isclose(A[k, k+1:], 0.0))
-                swap_cols(k, j)
-            else:
-                continue
+            j = k + np.argmax(~np.isclose(A[k, k:], 0.0))
+            swap_cols(k, j)
+            if np.isclose(A[k, k], 0.0): continue
 
         L[k+1:, k] = A[k+1:, k] / A[k, k]
         U[k, k:] = A[k, k:]
@@ -32,7 +26,6 @@ def unit_lower_lu_factorization(A_in):
 
     Q = np.eye(n)[:, q]
     return L, U @ Q.T
-
 
 if __name__ == "__main__":
     A = np.array([[0, 0, 0], [0, 0, 1], [0, 0, 1]], dtype=float)

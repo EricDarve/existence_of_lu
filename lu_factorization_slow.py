@@ -3,43 +3,41 @@ def lu_factorization(A_in):
     A = A_in.astype(float).copy()
     n = A.shape[0]
     L, U = np.zeros_like(A), np.zeros_like(A)
+    p, q = np.arange(n), np.arange(n)
+
+    def swap_rows(k, i):
+        A[[k, i], k:] = A[[i, k], k:]
+        p[[k, i]] = p[[i, k]]
+        L[[k, i], :k] = L[[i, k], :k]
+
+    def swap_cols(k, j):
+        A[k:, [k, j]] = A[k:, [j, k]]
+        q[[k, j]] = q[[j, k]]
+        U[:k, [k, j]] = U[:k, [j, k]]
 
     for k in range(n):
-        i, j = k, k
-        if np.isclose(A[i, j], 0.0):        
-            # Search for the first shell `i` (relative to k) 
-            # that contains a non-zero element in either its row or column slice.
-            is_nz = ~np.isclose(A[k:, k:], 0.0)
-            
-            # valid_rows[x] is True if Row x of A[k:, k:] (upper part, j>=x) has non-zero
-            valid_rows = np.any(np.triu(is_nz), axis=1)
-            # valid_cols[x] is True if Col x of A[k:, k:] (lower part, i>=x) has non-zero
-            valid_cols = np.any(np.tril(is_nz), axis=0)
-            
-            valid_shells = valid_rows | valid_cols
-            
-            if np.any(valid_shells):
-                l_rel = np.argmax(valid_shells) # First index where valid
-                l = k + l_rel                
-                # Now find k_row and k_col for this specific shell l                
-                k_row = l + np.argmax(~np.isclose(A[l, l:], 0.0)) if valid_rows[l_rel] else n + 1
-                k_col = l + np.argmax(~np.isclose(A[l:, l], 0.0)) if valid_cols[l_rel] else n + 1                
-                use_row = k_row <= k_col
-                if l == k and np.any(~np.isclose(A[k:, k] if use_row else A[k, k:], 0.0)):
-                    print("Error: Pivot 0, but both row and col non-zero.")
-                    return None         
-                i, j = (l, k_row) if use_row else (k_col, l)
+        if np.isclose(A[k, k], 0.0):
+            if np.allclose(A[k:, k], 0.0):
+                i = k + np.argmax(np.any(~np.isclose(A[k:, k:], 0.0), axis=1))
+                swap_rows(k, i)                
+                if np.allclose(A[k, k:], 0.0): break
+                j = k + np.argmax(~np.isclose(A[k, k:], 0.0))
+                swap_cols(k, j)
             else:
-                break
+                if np.any(~np.isclose(A[k, k:], 0.0)):
+                    print("Error: Pivot 0, but both row and col non-zero.")
+                    return None
+                i = k + np.argmax(~np.isclose(A[k:, k], 0.0))
+                swap_rows(k, i)
 
-        L[k:, k] = A[k:, j] / A[i, j]
-        U[k, k:] = A[i, k:]
+        L[k:, k] = A[k:, k] / A[k, k]
+        U[k, k:] = A[k, k:]
         A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:])
-    
-    return L, U
+
+    P, Q = np.eye(n)[p], np.eye(n)[:, q]
+    return P.T @ L, U @ Q.T
 
 if __name__ == "__main__":
-
     # Test suite
     np.random.seed(42)
     
@@ -58,14 +56,8 @@ if __name__ == "__main__":
     A2 = np.array([[0., 1.], [1., 1.]])
     # Code should ERROR per logic: "if not row_zero and not col_zero: Error"
     print("\nTest 2 (Error Case)")
-    res2 = lu_factorization(A2)
-    if res2 is None: 
-        print("PASS: Correctly returned None.")
+    if lu_factorization(A2) is None: print("PASS: Correctly returned None.")
     else:
-        print(A2)
-        print(res2[0])
-        print(res2[1])
-        print(res2[0]@res2[1])
         print("  FAIL.")
 
     # 3. Pivot Needed (Row=0, Col!=0) -> Swap Row
