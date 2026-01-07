@@ -1,24 +1,5 @@
 import numpy as np
-def unit_lower_lu_factorization(A_in):
-    A = A_in.astype(float).copy()
-    n = A.shape[0]
-    L, U = np.eye(n), np.zeros_like(A)
-    q = np.arange(n)
-
-    for k in range(n):
-        j = k + np.argmax(~np.isclose(A[k, k:], 0.0))
-        if np.isclose(A[k, k], 0.0):
-            if not np.allclose(A[k+1:, k], 0.0):
-                print(f"Error: Pivot 0, but col non-zero.")
-                return None
-            if np.isclose(A[k, j], 0.0): continue
-
-        L[k+1:, k] = A[k+1:, j] / A[k, j]
-        U[k, k:] = A[k, k:]
-        A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:])
-
-    Q = np.eye(n)[:, q]
-    return L, U @ Q.T
+from algo2 import unit_lower_lu_factorization
 
 if __name__ == "__main__":
     np.random.seed(42)
@@ -33,12 +14,12 @@ if __name__ == "__main__":
         print("Test 1 (Random): Failed")
 
     # 2. Impossible Case (Pivot=0, Col!=0)
-    A2 = np.array([[0,0], [1,0]], dtype=float)
+    A2 = np.array([[0,0], [1,0]])
     print("\nTest 2 (Impossible)")
     if unit_lower_lu_factorization(A2) is None: print("PASS: Correctly returned None.")
 
     # 3. Pivot Needed (Pivot=0, Row!=0, Col=0) -> Swap Col
-    A3 = np.array([[0, 2], [0, 4]], dtype=float) 
+    A3 = np.array([[0, 2], [0, 4]]) 
     res3 = unit_lower_lu_factorization(A3)
     if res3:
         print(f"\nTest 3 (Pivot): A=LU? {np.allclose(A3, res3[0] @ res3[1])}")
@@ -46,7 +27,7 @@ if __name__ == "__main__":
         print("Test 3 (Pivot): Failed")
     
     # 4. Singular Block (Pivot=0, Row=0, Col=0)
-    A4 = np.array([[0,0], [0,1]], dtype=float)
+    A4 = np.array([[0,0], [0,1]])
     res4 = unit_lower_lu_factorization(A4)
     if res4:
          print(f"Test 4 (Singular): A=LU? {np.allclose(A4, res4[0] @ res4[1])}")
@@ -55,13 +36,28 @@ if __name__ == "__main__":
 
     # Randomized Large Scale Tests
     print(f"\nRunning Randomized Tests")
-    n_tests = 1000
-    p = 0.2
-    n = 16
+    n_tests = 20
+    p = 0.01
+    n = 1000
+
     success = 0
     for _ in range(n_tests):
-        L_gen = np.tril(np.random.rand(n,n)<p, -1).astype(float) + np.eye(n)
-        U_gen = np.triu(np.random.rand(n,n)<p).astype(float)
+        L_gen = np.tril(np.random.rand(n,n)<p, -1) + np.eye(n)
+        U_gen = np.triu(np.random.rand(n,n)<p)        
+        # Choose a random column between 1 and n-2
+        j = np.random.randint(0, n-1)
+        L_gen[j, j] = 0
+        L_gen[j+1:, j] = 1 + np.random.rand(n-j-1)
+        U_gen[:j+1, :j+1] = np.eye(j+1) + np.triu(np.random.rand(j+1,j+1), 1)
+        A_rand = L_gen @ U_gen
+        res = unit_lower_lu_factorization(A_rand)
+        if (res is None): success += 1            
+    print(f"Impossible Cases: {success}/{n_tests} tests passed.")    
+
+    success = 0    
+    for _ in range(n_tests):
+        L_gen = np.tril(np.random.rand(n,n)<p, -1) + np.eye(n)
+        U_gen = np.triu(np.random.rand(n,n)<p)
         A_rand = L_gen @ U_gen
         res = unit_lower_lu_factorization(A_rand)
         if (res 
@@ -69,4 +65,4 @@ if __name__ == "__main__":
             and np.allclose(res[0], np.tril(res[0])) 
             and np.allclose(np.diag(res[0]), 1.0)
             and np.allclose(res[1], np.triu(res[1]))): success += 1
-    print(f"PASS: {success}/{n_tests} tests passed.")
+    print(f"Successful Cases: {success}/{n_tests} tests passed.")
