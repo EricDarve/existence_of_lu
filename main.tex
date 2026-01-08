@@ -35,12 +35,9 @@
 \newcommand{\Names}{Eric Darve}
 \newcommand{\Title}{Necessary and Sufficient Conditions for the Existence of an LU Factorization for General Rank Deficient Matrices}
 
-% Symbols for real and complex numbers
-\newcommand{\reals}{\mathbb{R}}
-\newcommand{\complex}{\mathbb{C}}
- 
 % Setting up to have Theorems indexed by section
 \renewcommand{\theequation}{\thesection.\arabic{equation}}
+
 \newsiamthm{property}{Property}
 
 \usepackage{booktabs,listings}
@@ -66,10 +63,6 @@
 
 \newcommand{\by}{\times}
 
-% \usepackage[url=false]{biblatex}
-% \addbibresource{ref.bib}
-% \AtEveryBibitem{\clearfield{urldate}}
-
 \Crefname{property}{Property}{Properties}
 \crefname{property}{property}{properties}
 \Crefname{corollary}{Corollary}{Corollaries}
@@ -83,7 +76,7 @@
 \Crefname{lstlisting}{Algorithm}{Algorithms}
 \crefname{lstlisting}{algorithm}{algorithms}
 
-%strongly recommended
+% Strongly recommended
 \numberwithin{theorem}{section}
 
 \begin{document}
@@ -105,7 +98,9 @@
 
 \author{
 	Eric Darve\thanks{Institute for Computational and Mathematical Engineering,
-		Stanford University, Stanford, CA 94305, USA
+		Mechanical Engineering Department,
+		Stanford University,
+		Stanford, CA 94305, USA
 		(darve@stanford.edu).}
 }
 
@@ -978,19 +973,42 @@ The standard Schur complement $S_k$ corresponds to the bottom block of this proj
 
 See \Cref{lst:lu_restricted_pivoting}.
 
-\lstinputlisting[style=PythonStyle, caption={Algorithm for LU factorization. Returns the LU factorization of a matrix $A = LU$ or None if the factorization does not exist. The algorithm is guaranteed to return None only when the factorization does not exist.}, label={lst:lu_restricted_pivoting}]{algo1.py}
+\lstinputlisting[style=PythonStyle,
+	caption={Algorithm for LU factorization. Returns the LU factorization of a matrix $A = LU$ or None if the factorization does not exist. The algorithm is guaranteed to return None only when the factorization does not exist.},
+	label={lst:lu_restricted_pivoting},
+	% Tell listings that markers are preceded by "# "
+	rangeprefix=\#\ ,
+	% Define the range to print
+	linerange=scifig_start-scifig_end,
+	% Do not include the marker lines themselves in the output
+	includerangemarker=false]{lu_factorization.py}
 
 \subsection{Python code for classical LU with full pivoting}\label{sec:python_full_pivoting}
 
 See \Cref{lst:lu_full_pivoting}.
 
-\lstinputlisting[style=PythonStyle, caption={Classical LU factorization with full pivoting. Returns a factorization of the form $PAQ = LU$.}, label={lst:lu_full_pivoting}]{algo3.py}
+\lstinputlisting[style=PythonStyle, caption={Classical LU factorization with full pivoting. Returns a factorization of the form $PAQ = LU$.},
+	label={lst:lu_full_pivoting},
+	% Tell listings that markers are preceded by "# "
+	rangeprefix=\#\ ,
+	% Define the range to print
+	linerange=scifig_start-scifig_end,
+	% Do not include the marker lines themselves in the output
+	includerangemarker=false]{lu_pivoting.py}
 
 \subsection{Python code for unit lower triangular LU factorization}\label{sec:python_unit_lower}
 
 See \Cref{lst:unit_lower_lu}.
 
-\lstinputlisting[style=PythonStyle, caption={Unit lower triangular LU factorization. Returns a factorization $A = LU$ where $L$ is unit lower triangular or None if the factorization does not exist.}, label={lst:unit_lower_lu}]{algo2.py}
+\lstinputlisting[style=PythonStyle,
+	caption={Unit lower triangular LU factorization. Returns a factorization $A = LU$ where $L$ is unit lower triangular or None if the factorization does not exist.},
+	label={lst:unit_lower_lu},
+	% Tell listings that markers are preceded by "# "
+	rangeprefix=\#\ ,
+	% Define the range to print
+	linerange=scifig_start-scifig_end,
+	% Do not include the marker lines themselves in the output
+	includerangemarker=false]{unit_lower.py}
 
 \bibliographystyle{siamplain}
 \bibliography{ref}

@@ -1,5 +1,25 @@
 import numpy as np
-from algo2 import unit_lower_lu_factorization
+
+# scifig_start
+def unit_lower_lu_factorization(A_in):
+    A = A_in.astype(np.float64).copy()
+    n = A.shape[0]
+    L, U = np.eye(n), np.zeros_like(A)
+
+    for k in range(n):
+        j = k + np.argmax(~np.isclose(A[k, k:], 0.0))
+        if np.isclose(A[k, k], 0.0):
+            if not np.allclose(A[k+1:, k], 0.0):
+                # Factorization does not exist
+                return None
+            if np.isclose(A[k, j], 0.0): continue
+
+        L[k+1:, k] = A[k+1:, j] / A[k, j]
+        U[k, k:] = A[k, k:]
+        A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:])
+    
+    return L, U
+# scifig_end
 
 if __name__ == "__main__":
     np.random.seed(42)
@@ -36,7 +56,7 @@ if __name__ == "__main__":
 
     # Randomized Large Scale Tests
     print(f"\nRunning Randomized Tests")
-    n_tests = 20
+    n_tests = 100
     p = 0.1
     n = 100
 
