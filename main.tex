@@ -46,7 +46,7 @@
 
 \lstdefinestyle{PythonStyle}{
     language=Python,
-    basicstyle=\ttfamily\fontsize{8pt}{9.6pt}\selectfont, % Font and size for the code
+    basicstyle=\ttfamily\fontsize{7pt}{8pt}\selectfont, % Font and size for the code
     keywordstyle=\color{blue}\bfseries, % Style for keywords
     stringstyle=\color{red}, % Style for strings
     commentstyle=\color{green}\itshape, % Style for comments
@@ -55,6 +55,7 @@
     numberstyle=\tiny\color{gray}, % Style for line numbers
     breaklines=true, % Allow lines to break
     captionpos=b, % Caption position at the bottom
+    escapeinside={(*@}{@*)}, % Defines the start and end sequences
 }
 
 \DeclareMathOperator{\rk}{rank}
@@ -75,6 +76,8 @@
 \crefname{theorem}{theorem}{theorems}
 \Crefname{lstlisting}{Algorithm}{Algorithms}
 \crefname{lstlisting}{algorithm}{algorithms}
+\addto\captionsenglish{\renewcommand{\lstlistingname}{Algorithm}}
+\addto\captionsenglish{\renewcommand{\lstlistlistingname}{List of Algorithms}}
 
 % Strongly recommended
 \numberwithin{theorem}{section}
@@ -114,10 +117,10 @@
 \end{abstract}
 
 \begin{keywords}
-	Nonsingular matrices, Determinants, Spherical coordinates.
+	LU factorization, Rank-deficient matrices, Singular matrices, Rank-revealing factorization, Nullity, Sparsity.
 \end{keywords}
 \begin{AMS}
-	15A15, 15F10.
+	15A23, 15A03, 65F05.
 \end{AMS}
 
 It is well-known that for any square matrix $A$, there exists a permutation of rows (and potentially columns) such that an LU factorization exists. Specifically, the factorization $PA = LU$, where $P$ is a permutation matrix, $L$ is unit lower triangular, and $U$ is upper triangular, is guaranteed to exist for any matrix $A$~\cite{higham_gaussian_2011,lu_numerical_2021}.
@@ -150,16 +153,17 @@ Second, we provide new, simpler proofs of these results. Our proofs are construc
 		$I_n$        & Identity matrix of size $n$ \\
 		\bottomrule
 	\end{tabular}
+	\vspace{5pt}
 	\caption{\label{tab:notations} Notations used in the paper.}
 \end{table}
 
-\paragraph{Triangular factorizations and Causal Systems.} Before presenting the technical results, we motivate the study of LU factorizations without permutations by considering their interpretation in causal systems and their computational advantages.
+\paragraph{Triangular factorizations and Causal Systems} Before presenting the technical results, we motivate the study of LU factorizations without permutations by considering their interpretation in causal systems and their computational advantages.
 
-In many applications, the index ordering carries physical significance, such as time in dynamic systems. A lower triangular matrix $L$ represents a causal operator where the current state $i$ depends only on past states $j \le i$. Similarly, $U$ can be interpreted as capturing correlations or reverse-flow conceptual dependencies. When $A=LU$, the system respects this intrinsic ordering. However, introducing permutations (as in $PAQ = LU$) destroys this structure: $P$ scrambles the equations (rows) and $Q$ scrambles the variables (columns), breaking the link between the matrix indices and the physical timeline. Consequently, in contexts where the ordering is immutable (e.g., streaming data, real-time control, or specific covariance structures), standard pivoting strategies are inapplicable. This necessitates a theory for the existence of LU factorizations that strictly preserves the original indexing.
+In some applications, the index ordering carries physical significance, such as time in dynamic systems. A lower triangular matrix $L$ represents a causal operator where the current state $i$ depends only on past states $j \le i$. Similarly, $U$ can be interpreted as capturing reverse-flow dependencies. When $A=LU$, the system respects this intrinsic ordering. However, introducing permutations (as in $PAQ = LU$) destroys this structure: $P$ scrambles the equations (rows) and $Q$ scrambles the variables (columns), breaking the link between the matrix indices and the causal dependencies. Consequently, in contexts where the ordering is immutable (e.g., autoregressive time series, structural equation modeling, or causal signal processing), standard pivoting strategies are inapplicable. This necessitates a theory for the existence of LU factorizations that strictly preserves the original indexing.
 
-Moreover, the choice of the LU factorization over other decompositions like QR or SVD is often driven by computational efficiency and sparsity. While the QR decomposition always exists for any matrix, the orthogonal factor $Q$ is typically dense. In contrast, the triangular factors $L$ and $U$ often preserve the sparsity of $A$ to a much greater extent, leading to significant savings in storage and computational cost. This cost advantage may also extend to physical limitations, such as data transport or logistical constraints represented by the matrix entries. These reasons lead us to the question of determining exactly when an LU factorization exists without permutations.
+Moreover, the choice of the LU factorization over other decompositions like QR or SVD is often driven by computational efficiency and sparsity. While the QR decomposition always exists for any matrix, the orthogonal factor $Q$ is typically dense. In contrast, the triangular factors $L$ and $U$ often preserve the sparsity of $A$ to a much greater extent, leading to significant savings in storage and computational cost. This cost advantage may also extend to physical limitations, such as data transport or logistical constraints when they are represented by the matrix entries. These reasons lead us to the question of determining exactly when an LU factorization exists without permutations.
 
-In summary, the contributions of this paper include:
+We finally summarize the contributions of this paper, which include:
 \begin{itemize}
 	\item A Nullity-Based Characterization: We prove that factorization exists if and only if $\text{null}(A_{11}) \le \text{null}(\text{Col}) + \text{null}(\text{Row})$ for all $k$. The proofs are original.
 	\item Rank-Revealing Structure: we show that we obtain a rank-revealing factorization when the LU factorization exists.
@@ -168,7 +172,7 @@ In summary, the contributions of this paper include:
 	\item Unit Triangular Factors: we provide a characterization of the conditions for the existence of unit triangular factors.
 \end{itemize}
 
-\paragraph{Organization of paper.}
+\paragraph{Organization of paper}
 The remainder of the paper is organized as follows. \Cref{sec:classical} reviews classical results regarding factorizations with permutations. \Cref{sec:main} presents the main theorem and the derivation of the nullity condition. \Cref{thm:main2} strengthens this result by characterizing rank-revealing factorizations. Finally, \Cref{sec:unit_triangular} discusses the specific requirements for unit triangular factors.
 
 We begin with a few classical results that will serve as reference for the later sections.
@@ -353,7 +357,7 @@ This yields a valid, rank-revealing LU factorization with no pivoting. Another v
 	\begin{pmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix}
 \]
 
-We can generalize this result using block matrices. Let $0_n$ denote the $n \times n$ zero matrix. If $B$ and $C$ are factorizable matrices such that $B=LU$ and $C=LU$, we can construct larger factorizable matrices $A$ as follows:
+We can generalize this result using block matrices. Let $0_n$ denote the $n \times n$ zero matrix. If $B$ is a factorizable matrix such that $B=LU$, we can construct larger factorizable matrices $A$ as follows:
 \[
 	A = \begin{pmatrix}
 		0_n & 0_n & 0_n \\
@@ -381,7 +385,9 @@ We can generalize this result using block matrices. Let $0_n$ denote the $n \tim
 		0_n & U   & 0_n
 	\end{pmatrix}
 \]
-for any invertible matrix $X$. Alternatively, using the factorization of $C$:
+for any invertible matrix $X$.
+
+Alternatively, if $C = LU$:
 \[
 	A =
 	\begin{pmatrix}
@@ -598,7 +604,7 @@ We will now prove the main theorem:
 
 	So $B$ satisfies \Cref{prop:rank}.
 
-	Since $b_{11} \neq 0$, $B$ has an LU factorization: $B = LU$. Column $j$ of $B$ is zero. If column $j$ of $U$ is non-zero, we can zero it out without affecting any column in $LU$. So we can assume that column $j$ of $U$ is zero. We have:
+	Since $b_{11} \neq 0$, $B$ has an LU factorization: $B = LU$. Column $j$ of $B$ is zero. If column $j$ of $U$ is non-zero, we can zero it out without affecting any column in $LU$. So we can always choose $U$ such that column $j$ is zero. We have:
 	\[ A = B \Pi_j = L U \Pi_j \]
 	and $U \Pi_j$ is still upper triangular because $\Pi_j$ only permutes column 1 and $j$. Therefore $A$ has an LU factorization.
 
@@ -628,7 +634,7 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
 	\]
 	Then $B = L_B U_B$. Furthermore, $A$ admits a rank-revealing factorization
 	\[ A = L U \]
-	where $L = P_r L_B$ and $U = U_B P_c$.
+	where $L = P_r L_B$ is lower triangular and $U = U_B P_c$ is upper triangular.
 
 	Moreover, we have the following sparsity results for $L$. Let $i_0$ be the row index in $A$ corresponding to the logical row index $i$ in $B$ (i.e., $e_{i_0} = P_r e_i$). Then:
 	\begin{itemize}
@@ -714,7 +720,7 @@ In \Cref{sec:python_restricted_pivoting}, we provide a Python implementation of 
 
 Please compare against the algorithm with full pivoting in \Cref{sec:python_full_pivoting}, which returns P, Q, L, and U such that \verb|P @ A @ Q = L @ U|. Full pivoting selects the largest pivot for maximum stability. Our algorithm selects the pivot to ensure that the factors L and U remain triangular.
 
-\Cref{lst:lu_restricted_pivoting} is vectorized for performance. The internal permutations are done implicitly. For example, line 35 moves column $j$ to column $k$. Line 37 zeros out column $j$ of $A$ in exact arithmetic.
+\Cref{lst:lu_restricted_pivoting} is vectorized for performance. The internal permutations are done implicitly. For example, line~\ref{copy_leftward} moves column $j$ to column $k$. Line~\ref{zero_column} zeros out column $j$ of $A$ in exact arithmetic.
 
 This algorithm is not backward stable as we do not control the size of the pivot. Finding a backward stable algorithm will be the topic of future work.
 
@@ -753,6 +759,7 @@ No column pivoting works. However, row pivoting is sufficient to get a unit lowe
 		Unit L and Unit U & \raggedright Only possible if $A$ is strongly non-singular & Most stringent (impossible for singular $A$) \\
 		\bottomrule
 	\end{tabular}
+	\vspace{5pt}
 	\caption{Constraints on factorization, condition (for all $k$), and stringency of condition.}\label{tab:constraints}
 \end{table}
 
@@ -966,6 +973,7 @@ The standard Schur complement $S_k$ corresponds to the bottom block of this proj
 	\[ P_o(X) A[:,j] = A[:,j] \]
 	Therefore:
 	\[ Q_o(X) A[:,j] = (I - P_o(X)) A[:,j] = 0 \]
+
 	Since $S^o_k$ is formed by applying $Q_o(X)$ to the columns $A[:,k:]$, the column corresponding to $A[:,j]$ is zero.
 \end{proof}
 
@@ -1010,6 +1018,8 @@ See \Cref{lst:unit_lower_lu}.
 	% Do not include the marker lines themselves in the output
 	includerangemarker=false]{unit_lower.py}
 
+\clearpage
+\phantomsection % This forces hyperref to create a new, correct anchor	
 \bibliographystyle{siamplain}
 \bibliography{ref}
 

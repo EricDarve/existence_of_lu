@@ -8,15 +8,12 @@ def lu_factorization(A_in):
     for k in range(n):
         i, j = k, k
         if np.isclose(A[i, j], 0.0):        
-            # Search for the first shell `i` (relative to k) 
-            # that contains a non-zero element in either its row or column slice.
+            # Search for the first shell `i` (relative to k) that contains a non-zero element in either its row or column slice.
             is_nz = ~np.isclose(A[k:, k:], 0.0)
             
-            # valid_rows[x] is True if Row x of 
-            # A[k:, k:] (upper part, j>=x) has non-zero
+            # valid_rows[x] is True if Row x of A[k:, k:] (upper part, j>=x) has non-zero
             valid_rows = np.any(np.triu(is_nz), axis=1)
-            # valid_cols[x] is True if Col x of 
-            # A[k:, k:] (lower part, i>=x) has non-zero
+            # valid_cols[x] is True if Col x of A[k:, k:] (lower part, i>=x) has non-zero
             valid_cols = np.any(np.tril(is_nz), axis=0)    
             valid_shells = valid_rows | valid_cols     
 
@@ -34,9 +31,9 @@ def lu_factorization(A_in):
             else:
                 break
 
-        L[k:, k] = A[k:, j] / A[i, j]
+        L[k:, k] = A[k:, j] / A[i, j] #(*@\label{copy_leftward}@*)
         U[k, k:] = A[i, k:]
-        A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:])
+        A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:]) #(*@\label{zero_column}@*)
     
     return L, U
 # scifig_end
