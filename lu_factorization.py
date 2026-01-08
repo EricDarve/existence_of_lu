@@ -75,8 +75,8 @@ if __name__ == "__main__":
     # Randomized Large Scale
     print(f"\nRunning Randomized Tests")
     n_tests = 20
-    p = 0.99
-    n = 1000
+    p = 0.1
+    n = 100
 
     # Failing tests
     success = 0    

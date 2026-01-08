@@ -35,6 +35,5 @@ def lu_factorization(A_in):
         L[k:, k] = A[k:, j] / A[i, j]
         U[k, k:] = A[i, k:]
         A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:])
-        if j > k: A[k+1:, j] = np.zeros_like(A[k+1:, j])
     
     return L, U

@@ -15,6 +15,5 @@ def unit_lower_lu_factorization(A_in):
         L[k+1:, k] = A[k+1:, j] / A[k, j]
         U[k, k:] = A[k, k:]
         A[k+1:, k+1:] -= np.outer(L[k+1:, k], U[k, k+1:])
-        if j > k: A[k+1:, j] = np.zeros_like(A[k+1:, j])
     
     return L, U

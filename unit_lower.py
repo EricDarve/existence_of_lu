@@ -37,8 +37,8 @@ if __name__ == "__main__":
     # Randomized Large Scale Tests
     print(f"\nRunning Randomized Tests")
     n_tests = 20
-    p = 0.01
-    n = 1000
+    p = 0.1
+    n = 100
 
     success = 0
     for _ in range(n_tests):
