@@ -1,46 +1,48 @@
-\documentclass[10pt,twoside]{siamart1116}
+\documentclass{article}
 
-% Standard ELA packages
+\usepackage{arxiv}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{xcolor}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{property}[theorem]{Property}
+\newtheorem{definition}[theorem]{Definition}
+
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{cleveref}       % smart cross-referencing
+\usepackage{lipsum}         % Can be removed after putting your text content
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{doi}
+
 \usepackage[english]{babel}
-\usepackage{fancyhdr,amsfonts,amssymb}
 
-% ELA page dimensions
-\setlength{\textheight}{210mm}
-\setlength{\textwidth}{165mm}
-\topmargin = -10mm
-\renewcommand{\baselinestretch}{1.1}
-\setlength{\parskip}{.1in}
+\title{Necessary and Sufficient Conditions for the Existence of an LU Factorization for General Rank Deficient Matrices}
+\date{\today}
 
-% Box for end of proof outside environment
-\def\cvd{~\vbox{\hrule\hbox{%
-     \vrule height1.3ex\hskip0.8ex\vrule}\hrule } }
+\author{Eric Darve\\
+Institute for Computational and Mathematical Engineering\\	
+Mechanical Engineering Department\\
+Stanford University\\
+Stanford, CA 94305, USA\\
+\texttt{darve@stanford.edu}
+}
 
-% Information for ELA papers, to be completed by the Editors upon acceptance
-% Starting page
-\newcommand{\SP}{1}
-% Ending page
-\newcommand{\EP}{10}
-% Publication month
-\newcommand{\PMonth}{Month}
-% Handling Editor
-\newcommand{\HE}{Name of Handling Editor}
-% Date of Submission
-\newcommand{\DoS}{Month/Day/Year}
-% Date of Acceptance
-\newcommand{\DoA}{Month/Day/Year}
+\renewcommand{\headeright}{Technical Report}
+\renewcommand{\undertitle}{Technical Report}
+\renewcommand{\shorttitle}{Conditions for the Existence of LU Factorizations}	
 
-\newcommand{\CA}{Eric Darve}
-
-% Please insert names of author(s) and short title for running headers
-\newcommand{\Names}{Eric Darve}
-\newcommand{\Title}{Necessary and Sufficient Conditions for the Existence of an LU Factorization for General Rank Deficient Matrices}
-
-% Setting up to have Theorems indexed by section
-\renewcommand{\theequation}{\thesection.\arabic{equation}}
-
-\newsiamthm{property}{Property}
-
-\usepackage{booktabs,listings}
+\usepackage{listings}
 \usepackage{csquotes}
 \MakeOuterQuote{"}
 
@@ -76,39 +78,11 @@
 \crefname{theorem}{theorem}{theorems}
 \Crefname{lstlisting}{Algorithm}{Algorithms}
 \crefname{lstlisting}{algorithm}{algorithms}
+
 \addto\captionsenglish{\renewcommand{\lstlistingname}{Algorithm}}
 \addto\captionsenglish{\renewcommand{\lstlistlistingname}{List of Algorithms}}
 
-% Strongly recommended
-\numberwithin{theorem}{section}
-
 \begin{document}
-
-% \bibliographystyle{plain}
-
-% Leave these commented lines here
-%\input{ELAheader-template.tex}
-% ELA insert correct page number
-\setcounter{page}{1}
-
-\thispagestyle{empty}
-
-% Insert the title of the paper
-\title{\Title\thanks{Received
-		by the editors on \DoS.
-		Accepted for publication on \DoA.
-		Handling Editor: \HE. Corresponding Author: \CA}}
-
-\author{
-	Eric Darve\thanks{Institute for Computational and Mathematical Engineering,
-		Mechanical Engineering Department,
-		Stanford University,
-		Stanford, CA 94305, USA
-		(darve@stanford.edu).}
-}
-
-% \pagestyle{myheadings}
-% \markboth{\Names}{\Title}
 
 \maketitle
 
@@ -116,12 +90,7 @@
 	We establish necessary and sufficient conditions for the existence of an LU factorization $A=LU$ for an arbitrary square matrix $A$, including singular and rank-deficient cases, without the use of row or column permutations. We prove that such a factorization exists if and only if the nullity of every leading principal submatrix is bounded by the sum of the nullities of the corresponding leading column and row blocks. While building upon the work of Okunev and Johnson, we present simpler, constructive proofs. Furthermore, we extend these results to characterize rank-revealing factorizations, providing explicit sparsity bounds for the factors $L$ and $U$. Finally, we derive analogous necessary and sufficient conditions for the existence of factorizations constrained to have unit lower or unit upper triangular factors.
 \end{abstract}
 
-\begin{keywords}
-	LU factorization, Rank-deficient matrices, Singular matrices, Rank-revealing factorization, Nullity, Sparsity.
-\end{keywords}
-\begin{AMS}
-	15A23, 15A03, 65F05.
-\end{AMS}
+\keywords{LU factorization, Rank-deficient matrices, Singular matrices, Rank-revealing factorization, Nullity, Sparsity}
 
 It is well-known that for any square matrix $A$, there exists a permutation of rows (and potentially columns) such that an LU factorization exists. Specifically, the factorization $PA = LU$, where $P$ is a permutation matrix, $L$ is unit lower triangular, and $U$ is upper triangular, is guaranteed to exist for any matrix $A$~\cite{higham_gaussian_2011,lu_numerical_2021}.
 
@@ -157,7 +126,7 @@ Second, we provide new, simpler proofs of these results. Our proofs are construc
 	\caption{\label{tab:notations} Notations used in the paper.}
 \end{table}
 
-\paragraph{Triangular factorizations and causal systems} Before presenting the technical results, we motivate the study of LU factorizations without permutations by considering their interpretation in causal systems and their computational advantages.
+\paragraph{Triangular factorizations and causal systems.} Before presenting the technical results, we motivate the study of LU factorizations without permutations by considering their interpretation in causal systems and their computational advantages.
 
 In some applications, the index ordering carries physical significance, such as time in dynamic systems. A lower triangular matrix $L$ represents a causal operator where the current state $i$ depends only on past states $j \le i$. Similarly, $U$ can be interpreted as capturing reverse-flow dependencies. When $A=LU$, the system respects this intrinsic ordering. However, introducing permutations (as in $PAQ = LU$) destroys this structure: $P$ scrambles the equations (rows) and $Q$ scrambles the variables (columns), breaking the link between the matrix indices and the causal dependencies. Consequently, in contexts where the ordering is immutable (e.g., autoregressive time series, structural equation modeling, or causal signal processing), standard pivoting strategies are inapplicable. This necessitates a theory for the existence of LU factorizations that strictly preserves the original indexing.
 
@@ -172,7 +141,7 @@ We finally summarize the contributions of this paper, which include:
 	\item Unit Triangular Factors: we provide a characterization of the conditions for the existence of unit triangular factors.
 \end{itemize}
 
-\paragraph{Organization of paper}
+\paragraph{Organization of paper.}
 The remainder of the paper is organized as follows. \Cref{sec:classical} reviews classical results regarding factorizations with permutations. \Cref{sec:main} presents the main theorem and the derivation of the nullity condition. \Cref{thm:main2} strengthens this result by characterizing rank-revealing factorizations. Finally, \Cref{sec:unit_triangular} discusses the specific requirements for unit triangular factors.
 
 We begin with a few classical results that will serve as reference for the later sections.
@@ -458,6 +427,7 @@ The main existence results are summarized in \Cref{tab:main}.
 		Generalized LU & $A=LU$ & Subject of this work. & \raggedright Handles singular/rank-deficient cases without $P$, $Q$.\tabularnewline
 		\bottomrule
 	\end{tabular}
+	\vspace{5pt}
 	\caption{Summary of the main factorization types and their conditions for existence.}\label{tab:main}
 \end{table}
 
@@ -1020,7 +990,7 @@ See \Cref{lst:unit_lower_lu}.
 
 \clearpage
 \phantomsection % This forces hyperref to create a new, correct anchor	
-\bibliographystyle{siamplain}
+\bibliographystyle{unsrtnat}
 \bibliography{ref}
 
 \end{document}
