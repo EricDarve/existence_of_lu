@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/1104142339.svg)](https://doi.org/10.5281/zenodo.18224816)
+
 Pre-print and Python code for:
 
 Title: Necessary and Sufficient Conditions for the Existence of an LU Factorization for General Rank Deficient Matrices
