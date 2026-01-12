@@ -1,4 +1,4 @@
-Pre-print and PYthon code for:
+Pre-print and Python code for:
 
 Necessary and Sufficient Conditions for the Existence of an LU Factorization for General Rank Deficient Matrices
 
