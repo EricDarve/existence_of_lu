@@ -1,0 +1,132 @@
+% ===========================================================================
+%  Possibly-nonzero envelope of L in a rank-revealing LU factorization.
+%  n = 8, r = 4.  Single 8x8 grid; row i0 = 1..8 top->bottom, col = 1..8.
+%  Case A: independent rows (blue).  Case B: dependent, top block (orange).
+%  Case C: dependent, bottom block (orange): zero beyond col r.
+% ===========================================================================
+
+% ---- palette (chosen to remain distinguishable in monochrome) -------------
+\definecolor{indepFill}{RGB}{207,225,242}   % light blue   (case A, independent)
+\definecolor{indepEdge}{RGB}{ 46,107,170}
+\definecolor{depFill}{RGB}{250,224,196}      % light orange (case B, dependent top)
+\definecolor{depEdge}{RGB}{200,110, 20}
+\definecolor{dFill}{RGB}{244,168,116}        % darker orange (case C, dependent bottom)
+\definecolor{dEdge}{RGB}{166, 70,  0}
+\definecolor{zeroTail}{RGB}{120,120,120}     % guaranteed-zero tail
+\definecolor{rankLine}{RGB}{ 20, 20, 20}
+
+\begin{tikzpicture}[x=1cm,y=1cm,line cap=round,line join=round]
+
+  \def\n{8}\def\r{4}
+
+  % staircase: w(i0) = rightmost possibly-nonzero column, for i0 = 1..8
+  % i0 : i  : case : w
+  % 1  : 1  : A : 1      5 : 3 : A : 3
+  % 2  : 6  : B : 1      6 : 4 : A : 4
+  % 3  : 5  : B : 2      7 : 7 : C : 4
+  % 4  : 2  : A : 2      8 : 8 : C : 4
+  %
+  % Cell (c,row): x in [c-1,c], y in [-row,-(row-1)]; rows counted from TOP.
+
+  %% ---------- guaranteed-zero tail (cols r+1..n, all rows): shade FIRST -----
+  \fill[zeroTail!14] (\r,0) rectangle (\n,-\n);
+  \draw[pattern=north east lines,pattern color=zeroTail!42]
+  (\r,0) rectangle (\n,-\n);
+
+  %% ---------- possibly-nonzero bars (drawn per row) -------------------------
+  \foreach \row/\w/\case/\fillc/\edgec/\lw in {
+    1/1/A/indepFill/indepEdge/0.4,
+    2/1/B/depFill/depEdge/0.4,
+    3/2/B/depFill/depEdge/0.4,
+    4/2/A/indepFill/indepEdge/0.4,
+    5/3/A/indepFill/indepEdge/0.4,
+    6/4/A/indepFill/indepEdge/0.4,
+    7/4/C/dFill/dEdge/0.4,
+  8/4/C/dFill/dEdge/0.4}{
+    \fill[\fillc] (0,-\row+1) rectangle (\w,-\row);
+    \draw[\edgec,line width=\lw pt] (0,-\row+1) rectangle (\w,-\row);
+  }
+
+  %% ---------- light grid lines (faint) --------------------------------------
+  \foreach \k in {0,...,\n}{
+    \draw[black!14,line width=0.2pt] (\k,0) -- (\k,-\n);
+    \draw[black!14,line width=0.2pt] (0,-\k) -- (\n,-\k);
+  }
+
+  %% ---------- main diagonal (lower-triangular boundary) ---------------------
+  \draw[black!55,line width=0.7pt,dash pattern=on 2pt off 1.5pt]
+  (0,0) -- (\n,-\n);
+  % centre on the diagonal at the midpoint of the zero-tail columns r+1..n:
+  % horizontal centre x=(r+n)/2=6, on the diagonal y=-x, so the point is (6,-6).
+  \node[black!55,font=\scriptsize,anchor=center,rotate=-45,fill=white,inner sep=1pt]
+  at ({(\r+\n)/2},{-(\r+\n)/2}) {main diagonal};
+
+  %% ---------- outer frame ---------------------------------------------------
+  \draw[black,line width=1.0pt] (0,0) rectangle (\n,-\n);
+
+  %% ---------- pivot markers on independent rows (case A) at (i0,i) ----------
+  \foreach \row/\i in {1/1, 4/2, 5/3, 6/4}{
+    \fill[indepEdge] (\i-0.5,-\row+0.5) circle (2.6pt);
+    \draw[white,line width=0.5pt] (\i-0.5,-\row+0.5) circle (2.6pt);
+  }
+
+  %% ---------- thick rank separator after column r ---------------------------
+  \draw[rankLine,line width=2.2pt] (\r,0.20) -- (\r,-\n-0.20);
+  \node[rankLine,font=\small\bfseries,anchor=south] at (\r,0.34) {rank $r=4$};
+
+  %% ---------- column / row index ticks --------------------------------------
+  \foreach \c in {1,...,\n}{
+    \node[font=\tiny,black!55] at (\c-0.5, 0.12) {\c};
+  }
+  \node[font=\tiny,black!55,anchor=east] at (-0.16,-0.5) {$i_0{=}1$};
+  \foreach \row in {2,...,\n}{
+    \node[font=\tiny,black!55,anchor=east] at (-0.16,-\row+0.5) {\row};
+  }
+
+  %% ---------- per-row right annotations: case + (i,i0) ----------------------
+  \def\ax{8.55}  % anchor x for annotations (just past grid/tail)
+  \foreach \row/\i/\case in {1/1/A, 2/6/B, 3/5/B, 4/2/A, 5/3/A, 6/4/A, 7/7/C, 8/8/C}{
+    \node[anchor=west,font=\scriptsize] at (\ax,-\row+0.5)
+    {\textbf{\case}\,\;$(i{=}\i,\,i_0{=}\row)$};
+  }
+
+  %% ---------- guaranteed-zero tail label (bracket below) --------------------
+  \draw[decorate,decoration={brace,amplitude=5pt,raise=1pt},zeroTail!85,line width=0.9pt]
+  (\n,-\n-0.32) -- (\r,-\n-0.32);
+  \node[zeroTail!90,font=\small,anchor=north] at ({(\r+\n)/2},-\n-0.58)
+  {$L[:,\,r{+}1{:}]=\mathbf{0}$ \;(rank-revealing tail)};
+
+  %% ---------- title --------------------------------------------------------
+  \node[font=\bfseries] at (\n/2,1.18)
+  {Example nonzero envelope of $L$ \;($n=8$,\, $r=4$)};
+
+  %% ---------- LEGEND (single narrow column, lower-left) ---------------------
+  % Kept left of the centered tail label / right-side callout to avoid clashes.
+  \begin{scope}[shift={(0,-\n-2.15)}]
+    \node[anchor=south west,font=\small\bfseries] at (0,0.58) {Legend};
+    \def\sw{0.40}  % swatch size
+    % row 1: independent (case A)
+    \fill[indepFill] (0,0) rectangle (\sw,\sw);
+    \draw[indepEdge,line width=0.4pt] (0,0) rectangle (\sw,\sw);
+    \fill[indepEdge] (\sw/2,\sw/2) circle (1.8pt);
+    \node[anchor=west,font=\scriptsize] at (\sw+0.14,\sw/2)
+    {independent rows (case A);\, $\bullet$ = pivot $L[i_0,i]\neq0$};
+    % row 2: dependent (case B, top block)
+    \fill[depFill] (0,-0.54) rectangle (\sw,-0.54+\sw);
+    \draw[depEdge,line width=0.4pt] (0,-0.54) rectangle (\sw,-0.54+\sw);
+    \node[anchor=west,font=\scriptsize] at (\sw+0.14,-0.54+\sw/2)
+    {dependent rows, top block (case B): $L[i_0,\,i_0{:}]=0$};
+    % row 3: dependent (case C, bottom block)
+    \fill[dFill] (0,-1.08) rectangle (\sw,-1.08+\sw);
+    \draw[dEdge,line width=0.4pt] (0,-1.08) rectangle (\sw,-1.08+\sw);
+    \node[anchor=west,font=\scriptsize] at (\sw+0.14,-1.08+\sw/2)
+    {dependent rows, bottom block (case C): $L[i_0,\,r{+}1{:}]=0$};
+    % row 4: zero tail
+    \fill[zeroTail!14] (0,-1.62) rectangle (\sw,-1.62+\sw);
+    \draw[pattern=north east lines,pattern color=zeroTail!42]
+    (0,-1.62) rectangle (\sw,-1.62+\sw);
+    \draw[zeroTail!55,line width=0.4pt] (0,-1.62) rectangle (\sw,-1.62+\sw);
+    \node[anchor=west,font=\scriptsize] at (\sw+0.14,-1.62+\sw/2)
+    {guaranteed-zero region: $L[:,\,r{+}1{:}]=0$ (tail)};
+  \end{scope}
+\end{tikzpicture}
