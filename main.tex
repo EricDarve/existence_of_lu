@@ -395,34 +395,80 @@ We now provide the formal proof of the main results, \Cref{thm:main,thm:main2}. 
 
 \subsection{Sufficient condition}
 
-The construction below repeatedly removes a zero pivot by interchanging a zero row or column with a later one. We first record, in the next two lemmas, that such interchanges preserve \Cref{prop:rank}.
+The construction below repeatedly removes a zero pivot by interchanging a zero row or column with a later one. We first record a general preservation lemma, then recover the two forms needed below as corollaries.
 
-\begin{lemma}\label{lem:zero-line-indep}
-  Let $A$ satisfy \Cref{prop:rank} with column $1$ of $A$ equal to zero, and let $B = A\Pi_j$ interchange columns $1$ and $j$ (with $\Pi_j^2 = I$). If, for every $k = 1, \ldots, j-1$, the truncated column $A[1:k,j]$ does not lie in the span of the columns of the leading block $A[1:k,1:k]$, then $B$ satisfies \Cref{prop:rank}. By transposition, the corresponding statement holds with the roles of rows and columns exchanged.
+\begin{lemma}\label{lem:zero-column-swap}
+  Let $A$ satisfy \Cref{prop:rank} with column $1$ of $A$ equal to zero, and let $B = A\Pi_j$ interchange columns $1$ and $j$ (with $\Pi_j^2 = I$). For $1 \le k < j$, define the slack
+  \[
+    s_k =
+    \nl(A[:,1:k]) + \nl({A[1:k,:]}^T) - \nl(A[1:k,1:k]).
+  \]
+  Assume that, for every $1 \le k < j$, if
+  \[
+    A[:,j] \notin \operatorname{span} A[:,2:k]
+    \quad\text{and}\quad
+    A[1:k,j] \in \operatorname{span} A[1:k,2:k],
+  \]
+  then $s_k \ge 1$. Then $B$ satisfies \Cref{prop:rank}. By transposition, the corresponding statement holds with the roles of rows and columns exchanged.
 \end{lemma}
 
 \begin{proof}
   For $k \ge j$ the interchange is internal to the first $k$ columns and leaves all three nullities of \Cref{prop:rank} unchanged, so the inequality for $B$ reduces to the one for $A$.
 
-  Let $k < j$. The interchange replaces the zero column $1$ of the leading block by $A[1:k,j]$ and leaves columns $2, \ldots, k$ in place, so $B[1:k,1:k] = [\,A[1:k,j] \mid A[1:k,2:k]\,]$. Because column $1$ of $A$ is zero, the columns of $A[1:k,1:k]$ span the same space as those of $A[1:k,2:k]$; by hypothesis $A[1:k,j]$ lies outside it, so appending it raises the rank by one:
+  Let $k < j$, and set
   \[
-    \nl(B[1:k,1:k]) = \nl(A[1:k,1:k]) - 1.
+    \epsilon_k =
+    \begin{cases}
+      1, & A[:,j] \notin \operatorname{span} A[:,2:k],\\
+      0, & \text{otherwise},
+    \end{cases}
+    \qquad
+    \delta_k =
+    \begin{cases}
+      1, & A[1:k,j] \notin \operatorname{span} A[1:k,2:k],\\
+      0, & \text{otherwise}.
+    \end{cases}
   \]
-  Any dependence of $A[:,j]$ on $A[:,2:k]$ would restrict to a dependence of $A[1:k,j]$ on $A[1:k,2:k]$, which the hypothesis excludes; hence $A[:,j]$ is independent of $A[:,2:k]$ as well, and the same computation gives
+  The first $k$ columns of $B$ are obtained from the first $k$ columns of $A$ by replacing the zero column $1$ with $A[:,j]$. Hence
   \[
-    \nl(B[:,1:k]) = \nl(A[:,1:k]) - 1.
+    \nl(B[:,1:k]) = \nl(A[:,1:k]) - \epsilon_k.
   \]
-  Finally, the interchange only permutes the columns of the row block, so $\nl({B[1:k,:]}^T) = \nl({A[1:k,:]}^T)$. Subtracting $1$ from the leading two terms of \Cref{prop:rank} for $A$ shows it holds for $B$. Hence $B$ satisfies \Cref{prop:rank}.
+  The same argument applied to the leading block gives
+  \[
+    \nl(B[1:k,1:k]) = \nl(A[1:k,1:k]) - \delta_k.
+  \]
+  Finally, the interchange only permutes the columns of the row block, so
+  \[
+    \nl({B[1:k,:]}^T) = \nl({A[1:k,:]}^T).
+  \]
+  Therefore \Cref{prop:rank} for $B$ at index $k$ is equivalent to
+  \[
+    s_k \ge \epsilon_k - \delta_k.
+  \]
+  Since $A$ satisfies \Cref{prop:rank}, we have $s_k \ge 0$. If $\epsilon_k - \delta_k \le 0$, the inequality follows. If $\epsilon_k - \delta_k = 1$, then $\epsilon_k = 1$ and $\delta_k = 0$, which is exactly the unmatched case covered by the hypothesis. Thus \Cref{prop:rank} holds for $B$ for every $k < j$ as well.
 
   The transposed statement follows because \Cref{prop:rank} is invariant under transposition: its right-hand side is symmetric in $\nl(A[:,1:k])$ and $\nl({A[1:k,:]}^T)$, while $\nl((A[1:k,1:k])^T) = \nl(A[1:k,1:k])$.
 \end{proof}
 
-\begin{lemma}\label{lem:zero-line-both}
-  Let $A$ satisfy \Cref{prop:rank} with column $1$ and row 1 of $A$ equal to zero, and let $B = A\Pi_j$ interchange columns $1$ and $j$ (with $\Pi_j^2 = I$). If $j$ is the smallest index whose column is nonzero, then $B$ satisfies \Cref{prop:rank}. By transposition, the corresponding statement holds with the roles of rows and columns exchanged.
-\end{lemma}
+\begin{corollary}\label{lem:zero-line-indep}
+  Let $A$ satisfy \Cref{prop:rank} with column $1$ of $A$ equal to zero, and let $B = A\Pi_j$ interchange columns $1$ and $j$ (with $\Pi_j^2 = I$). If, for every $k = 1, \ldots, j-1$, the truncated column $A[1:k,j]$ does not lie in the span of the columns of the leading block $A[1:k,1:k]$, then $B$ satisfies \Cref{prop:rank}. By transposition, the corresponding statement holds with the roles of rows and columns exchanged.
+\end{corollary}
 
 \begin{proof}
-  For $k \ge j$ the interchange is internal to the first $k$ columns and leaves the three nullities unchanged. For $k < j$ columns $1, \ldots, k$ of $A$ all vanish, so $\nl(A[1:k,1:k]) = \nl(A[:,1:k]) = k$; moreover $B[:,1:k]$ has rank $1$, hence nullity $k-1$, and $\nl({B[1:k,:]}^T) = \nl({A[1:k,:]}^T) \ge 1$ because row $1$ of $A[1:k,:]$ is zero. Therefore $\nl(B[1:k,1:k]) \le k \le \nl(B[:,1:k]) + \nl({B[1:k,:]}^T)$, so $B$ satisfies \Cref{prop:rank}. The transposed statement follows from the transpose-invariance of \Cref{prop:rank} noted above.
+  For each $k < j$, column $1$ of $A$ is zero, so the columns of $A[1:k,1:k]$ span the same space as those of $A[1:k,2:k]$. Hence the hypothesis says that $A[1:k,j] \notin \operatorname{span} A[1:k,2:k]$ for every $k < j$. The unmatched case in \Cref{lem:zero-column-swap} cannot occur, so $B$ satisfies \Cref{prop:rank}. The row statement follows from the transposed form of \Cref{lem:zero-column-swap}.
+\end{proof}
+
+\begin{corollary}\label{lem:zero-line-both}
+  Let $A \neq 0$ satisfy \Cref{prop:rank} with column $1$ and row 1 of $A$ equal to zero, and let $B = A\Pi_j$ interchange columns $1$ and $j$ (with $\Pi_j^2 = I$). If $j$ is the smallest index whose column is nonzero, then $B$ satisfies \Cref{prop:rank}. By transposition, the corresponding statement holds with the roles of rows and columns exchanged.
+\end{corollary}
+
+\begin{proof}
+  For $k < j$, columns $1, \ldots, k$ of $A$ all vanish, so
+  \[
+    \nl(A[:,1:k]) = \nl(A[1:k,1:k]) = k.
+  \]
+  Also $\nl({A[1:k,:]}^T) \ge 1$ because row $1$ of $A[1:k,:]$ is zero. Hence the slack $s_k$ in \Cref{lem:zero-column-swap} satisfies $s_k \ge 1$ for every $k < j$, so the hypothesis of that lemma holds and $B$ satisfies \Cref{prop:rank}.
+  The row statement follows from the transposed form of \Cref{lem:zero-column-swap}.
 \end{proof}
 
 We will now prove the main theorem:
@@ -481,9 +527,9 @@ We will now prove the main theorem:
   \end{equation}
   so column $1$ or row $1$ of $A$ is zero. This deadlock-free property is what guarantees the success of our construction below.
 
-  If $A = 0$, then $L = U = 0$ is a factorization. Otherwise, let $j$ be the index of the first nonzero column of $A$ and $i$ the index of the first nonzero row. Transposing $A$ exchanges these two indices and preserves both \Cref{prop:rank} and the existence of an LU factorization. We may therefore assume $j \le i$.
+  If $A = 0$, then $L = U = 0$ is a factorization. Otherwise, let $j$ be the index of the first nonzero column of $A$ and $i'$ the index of the first nonzero row. Transposing $A$ exchanges these two indices and preserves both \Cref{prop:rank} and the existence of an LU factorization. We may therefore assume $j \le i'$.
 
-  Then row $1$ of $A$ is zero. We prove this by contradiction. Assume it is nonzero, then $i = 1$, hence $j \le 1$ and $j = 1$, so column $1$ is nonzero. We have a nonzero row and a nonzero column while $a_{11} = 0$. This contradicts \cref{eq:deadlock}.
+  Then row $1$ of $A$ is zero. We prove this by contradiction. Assume it is nonzero, then $i' = 1$, hence $j \le 1$ and $j = 1$, so column $1$ is nonzero. We have a nonzero row and a nonzero column while $a_{11} = 0$. This contradicts \cref{eq:deadlock}.
 
   Let $i$ now be the smallest index with $A[i,j] \neq 0$. We bring $A[i,j]$ to the $(1,1)$ position by two interchanges, each of a zero line.
   \begin{itemize}
@@ -582,28 +628,37 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
       0 & P_{c,S}
     \end{pmatrix}
   \]
-  The sparsity results follow directly from the induction hypothesis.
+  In this case the first row and first column are the first selected independent row and column. The induction hypothesis gives the stated sparsity pattern for the Schur complement on indices $2,\ldots,n$; adjoining the first pivot only shifts those logical and original indices by one. Since the added first row of the lower factor and first column of the upper factor are triangular, the sparsity claims are preserved.
 
-  Assume $a_{11} = 0$. From \Cref{prop:rank}, we have:
-  \begin{enumerate}
-    \item $A[:,1] = 0$, $A[1,:] \ne 0$, or
-    \item $A[1,:] = 0$, $A[:,1] \ne 0$, or
-    \item $A[:,1] = 0$, $A[1,:] = 0$.
-  \end{enumerate}
+  Assume $a_{11} = 0$. Evaluating \Cref{prop:rank} at $k = 1$ gives the deadlock-free alternative used in \Cref{thm:main}: column $1$ or row $1$ of $A$ is zero. If $A = 0$, we take $P_r = P_c = I$ and $L = U = 0$, and all sparsity claims are immediate.
 
-  Case 1: $A[:,1] = 0$. Since $A[1,:] \neq 0$, let $j$ be the smallest index with $A[1,j] \neq 0$. For every $k < j$ the first row of the leading block $A[1:k,1:k]$ is zero (because $A[1,1] = \cdots = A[1,k] = 0$), while $A[1,j] \neq 0$; hence the truncated column $A[1:k,j]$ does not lie in the span of the columns of $A[1:k,1:k]$. By \Cref{lem:zero-line-indep}, the matrix $B = A \Pi_j$ interchanging columns $1$ and $j$ satisfies \Cref{prop:rank}, and $b_{11} = A[1,j] \neq 0$. So $B$ has an LU factorization with the sparsity pattern of \Cref{thm:main2}. Since column $j$ of $B$ is zero, column $j$ of $U_{B}$ is zero. We define
-  \[ P_c = P_{c,B} \Pi_j, \quad U = U_B \Pi_j \]
-  $\Pi_j$ swaps columns 1 and $j$ of $U_{B}$. We have $e_1 = \Pi_j^T e_j$ and column $j$ of $U_{B}$ is zero. We also have a $j_0$ such that $e_j = P_{c,B}^T e_{j_0}$ and $e_1 = P_c^T e_{j_0}$. Note that since column $j$ of $B$ (which is column 1 of $A$) is zero, we are beyond the rank-revealing part and $j_0 > r$. Since column 1 of $U$ is zero and the other columns of $U$ have the sparsity pattern of \Cref{thm:main2}, $U$ also satisfies the sparsity pattern of \Cref{thm:main2}.
+  Otherwise, let $j$ be the index of the first nonzero column of $A$ and let $i'$ be the index of the first nonzero row of $A$. Transposing $A$ exchanges the row and column assertions of the theorem, so it is enough to treat the case $j \le i'$. Then row $1$ of $A$ is zero: if it were nonzero, then $i'=1$, hence $j=1$, so both row $1$ and column $1$ would be nonzero, contradicting the deadlock-free alternative at $a_{11}=0$.
 
-  Case 2: $A[1,:] = 0$. Consider $B = A^T$. $B$ corresponds to Case 1 and satisfies the sparsity pattern of \Cref{thm:main2}. So $A$ also satisfies the sparsity pattern of \Cref{thm:main2}.
+  Let $i$ be the smallest index with $A[i,j] \neq 0$. We bring this entry to the $(1,1)$ position exactly as in \Cref{thm:main}. If $j > 1$, set $B = A\Pi_j$; since column $1$ and row $1$ of $A$ are zero and $j$ is the first nonzero column, \Cref{lem:zero-line-both} shows that $B$ satisfies \Cref{prop:rank}. If $j=1$, set $B=A$. In both cases column $1$ of $B$ is nonzero and row $1$ of $B$ is zero. Set $C=\Pi_i B$. Since $i$ is the first index with $B[i,1]\neq0$, the row form of \Cref{lem:zero-line-indep} shows that $C$ satisfies \Cref{prop:rank}, and $c_{11}=A[i,j]\neq0$.
 
-  Case 3: If $A = 0$, it has an LU factorization. In that case we pick $L=U=0$ as the factors. If $A \neq 0$, let's denote by $j$ the smallest index such that column $j$ is non zero. Let's denote by $i > 1$ the smallest index such that $a_{ij} \neq 0$. Let's pivot column 1 and $j$ and denote by $B = A \Pi_j$ the permuted matrix. $B$ satisfies Case 2, so it has an LU factorization: $B = L U$ with the sparsity pattern of \Cref{thm:main2}. Following a reasoning analogous to Case 1, we can show that $A$ also satisfies the sparsity pattern of \Cref{thm:main2}.
+  Applying the nonzero-pivot case to $C$ gives permutations $P_{r,C}$ and $P_{c,C}$ and rank-revealing factors $C=L_CU_C$ with the stated sparsity pattern. Define
+  \[
+    P_r = \Pi_i P_{r,C}, \qquad
+    P_c = P_{c,C}\Pi_j, \qquad
+    L = \Pi_i L_C, \qquad
+    U = U_C\Pi_j,
+  \]
+  where $\Pi_j=I$ if $j=1$. Then
+  \[
+    B_C = P_{r,C}^{-1} C P_{c,C}^{-1}
+    = P_r^{-1} A P_c^{-1},
+    \qquad
+    A = LU.
+  \]
 
-  As in \Cref{thm:main}, we have also proved that this process must terminate after $r$ steps where $r = \rk(A)$. So the LU factorization of $B$ is rank revealing.
+  The same argument used above for interchanging an identically zero row or column also explains the extra sparsity. Row $i$ of $C$ is the old row $1$ of $A$, hence is zero; because $U_C$ has full row rank on its first $r$ rows, row $i$ of $L_C$ is zero. Thus $\Pi_i L_C$ remains lower triangular, and row $1$ of $L$ is zero. If $j>1$, column $j$ of $C$ is the old column $1$ of $A$, hence is zero; because $L_C$ has full column rank on its first $r$ columns, column $j$ of $U_C$ is zero. Thus $U_C\Pi_j$ remains upper triangular, and column $1$ of $U$ is zero.
 
-  Following \Cref{lem:oblique}, any column $j_0$ in $A$ that is a linear combination of the previous columns will become 0 at step $\min(r,j_0-1)$. If $j_0 \le r$, this column will be moved rightward to position $j$ with $j > r$. Any column $j_0$ that is a linearly independent of the previous columns will never become zero. If $j_0 > r$, it will be moved leftward to position $j$ with $j \le r$.
+  Finally, the selected pivot row and column are precisely the next rows and columns that are independent of their predecessors. Indeed, by \Cref{lem:oblique}, a row or column that is a linear combination of its predecessors becomes zero in the active Schur complement, while an independent one does not. Therefore the first $r$ logical rows and columns are the independent original rows and columns, and the remaining logical rows and columns are dependent. The inequalities $i_0 \ge i$ and $j_0 \ge j$ in the independent cases express that the $i$th independent row, respectively the $j$th independent column, cannot occur before original index $i$, respectively $j$. In those cases the triangularity of $L_C$ and $U_C$, transported back by the swaps above, gives $L[i_0,i+1:]=0$ and $U[j+1:,j_0]=0$.
 
-  A similar result applies to the rows of $A$.
+  For dependent rows and columns, the zero active row or column is either already beyond the rank-revealing block, in which case it is not moved and $i=i_0$ or $j=j_0$, or it originally occurs at an index at most $r$ and is displaced beyond the first $r$ logical positions. In the latter case its row of $L$ or column of $U$ is zero from the original index onward, giving $L[i_0,i_0:]=0$ or $U[j_0:,j_0]=0$. Since the factorization is rank revealing, the trailing populated parts vanish in all dependent cases:
+  \[
+    L[i_0,r+1:] = 0, \qquad U[r+1:,j_0] = 0.
+  \]
 \end{proof}
 
 \subsection{Python implementation}
