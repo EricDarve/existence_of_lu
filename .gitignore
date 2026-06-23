@@ -328,3 +328,6 @@ TSWLatexianTemp*
 # option is specified. Footnotes are the stored in a file with suffix Notes.bib.
 # Uncomment the next line to have this generated file ignored.
 #*Notes.bib
+download_literature_papers.py
+literature_review_johnson_okunev.tex
+literature_review_references_with_urls.bib
