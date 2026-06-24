@@ -1,0 +1,371 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7em}
+\setlist[itemize]{leftmargin=2em}
+\setlist[enumerate]{leftmargin=2em}
+
+\definecolor{commentblue}{RGB}{30,80,150}
+\definecolor{responsegreen}{RGB}{20,110,70}
+
+\newenvironment{refereecomment}
+{\par\smallskip\noindent\textbf{\color{commentblue}Referee comment.}
+\begin{quote}\itshape}
+  {
+\end{quote}}
+
+\newenvironment{authorresponse}
+{\par\smallskip\noindent\textbf{\color{responsegreen}Response.}}
+{\par\smallskip}
+
+\newcommand{\changeplaceholder}{\textbf{Change made.} [Describe the manuscript change and give page, theorem, equation, or line references.]}
+\newcommand{\responseplaceholder}{[Write the response here.]}
+
+\begin{document}
+
+\begin{center}
+  {\Large Response to Referee}\\[0.5em]
+  {\large Necessary and Sufficient Conditions for the Existence of an LU Factorization for General Rank Deficient Matrices}
+\end{center}
+
+Dear Editor,
+
+We are grateful to the referee for the careful reading of the manuscript and for the detailed comments. The revised manuscript addresses the issues raised in the report. In particular, we have clarified the induction steps in the main proofs, expanded the discussion of the relationship with existing results, and revised several points of notation and exposition.
+
+Below we give a point-by-point response. Referee comments are shown in italics. Our responses follow each comment.
+
+\section*{Summary of Main Changes}
+
+\begin{itemize}
+  \item \null [Will do at the end]
+\end{itemize}
+
+\section*{Main Points}
+
+\subsection*{Main Point 1}
+
+\begin{refereecomment}
+  The new results (in fact, examples) only start from Page 5, and the theoretical contribution does not appear to justify the current length. In my opinion, the manuscript can be substantially cut down by providing only references to known results and, with a proper literature review, emphasizing on how the new theorem improves on existing results.
+\end{refereecomment}
+
+\begin{authorresponse}
+  Thank you for this comment. We agree that the manuscript should be more focused on the key new results while deemphasizing the known/more obvious results. To that effect, we moved content with known or relatively straightforward results to the appendix. Previously the main theorem started on page 9. Now it starts on page 6. The author decided to move the previous text to the appendix instead of cutting it so that the manuscript remains self-contained and can be read without consulting other references.
+\end{authorresponse}
+
+\subsection*{Main Point 2}
+
+\begin{refereecomment}
+  The referee asks that the proof of Theorem 1.1 spell out how the permutation and the factorization of the Schur complement are embedded into the full matrix. The referee also asks for the analogous induction step in Theorem 1.4 and for explicit mention of the Schur complement.
+\end{refereecomment}
+
+\begin{authorresponse}
+  Theorem 1.1 is now Theorem A.1. We made the corrections suggested by the reviewer.
+
+  Theorem 1.4 is now Theorem A.4. We also followed the referee's suggestion and made the changes accordingly.
+\end{authorresponse}
+
+\subsection*{Main Point 3}
+
+\begin{refereecomment}
+  The referee asks for an explanation of why the construction terminates after $r=\operatorname{rank}(A)$ steps, and suggests that the later statement in Theorem 2.5 can refer back to this explanation.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We modified the proof of Theorem A.4 to clarify the point raised by the reviewer.
+
+  Theorem 2.5 is now Theorem 1.5. We point back to Theorem A.4 and added a comment about the rank.
+\end{authorresponse}
+
+\subsection*{Main Point 4}
+
+\begin{refereecomment}
+  The referee notes that Property 2.1 is cited as Theorem 2.1, and questions the separation of statements and proofs for the main results.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We apologize for the confusion. Before submission we switch the latex style to \verb|\documentclass[10pt,twoside]{siamart1116}|. As a result, the references and labels were corrupted and we did not notice it. This is now fixed in the revised manuscript.
+
+  Property 1.1 is now correctly listed as Property and not Theorem, which was incorrect. The main theorems are 1.5, 1.6, and 2.1.
+\end{authorresponse}
+
+\subsection*{Main Point 5}
+
+\begin{refereecomment}
+  The referee asks for more detail in the proof of Theorem 2.5 explaining why the intermediate matrix $D$ and the Schur complement $S$ inherit the same rank condition.
+\end{refereecomment}
+
+\begin{authorresponse}
+  Theorem 2.5 is now 1.5. We expanded the proof to clarify the point raised by the reviewer.
+\end{authorresponse}
+
+\subsection*{Main Point 6}
+
+\begin{refereecomment}
+  The referee asks whether the linear independence argument still holds in Case 1 of the proof of Theorem 2.5, since it is no longer clear that $B(1,2:k)=0$ for $k \ge j$.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+
+  \changeplaceholder
+\end{authorresponse}
+
+\subsection*{Main Point 7}
+
+\begin{refereecomment}
+  The referee points out that the necessary direction of Theorem 3.1 can be proved more directly by using
+  \[
+    A(:,1:k)=L(:,1:k)U(1:k,1:k),
+    \qquad
+    A(1:k,1:k)=L(1:k,1:k)U(1:k,1:k),
+  \]
+  and the full column rank of $L(:,1:k)$ and $L(1:k,1:k)$.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+
+  \changeplaceholder
+\end{authorresponse}
+
+\section*{Minor Points}
+
+\subsection*{Minor Point 1: Singular and rank-deficient}
+
+\begin{refereecomment}
+  For square matrices, the terms ``singular'' and ``rank-deficient'' are interchangeable. The referee suggests keeping only one where applicable.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 2: Punctuation of displayed mathematics}
+
+\begin{refereecomment}
+  The referee asks that mathematical expressions be treated as part of the sentence and punctuated accordingly.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 3: More formal row and column phrasing}
+
+\begin{refereecomment}
+  The referee suggests replacing expressions such as ``column $i$'' and ``row $j$'' by ``the $i$th column'' and ``the $j$th row''.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 4: Matrix notation}
+
+\begin{refereecomment}
+  The referee suggests replacing MATLAB-style notation such as $A[:,i]$ by standard numerical linear algebra notation, and using block notation for submatrices.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 5: References for applications}
+
+\begin{refereecomment}
+  The referee asks for references in the discussion of the physical setting and application background on page 2.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 6: Definition of $A_{11}$}
+
+\begin{refereecomment}
+  The referee notes that $A_{11}$ appears on page 2 without a proper definition.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 7: Wording in the proof of Theorem 1.1}
+
+\begin{refereecomment}
+  The referee suggests changing the second line of Case 1 in the proof of Theorem 1.1 to say that $B$ has a partially pivoted LU factorization.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 8: Proof of Corollary 1.2}
+
+\begin{refereecomment}
+  The referee suggests writing: ``Apply Theorem 1.1 to $A^T$ and take the transpose of the result.''
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 9: Definition 1.3}
+
+\begin{refereecomment}
+  The referee suggests replacing ``triangular matrix'' by ``trapezoidal matrix'' in Definition 1.3.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 10: Colon after ``Therefore''}
+
+\begin{refereecomment}
+  The referee notes that in line 3 of the proof of Proposition 1.5, the colon after ``Therefore'' should be a comma.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 11: Theorem 2.2--Corollary 2.4}
+
+\begin{refereecomment}
+  The referee suggests replacing this material by references to the literature, for example Exercise 4.5.10 in Carl D. Meyer's \emph{Matrix Analysis and Applied Linear Algebra}.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 12: Key property from the smallest index $j$}
+
+\begin{refereecomment}
+  The referee notes that in the proof of Theorem 2.5, the key property following from the smallest index $j$ is that $B(1,2:k)=0$, and asks that this be mentioned for readability.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 13: ``non zero''}
+
+\begin{refereecomment}
+  The referee notes that ``non zero'' should be written as ``nonzero.''
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 14: ``B satisfies Case 2''}
+
+\begin{refereecomment}
+  The referee notes that the phrase ``B satisfies Case 2'' is imprecise because Case 2 is stated for $A$.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 15: Rank-revealing factors $L_B$ and $U_B$}
+
+\begin{refereecomment}
+  The referee found it unclear whether the standalone paragraphs about the rank-revealing factors $L_B$ and $U_B$ are part of Theorem 2.6.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 16: Typos in sparsity expressions}
+
+\begin{refereecomment}
+  The referee notes typos in expressions such as $L[i_0,i+1:]$ and $L[i_0,i_0:]$, and similar errors elsewhere.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 17: Figure for Theorem 2.6}
+
+\begin{refereecomment}
+  The referee suggests adding a graphical illustration of the sparsity pattern of the LU factors.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 18: ``an index $j_0$''}
+
+\begin{refereecomment}
+  The referee suggests replacing ``We also have a $j_0$ such that...'' by ``an index $j_0$ such that...''
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 19: Row and column permutations in the unit lower case}
+
+\begin{refereecomment}
+  The referee comments on the sentence ``The triangular unit structure of $L$ prevents row permutations'' and suggests clarifying that no row permutation can be performed to $A$.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 20: Table 3}
+
+\begin{refereecomment}
+  The referee notes that the column and row conditions in Table 3 appear to be with respect to $A_{11}$, and asks that this be made clear.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 21: Paragraph above Lemma A.3}
+
+\begin{refereecomment}
+  The referee suggests explicitly stating
+  \[
+    (I-P_o(X))A =
+    \begin{pmatrix}
+      O_{k-1} & O \\
+      O & S
+    \end{pmatrix}
+  \]
+  and adding some discussion.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\subsection*{Minor Point 22: Lemmas A.1--A.3}
+
+\begin{refereecomment}
+  The referee suggests moving Lemmas A.1--A.3 into the main text if the results are new.
+\end{refereecomment}
+
+\begin{authorresponse}
+  \responseplaceholder
+\end{authorresponse}
+
+\section*{Closing}
+
+We hope that the revisions address the referee's concerns and make the manuscript clearer and more useful to readers.
+
+\end{document}
