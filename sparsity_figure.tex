@@ -72,14 +72,12 @@
 
   %% ---------- thick rank separator after column r ---------------------------
   \draw[rankLine,line width=2.2pt] (\r,0.20) -- (\r,-\n-0.20);
-  \node[rankLine,font=\small\bfseries,anchor=south] at (\r,0.34) {rank $r=4$};
 
   %% ---------- column / row index ticks --------------------------------------
   \foreach \c in {1,...,\n}{
-    \node[font=\tiny,black!55] at (\c-0.5, 0.12) {\c};
+    \node[font=\tiny,black!55] at (\c-0.5, 0.2) {\c};
   }
-  \node[font=\tiny,black!55,anchor=east] at (-0.16,-0.5) {$i_0{=}1$};
-  \foreach \row in {2,...,\n}{
+  \foreach \row in {1,...,\n}{
     \node[font=\tiny,black!55,anchor=east] at (-0.16,-\row+0.5) {\row};
   }
 
@@ -97,7 +95,7 @@
   {$L[:,\,r{+}1{:}]=\mathbf{0}$ \;(rank-revealing tail)};
 
   %% ---------- title --------------------------------------------------------
-  \node[font=\bfseries] at (\n/2,1.18)
+  \node[font=\bfseries] at (\n/2,0.7)
   {Example nonzero envelope of $L$ \;($n=8$,\, $r=4$)};
 
   %% ---------- LEGEND (single narrow column, lower-left) ---------------------

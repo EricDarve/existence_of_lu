@@ -697,7 +697,7 @@ No column pivoting works. However, row pivoting is sufficient to get a unit lowe
 
 \begin{table}[htbp]
   \centering
-  \begin{tabular}{l l p{6cm}}
+  \begin{tabular}{l l p{6.5cm}}
     \toprule
     Constraint & Condition (for all $k$) & Stringency \\
     \midrule
@@ -734,6 +734,13 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
       \[ U[j+1:, j_0] = 0 \]
   \end{itemize}
 \end{theorem}
+
+\begin{figure}[htbp]
+  \centering
+  \input{unit_lower_sparsity_figure.tex}
+  \caption{Figure illustrating the sparsity pattern of the $U$ factor in \Cref{thm:main_unit_lower}. Case A represents independent rows of $B$: $j_0 \ge j$ and $U[j+1:,j_0]=0$. Case B represents dependent rows of $B$: $j_0 \le j$, $U[j,:]=0$, and $U[j_0:,j_0]=0$.}
+  \label{fig:unit_lower_sparsity}
+\end{figure}
 
 \begin{proof} \par
   \textbf{Condition is necessary.} \quad Assume that $A$ admits a factorization $A = LU$, where $L$ is unit lower triangular and $U$ is upper triangular. For any $k \in \{1, \dots, n\}$, since $U$ is upper triangular,
@@ -791,7 +798,6 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
     \nl(D[:,1:k])     & = \nl(A[:,1:k]) - 1 \\
     \nl({D[1:k,:]}^T) & = \nl({A[1:k,:]}^T) - 1
   \end{align*}
-  So that \Cref{prop:rank} may not be satisfied by $D$.
 \end{proof}
 
 We now state the corresponding result where $U$ is unit upper triangular. Please compare the result below with \Cref{cor:col_permutation}.

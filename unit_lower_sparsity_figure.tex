@@ -1,0 +1,127 @@
+% ===========================================================================
+%  Possibly-nonzero envelope of U in a unit-lower LU factorization.
+%  n = 8, r = 5.  Single 8x8 grid; row j = 1..8 top->bottom,
+%  column j0 = 1..8 left->right.
+%  Case A: independent rows/columns (blue).
+%  Case B: dependent rows/columns (orange).
+% ===========================================================================
+
+% ---- palette (chosen to match sparsity_figure.tex) -------------------------
+\definecolor{unitIndepFill}{RGB}{207,225,242}
+\definecolor{unitIndepEdge}{RGB}{ 46,107,170}
+\definecolor{unitDepFill}{RGB}{250,224,196}
+\definecolor{unitDepEdge}{RGB}{200,110, 20}
+\definecolor{unitRowZero}{RGB}{244,168,116}
+\definecolor{unitZero}{RGB}{120,120,120}
+
+\begin{tikzpicture}[x=1cm,y=1cm,line cap=round,line join=round]
+
+  \def\n{8}\def\r{5}
+
+  % The example column permutation, listed by logical index j, is:
+  % j :  1  2  3  4  5  6  7  8
+  % j0:  1  2  5  4  6  3  7  8
+  % Equivalently, along the plotted sequential j0-columns:
+  % j0:  1  2  3  4  5  6  7  8
+  % j :  1  2  6  4  3  5  7  8
+  % case A: j = 1,3,5,7,8.  case B: j = 2,4,6.
+
+  %% ---------- upper-triangular guaranteed-zero region -----------------------
+  \foreach \row in {2,...,\n}{
+    \pgfmathtruncatemacro{\lastzero}{\row-1}
+    \fill[unitZero!12] (0,-\row+1) rectangle (\lastzero,-\row);
+    \draw[pattern=north east lines,pattern color=unitZero!38]
+    (0,-\row+1) rectangle (\lastzero,-\row);
+  }
+
+  %% ---------- possibly-nonzero column envelopes -----------------------------
+  \foreach \col/\h/\case/\fillc/\edgec/\lw in {
+    1/1/A/unitIndepFill/unitIndepEdge/0.4,
+    2/1/B/unitDepFill/unitDepEdge/0.4,
+    3/2/B/unitDepFill/unitDepEdge/0.4,
+    4/3/B/unitDepFill/unitDepEdge/0.4,
+    5/3/A/unitIndepFill/unitIndepEdge/0.4,
+    6/5/A/unitIndepFill/unitIndepEdge/0.4,
+    7/7/A/unitIndepFill/unitIndepEdge/0.4,
+  8/8/A/unitIndepFill/unitIndepEdge/0.4}{
+    \fill[\fillc] (\col-1,0) rectangle (\col,-\h);
+    \draw[\edgec,line width=\lw pt] (\col-1,0) rectangle (\col,-\h);
+  }
+
+  %% ---------- dependent zero rows: U[j,:] = 0 -------------------------------
+  \foreach \row in {2,4,6}{
+    \fill[unitRowZero!38] (0,-\row+1) rectangle (\n,-\row);
+    \draw[pattern=north west lines,pattern color=unitDepEdge!60]
+    (0,-\row+1) rectangle (\n,-\row);
+    \draw[unitDepEdge!70,line width=0.35pt] (0,-\row+1) rectangle (\n,-\row);
+  }
+
+  %% ---------- light grid lines ----------------------------------------------
+  \foreach \k in {0,...,\n}{
+    \draw[black!14,line width=0.2pt] (\k,0) -- (\k,-\n);
+    \draw[black!14,line width=0.2pt] (0,-\k) -- (\n,-\k);
+  }
+
+  %% ---------- main diagonal (upper-triangular boundary) ---------------------
+  \draw[black!55,line width=0.7pt,dash pattern=on 2pt off 1.5pt]
+  (0,0) -- (\n,-\n);
+
+  %% ---------- outer frame ---------------------------------------------------
+  \draw[black,line width=1.0pt] (0,0) rectangle (\n,-\n);
+
+  %% ---------- pivot markers for independent rows/columns --------------------
+  \foreach \row/\col in {1/1, 3/5, 5/6, 7/7, 8/8}{
+    \fill[unitIndepEdge] (\col-0.5,-\row+0.5) circle (2.6pt);
+    \draw[white,line width=0.5pt] (\col-0.5,-\row+0.5) circle (2.6pt);
+  }
+
+  %% ---------- column / row index ticks --------------------------------------
+  \foreach \c in {1,...,\n}{
+    \node[font=\tiny,black!55] at (\c-0.5, 0.2) {\c};
+  }
+  \foreach \row in {1,...,\n}{
+    \node[font=\tiny,black!55,anchor=east] at (-0.16,-\row+0.5) {\row};
+  }
+
+  %% ---------- per-column right annotations: case + (j0,j) -------------------
+  \def\ax{8.55}
+  \foreach \col/\logicalj/\case in {1/1/A, 2/2/B, 3/6/B, 4/4/B, 5/3/A, 6/5/A, 7/7/A, 8/8/A}{
+    \node[anchor=west,font=\scriptsize] at (\ax,-\col+0.5)
+    {\textbf{\case}\,\;$(j{=}\logicalj,\,j_0{=}\col)$};
+  }
+
+  %% ---------- title ---------------------------------------------------------
+  \node[font=\bfseries] at (\n/2,0.75)
+  {Example nonzero envelope of $U$ for unit lower $L$ \;($n=8$,\, $r=5$)};
+
+  %% ---------- LEGEND --------------------------------------------------------
+  \begin{scope}[shift={(0,-\n-1.5)}]
+    \node[anchor=south west,font=\small\bfseries] at (0,0.58) {Legend};
+    \def\sw{0.40}
+    % independent
+    \fill[unitIndepFill] (0,0) rectangle (\sw,\sw);
+    \draw[unitIndepEdge,line width=0.4pt] (0,0) rectangle (\sw,\sw);
+    \fill[unitIndepEdge] (\sw/2,\sw/2) circle (1.8pt);
+    \node[anchor=west,font=\scriptsize] at (\sw+0.14,\sw/2)
+    {independent case A: $U[j{+}1{:},\,j_0]=0$;\, $\bullet$ = pivot};
+    % dependent column
+    \fill[unitDepFill] (0,-0.54) rectangle (\sw,-0.54+\sw);
+    \draw[unitDepEdge,line width=0.4pt] (0,-0.54) rectangle (\sw,-0.54+\sw);
+    \node[anchor=west,font=\scriptsize] at (\sw+0.14,-0.54+\sw/2)
+    {dependent case B: $U[j_0{:},\,j_0]=0$};
+    % zero row
+    \fill[unitRowZero!38] (0,-1.08) rectangle (\sw,-1.08+\sw);
+    \draw[pattern=north west lines,pattern color=unitDepEdge!60]
+    (0,-1.08) rectangle (\sw,-1.08+\sw);
+    \draw[unitDepEdge!70,line width=0.4pt] (0,-1.08) rectangle (\sw,-1.08+\sw);
+    \node[anchor=west,font=\scriptsize] at (\sw+0.14,-1.08+\sw/2)
+    {dependent row: $U[j,:]=0$ and $L[:,j]=e_j$};
+    % upper triangular zero
+    \fill[unitZero!12] (0,-1.62) rectangle (\sw,-1.62+\sw);
+    \draw[pattern=north east lines,pattern color=unitZero!38]
+    (0,-1.62) rectangle (\sw,-1.62+\sw);
+    \draw[unitZero!55,line width=0.4pt] (0,-1.62) rectangle (\sw,-1.62+\sw);
+    \node[anchor=west,font=\scriptsize] at (\sw+0.14,-1.62+\sw/2)
+    {upper-triangular zero region};
+  \end{scope}
+\end{tikzpicture}
