@@ -783,14 +783,55 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
       0 & I
     \end{pmatrix}
   \]
-  and $S=A_{22}$. $D$ satisfies
+  and $S=A_{22}$. Since row $1$ and column $1$ of $A$ are zero, for $\ell=1,\ldots,n-1$,
   \[
-    \nl(D[1:k,1:k]) = \nl(A[1:k,1:k]) - 1
-    = \nl(A[:,1:k]) - 1 = \nl(D[:,1:k])
+    \nl(A[1:\ell+1,1:\ell+1])
+    =
+    1+\nl(S[1:\ell,1:\ell]),
+    \qquad
+    \nl(A[:,1:\ell+1])
+    =
+    1+\nl(S[:,1:\ell]).
   \]
-  $D$ satisfies \cref{eq:cond_unit_lower}. By the induction hypothesis, we can find a column permutation $P_{c,S}$ such that $S P_{c,S}^{-1}$ has an LU factorization with unit lower triangular factor.
+  Applying \cref{eq:cond_unit_lower} to $A$ at $k=\ell+1$ therefore gives
+  \[
+    \nl(S[1:\ell,1:\ell]) = \nl(S[:,1:\ell]),
+    \qquad \ell=1,\ldots,n-1.
+  \]
+  Thus $S$ satisfies \cref{eq:cond_unit_lower}. By the induction hypothesis, there is a column permutation $P_{c,S}$ such that
+  \[
+    B_S = S P_{c,S}^{-1} = L_S U_{B,S},
+  \]
+  where $L_S$ is unit lower triangular. Set $U_S = U_{B,S}P_{c,S}$, which is upper triangular. Define
+  \[
+    P_c =
+    \begin{pmatrix}
+      1 & 0       \\
+      0 & P_{c,S}
+    \end{pmatrix}, \quad
+    L_B =
+    \begin{pmatrix}
+      1 & 0   \\
+      0 & L_S
+    \end{pmatrix}, \quad
+    U_B =
+    \begin{pmatrix}
+      0 & 0       \\
+      0 & U_{B,S}
+    \end{pmatrix}.
+  \]
+  Then $B = A P_c^{-1}=L_B U_B$, and
+  \[
+    A = L_B(U_B P_c), \qquad
+    U_B P_c =
+    \begin{pmatrix}
+      0 & 0   \\
+      0 & U_S
+    \end{pmatrix}
+  \]
+  is upper triangular. We set $L=L_B$ and $U=U_B P_c$.
 
-  This also proves that row $j$ of $B$ is a linear combination of the previous rows if and only if column $j$ of $B$ is a linear combination of the previous columns. Moreover, if $e_{j_0} = P_c^T e_j$ and row $j$ of $B$ is a linear combination of the previous rows, then $j_0 \le j$. We have $L[:,j] = e_j$, $U[j,:] = 0$, and $U[j_0:,j_0] = 0$.
+  The structure and sparsity statements in this second case are the induction statements for $S$, shifted by one index, together with the new zero first row and column. Row $1$ and column $1$ of $B$ are both zero, so they are both dependent, $j_0=1$, and $L[:,1]=e_1$, $U[1,:]=0$, $U[1:,1]=0$. For $j>1$, write $\ell=j-1$ and $\ell_0=j_0-1$. Dependence of row $j$ of $B$ on the previous rows is equivalent to dependence of row $\ell$ of $B_S$ on the previous rows. The same statement holds for columns. Hence the induction hypothesis for $S$ gives the equivalence between dependent rows and dependent columns for $B$. It also gives, in the dependent case, $\ell_0\le \ell$, $L_S[:,\ell]=e_\ell$, $U_S[\ell,:]=0$, and $U_S[\ell_0:,\ell_0]=0$. Shifting the indices yields $j_0\le j$, $L[:,j]=e_j$, $U[j,:]=0$, and $U[j_0:,j_0]=0$. In the independent case, the induction hypothesis gives $\ell_0\ge\ell$ and $U_S[\ell+1:,\ell_0]=0$, which shifts to $j_0\ge j$ and $U[j+1:,j_0]=0$.
 
   Note that the step above with $D$ is not a valid step in \Cref{thm:main2}. Indeed:
   \begin{align*}
