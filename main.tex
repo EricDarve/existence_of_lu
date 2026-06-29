@@ -150,7 +150,7 @@ Handling Editor: \HE. Corresponding Author: \CA}}
 \maketitle
 
 \begin{abstract}
-  We establish necessary and sufficient conditions for the existence of an LU factorization $A=LU$ for an arbitrary square matrix $A$ with entries in an arbitrary field $F$, including singular and rank-deficient cases, without the use of row or column permutations. We prove that such a factorization exists if and only if the nullity of every leading principal submatrix is bounded by the sum of the nullities of the corresponding leading column and row blocks. While building upon the work of Okunev and Johnson, we present simpler, constructive proofs. Furthermore, we extend these results to characterize rank-revealing factorizations, providing explicit sparsity bounds for the factors $L$ and $U$. Finally, we derive analogous necessary and sufficient conditions for the existence of factorizations constrained to have unit lower or unit upper triangular factors.
+  We establish necessary and sufficient conditions for the existence of an LU factorization $A=LU$ of an arbitrary square matrix $A$ with entries in a field $F$, including rank-deficient cases, without row or column permutations. We prove that such a factorization exists if and only if the nullity of every leading principal submatrix is bounded by the sum of the nullities of the corresponding leading column and row blocks. Building on the work of Okunev and Johnson, we present simpler, constructive proofs. Furthermore, we extend these results to characterize rank-revealing factorizations, providing explicit sparsity bounds for the factors $L$ and $U$. Finally, we derive analogous necessary and sufficient conditions for the existence of factorizations with unit lower or unit upper triangular factors.
 \end{abstract}
 
 \begin{keywords}
@@ -160,27 +160,27 @@ Handling Editor: \HE. Corresponding Author: \CA}}
   15A23, 15A03, 65F05.
 \end{AMS}
 
-It is well-known that for any square matrix $A$, there exists a permutation of rows (and potentially columns) such that an LU factorization exists. Specifically, the factorization $PA = LU$, where $P$ is a permutation matrix, $L$ is unit lower triangular, and $U$ is upper triangular, is guaranteed to exist for any matrix $A$~\cite{higham_gaussian_2011,lu_numerical_2021}.
+It is well known that for any square matrix $A$, there exists a permutation of rows (and potentially columns) such that an LU factorization exists. Specifically, one can always achieve the form $PA = LU$, where $P$ is a permutation matrix, $L$ is unit lower triangular, and $U$ is upper triangular~\cite{higham_gaussian_2011,lu_numerical_2021}.
 
-However, the existence of an LU factorization for a matrix $A$ \emph{without} permutations (that is, $A = LU$) is not guaranteed. A classical result states that for a non-singular matrix, such a factorization exists if and only if all its leading principal minors are non-zero. When the matrix is singular or when leading principal minors vanish, the situation becomes significantly more complex. The standard conditions involving determinants are no longer sufficient to characterize the existence of the factorization.
+However, the existence of an LU factorization for a matrix $A$ \emph{without} permutations (that is, $A = LU$) is not guaranteed. A classical result states that for a non-singular matrix, such a factorization exists if and only if all its leading principal minors are non-zero. When the matrix is rank-deficient or when leading principal minors vanish, the situation becomes significantly more complex. The standard conditions involving determinants are no longer sufficient to characterize the existence of the factorization.
 
-For these singular and rank-deficient cases, we establish necessary and sufficient conditions for the existence of an LU factorization for an arbitrary matrix $A$, without imposing restrictions on its rank or invertibility. Throughout, $A$ is a matrix with entries in an arbitrary field $F$ (for example, $\mathbb{R}$, $\mathbb{C}$, the rationals $\mathbb{Q}$). All results hold over any field, since the constructions rely only on rank, nullity, and Gaussian elimination.
+For these rank-deficient cases, we establish necessary and sufficient conditions for the existence of an LU factorization of an arbitrary matrix $A$, without imposing restrictions on its rank or invertibility. Throughout, $A$ is a matrix with entries in an arbitrary field $F$ (for example, $\mathbb{R}$, $\mathbb{C}$, or $\mathbb{Q}$). All results hold over any field, since the constructions rely only on rank, nullity, and Gaussian elimination.
 
-The conditions are formulated using the \emph{nullity} of the leading principal submatrices relative to the nullity of the corresponding column and row blocks. Specifically, we prove that an LU factorization exists if and only if for all $k$ (this condition is equivalent to~\cite{okunev_necessary_2005}):
+The conditions are formulated using the \emph{nullity} of the leading principal submatrices relative to the nullity of the corresponding column and row blocks. Specifically, we prove that an LU factorization exists if and only if, for all $k$,
 \[
-  \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl({A[1:k,:]}^T)
+  \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl({A[1:k,:]}^T) \,.
 \]
-Note that, in this paper, null is the dimension of the null space of a matrix (see~\Cref{tab:notations}).
+This condition is equivalent to the one obtained by Okunev and Johnson~\cite{okunev_necessary_2005}. Here, $\nl(\cdot)$ denotes the dimension of the null space (the nullity) of a matrix (see~\Cref{tab:notations}).
 
-This paper extends the work of Okunev and Johnson~\cite{okunev_necessary_2005}, who first characterized the existence of an LU factorization by comparing the rank of each leading $k \times k$ principal submatrix with the ranks of its first $k$ columns and first $k$ rows. We recast their equivalent condition in nullity form and give a different constructive proof that rests on a restricted form of pivoting: it uses only those internal row or column moves that preserve triangularity once the permutations are undone. The mechanism is an interpretation of a zero pivot through the current Schur complement, where a zero active column corresponds to a globally dependent column, while a zero active row corresponds to a globally dependent row. This yields a direct "restricted pivoting" interpretation of why the existence condition prevents dead ends. The oblique-projection lemmas in the appendix provide an algebraic explanation of why dependent columns or rows become zero in the active Schur complement.
+This paper extends the work of Okunev and Johnson~\cite{okunev_necessary_2005}, who first characterized the existence of an LU factorization by comparing the rank of each leading $k \times k$ principal submatrix with the ranks of the first $k$ columns and first $k$ rows of $A$. We recast their condition in nullity form and give a different constructive proof that rests on a restricted form of pivoting: it uses only those internal row or column moves that preserve triangularity once the permutations are undone. The mechanism interprets a zero pivot through the current Schur complement: a zero active column corresponds to a globally dependent column, and a zero active row to a globally dependent row. This yields a direct "restricted pivoting" interpretation of why the existence condition prevents dead ends. The oblique-projection lemmas in the appendix provide an algebraic explanation of why dependent columns or rows become zero in the active Schur complement.
 
 We also develop rank-revealing, sparsity, and unit-triangular consequences from that construction. This manuscript makes the rank profile explicit. It constructs row and column permutations \(P_r\) and \(P_c\) for a reordered matrix
 \[
-  B=P_r^{-1}AP_c^{-1}
+  B=P_r^{-1}AP_c^{-1},
 \]
-whose leading \(r \times r\) principal blocks are strongly nonsingular, then forms rectangular rank-revealing factors \(L_B\in F^{n\times r}\) and \(U_B\in F^{r\times n}\).  After undoing the internal permutations, the factors \(L=P_rL_B\) and \(U=U_BP_c\) remain lower and upper triangular. We also state sparsity bounds that connect nonzero structure statements to whether an original row or column is linearly independent of the previous rows or columns.
+whose leading \(r \times r\) principal blocks are strongly non-singular, then forms rectangular rank-revealing factors \(L_B\in F^{n\times r}\) and \(U_B\in F^{r\times n}\).  After undoing the internal permutations, the factors \(L=P_rL_B\) and \(U=U_BP_c\) remain lower and upper triangular. We also state sparsity bounds that connect nonzero structure statements to whether an original row or column is linearly independent of the previous rows or columns.
 
-See also~\cite{dopico_multiple_2006} for a discussion on multiple factorizations of singular matrices. Other perspectives on factorizations and their existence in general algebraic structures or specific contexts can be found in~\cite{nagarajan_products_1999,johnson_inherited_1989,jeffrey_lu_2010,higham_gaussian_2011}.
+See also~\cite{dopico_multiple_2006} for a discussion on multiple factorizations of rank-deficient matrices. Other perspectives on factorizations and their existence in general algebraic structures or specific contexts can be found in~\cite{nagarajan_products_1999,johnson_inherited_1989,jeffrey_lu_2010,higham_gaussian_2011}.
 
 \begin{table}[htbp]
   \centering
@@ -191,17 +191,17 @@ See also~\cite{dopico_multiple_2006} for a discussion on multiple factorizations
     $\nl(A)$     & Dimension of the right null space of matrix $A$ \\
     $A^T$        & Transpose of matrix $A$ \\
     $a_{ij}$     & Entry $(i,j)$ of matrix $A$ \\
-    $A[:,i]$     & Column $i$ of matrix $A$ \\
-    $A[i,:]$     & Row $i$ of matrix $A$ \\
+    $A[:,i]$     & $i$th column of matrix $A$ \\
+    $A[i,:]$     & $i$th row of matrix $A$ \\
     $A[i:j,k:l]$ & Submatrix of $A$ with rows from $i$ to $j$ and columns from $k$ to $l$ \\
     $A[i:j,k:]$  & Submatrix of $A$ with rows from $i$ to $j$ and columns from $k$ to the end \\
-    $A[i,k:]$    & Row $i$ of $A$, columns from $k$ to the end (and similarly $A[k:,j]$ for a column) \\
+    $A[i,k:]$    & $i$th row of $A$, columns from $k$ to the end (and similarly $A[k:,j]$ for a column) \\
     $e_i$        & $i$-th vector of the standard basis \\
     $I_n$        & Identity matrix of size $n$ \\
     \bottomrule
   \end{tabular}
   \vspace{5pt}
-  \caption{\label{tab:notations} Notations used in the paper. We use the colon (slicing) notation standard in numerical linear algebra~\cite{golub_matrix_2013}: a colon denotes an index range, and a trailing colon extends the range to the last index, so $A[i,k:]$ means columns $k, k+1, \ldots, n$ of row $i$.}
+  \caption{\label{tab:notations} Notations used in the paper. We use the colon (slicing) notation standard in numerical linear algebra~\cite{golub_matrix_2013}: a colon denotes an index range, and a trailing colon extends the range to the last index, so $A[i,k:]$ means columns $k, k+1, \ldots, n$ of the $i$th row.}
 \end{table}
 
 \paragraph{Triangular factorizations and causal systems} Before presenting the technical results, we motivate the study of LU factorizations without permutations by considering their interpretation in causal systems and their computational advantages.
@@ -230,7 +230,7 @@ Consider the matrix:
 \[
   A =
   \begin{pmatrix} 0 & 1 \\ 1 & 0
-  \end{pmatrix}
+  \end{pmatrix} .
 \]
 This matrix does not admit an LU factorization. We prove this by contradiction. Suppose $A = LU$. Then the diagonal entry satisfies $a_{11} = l_{11} u_{11} = 0$. This implies that either $l_{11} = 0$ or $u_{11} = 0$.
 \begin{itemize}
@@ -240,11 +240,11 @@ This matrix does not admit an LU factorization. We prove this by contradiction. 
 
 In this special case, we have $A^2 = I$ and $A$ is a permutation matrix. So we note that $A A = I \cdot I$ is the factorization of \Cref{thm:row_permutation} with $P = A$, $L = I$, and $U = I$.
 
-However, a zero pivot does not always preclude factorization. Consider the singular matrix:
+However, a zero pivot does not always preclude factorization. Consider the rank-deficient matrix:
 \[
   A =
   \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & 1 \\ 0 & 1 & 0
-  \end{pmatrix}
+  \end{pmatrix}.
 \]
 Despite the zero principal minors, this matrix \emph{does} have an LU factorization. We can derive it by permuting $A$ into a factorizable form and then reversing the permutations. Apply a cyclic row shift $(1,2,3) \to (2,3,1)$ via $P$ and swap columns 1 and 3 via $Q$:
 \[
@@ -255,7 +255,7 @@ Despite the zero principal minors, this matrix \emph{does} have an LU factorizat
   \begin{pmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0
   \end{pmatrix}
   \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0
-  \end{pmatrix}
+  \end{pmatrix}.
 \]
 We can recover a factorization for $A$ by writing $A = P^{-1} (PAQ) Q^{-1}$:
 \[
@@ -267,7 +267,7 @@ We can recover a factorization for $A$ by writing $A = P^{-1} (PAQ) Q^{-1}$:
   \begin{pmatrix} 0 & 0 \\ 1 & 0 \\ 0 & 1
   \end{pmatrix}
   \begin{pmatrix} 0 & 0 & 1 \\ 0 & 1 & 0
-  \end{pmatrix}
+  \end{pmatrix}.
 \]
 This yields a valid, rank-revealing LU factorization with no pivoting. Another valid LU factorization is:
 \[
@@ -275,7 +275,7 @@ This yields a valid, rank-revealing LU factorization with no pivoting. Another v
   \begin{pmatrix} 0 & 0 \\ 0 & 1 \\ 1 & 0
   \end{pmatrix}
   \begin{pmatrix} 0 & 1 & 0 \\ 0 & 0 & 1
-  \end{pmatrix}
+  \end{pmatrix}.
 \]
 
 We can generalize this result using block matrices. Let $0_n$ denote the $n \times n$ zero matrix. If $B$ is a factorizable matrix such that $B=LU$, we can construct larger factorizable matrices $A$ as follows:
@@ -305,7 +305,7 @@ We can generalize this result using block matrices. Let $0_n$ denote the $n \tim
   \begin{pmatrix}
     0_n & 0_n & X^{-1} \\
     0_n & U   & 0_n
-  \end{pmatrix}
+  \end{pmatrix},
 \]
 for any invertible matrix $X$.
 
@@ -330,7 +330,7 @@ Alternatively, if $C = LU$:
   \begin{pmatrix}
     0_n & X^{-1} B & X^{-1} D \\
     0_n & 0_n      & U
-  \end{pmatrix}
+  \end{pmatrix}.
 \]
 
 These examples demonstrate that the existence of a factorization is linked to the relationship between the ranks (or nullities) of specific sub-blocks. We formalize this observation in \Cref{prop:rank}. We will show that \Cref{prop:rank} below is a necessary and sufficient condition for the existence of an LU factorization.
@@ -339,7 +339,7 @@ These examples demonstrate that the existence of a factorization is linked to th
   Matrix $A$ is square of size $n$. For all $k = 1, \ldots, n$:
   \begin{equation}
     \label{eq:cond1}
-    \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl({A[1:k,:]}^T)
+    \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl({A[1:k,:]}^T) \,.
   \end{equation}
 \end{property}
 
@@ -374,10 +374,10 @@ The main existence results are summarized in \Cref{tab:main}.
     \toprule
     Factorization Type & Equation & Conditions for Existence & Limitations \\
     \midrule
-    Non-singular LU & $A=LU$ & Strongly non-singular (all leading minors $\neq 0$). & Does not apply to singular matrices. \\
+    Non-singular LU & $A=LU$ & Strongly non-singular (all leading minors $\neq 0$). & Does not apply to rank-deficient matrices. \\
     Partial Pivoting & $PA=LU$ & \raggedright Always exists for any square $A$. & \raggedright Permutes rows, altering row-index meaning.\tabularnewline
     Full Pivoting & $PAQ=LU$ & \raggedright Always exists; rank-revealing. & \raggedright Permutes rows and columns, destroying all index structure.\tabularnewline
-    Generalized LU & $A=LU$ & Subject of this work. & \raggedright Handles singular/rank-deficient cases without $P$, $Q$.\tabularnewline
+    Generalized LU & $A=LU$ & Subject of this work. & \raggedright Handles rank-deficient cases without $P$, $Q$.\tabularnewline
     \bottomrule
   \end{tabular}
   \caption{Summary of the main factorization types and their conditions for existence.}\label{tab:main}
@@ -401,7 +401,7 @@ The construction below repeatedly removes a zero pivot by interchanging a zero r
   Let $A$ satisfy \Cref{prop:rank} with column $1$ of $A$ equal to zero, and let $B = A\Pi_j$ interchange columns $1$ and $j$ (with $\Pi_j^2 = I$). For $1 \le k < j$, define the slack
   \[
     s_k =
-    \nl(A[:,1:k]) + \nl({A[1:k,:]}^T) - \nl(A[1:k,1:k]).
+    \nl(A[:,1:k]) + \nl({A[1:k,:]}^T) - \nl(A[1:k,1:k]) \,.
   \]
   Assume that, for every $1 \le k < j$, if
   \[
@@ -477,7 +477,7 @@ We will now prove the main theorem:
 \end{theorem}
 
 \begin{proof}
-  We prove the result by induction on the size of $A$. The result is true for $n=1$.
+  Necessity is proved in \Cref{sec:necessary}. We prove sufficiency by induction on the size of $A$. The result is true for $n=1$.
 
   Assume it is true for size $n-1$.
 
@@ -487,7 +487,7 @@ We will now prove the main theorem:
   \]
   be the Schur complement of $a_{11}$ in $A$. We have the factorization
   \[
-    A = LDU
+    A = LDU,
   \]
   where
   \[
@@ -505,7 +505,7 @@ We will now prove the main theorem:
     \begin{pmatrix}
       a_{11} & A_{12} \\
       0      & I
-    \end{pmatrix}
+    \end{pmatrix}.
   \]
   We show that $A$ satisfies \Cref{prop:rank} if and only if $D$ does. Because $L$ is lower triangular and $U$ is upper triangular, for every $k$ the relevant blocks factor as
   \begin{align*}
@@ -517,9 +517,9 @@ We will now prove the main theorem:
   \begin{align*}
     \nl(A[1:k,1:k])   & = \nl(D[1:k,1:k]),  \\
     \nl(A[:,1:k])     & = \nl(D[:,1:k]),     \\
-    \nl({A[1:k,:]}^T) & = \nl({D[1:k,:]}^T)
+    \nl({A[1:k,:]}^T) & = \nl({D[1:k,:]}^T),
   \end{align*}
-  for every $k$. Hence the three terms of \Cref{prop:rank} coincide for $A$ and for $D$, which proves the claim. Furthermore, $D = \operatorname{diag}(a_{11}^{-1}, S)$ has a nonsingular leading $1 \times 1$ block, so \Cref{prop:rank} for $D$ at index $k$ reduces to \Cref{prop:rank} for $S$ at index $k-1$; thus $D$ satisfies \Cref{prop:rank} if and only if $S$ does. Consequently, $S$ satisfies \Cref{prop:rank} and is of size $n-1$. Moreover $S$ has rank $r-1$ if $r = \rk(A)$. By the induction hypothesis, $S$ has an LU factorization. The result for $A$ follows.
+  for every $k$. Hence the three terms of \Cref{prop:rank} coincide for $A$ and for $D$, which proves the claim. Furthermore, $D = \operatorname{diag}(a_{11}^{-1}, S)$ has a non-singular leading $1 \times 1$ block, so \Cref{prop:rank} for $D$ at index $k$ reduces to \Cref{prop:rank} for $S$ at index $k-1$; thus $D$ satisfies \Cref{prop:rank} if and only if $S$ does. Consequently, $S$ satisfies \Cref{prop:rank} and is of size $n-1$. Moreover $S$ has rank $r-1$ if $r = \rk(A)$. By the induction hypothesis, $S$ has an LU factorization. The result for $A$ follows.
 
   Assume now $a_{11} = 0$. Evaluating \Cref{prop:rank} at $k = 1$ and using $\nl(A[1:1,1:1]) = 1$,
   \begin{equation}\label{eq:deadlock}
@@ -531,18 +531,17 @@ We will now prove the main theorem:
 
   Then row $1$ of $A$ is zero. We prove this by contradiction. Assume it is nonzero, then $i' = 1$, hence $j \le 1$ and $j = 1$, so column $1$ is nonzero. We have a nonzero row and a nonzero column while $a_{11} = 0$. This contradicts \cref{eq:deadlock}.
 
-  Let $i$ now be the smallest index with $A[i,j] \neq 0$. We bring $A[i,j]$ to the $(1,1)$ position by two interchanges, each of a zero line.
+  Let $i$ now be the smallest index with $A[i,j] \neq 0$. We bring $A[i,j]$ to the $(1,1)$ position by two interchanges, each involving a zero row or column.
   \begin{itemize}
     \item \emph{Column.} If $j > 1$, set $B = A \Pi_j$, interchanging the zero column $1$ with column $j$; by \Cref{lem:zero-line-both}, $B$ satisfies \Cref{prop:rank}. If $j = 1$, set $B = A$. Either way column $1$ of $B$ is nonzero and row $1$ of $B$ is zero, so $b_{11} = 0$ and $i \ge 2$.
     \item \emph{Row.} Set $C = \Pi_i B$, interchanging the zero row $1$ with row $i$. Since $i$ is the smallest index with $B[i,1] \neq 0$, column $1$ of $B[1:k,1:k]$ vanishes for every $k < i$, so the truncated row $B[i,1:k]$ does not lie in the span of the rows of $B[1:k,1:k]$; by the row form of \Cref{lem:zero-line-indep}, $C$ satisfies \Cref{prop:rank}.
   \end{itemize}
-  Now $c_{11} = A[i,j] \neq 0$, so by the case already treated $C$ has an LU factorization $C = LU$. The displaced lines of $C$ are zero: row $i$ of $C$ is the old row $1$ of $A$, so row $i$ of $L$ is zero and $\Pi_i L$ is lower triangular; and if $j > 1$, column $j$ of $C$ is the old column $1$ of $A$, so column $j$ of $U$ is zero and $U \Pi_j$ is upper triangular. Since $C = \Pi_i A \Pi_j$,
+  Now $c_{11} = A[i,j] \neq 0$, so by the case already treated $C$ has an LU factorization $C = LU$. The displaced row and column of $C$ are zero: row $i$ of $C$ is the old row $1$ of $A$, so we can choose row $i$ of $L$ to be $0$, and then $\Pi_i L$ is lower triangular. If $j > 1$, column $j$ of $C$ is the old column $1$ of $A$, so we can choose column $j$ of $U$ to be $0$, and then $U \Pi_j$ is upper triangular. Since $C = \Pi_i A \Pi_j$,
   \[
     A = \Pi_i\, C\, \Pi_j = (\Pi_i L)(U \Pi_j)
   \]
   is an LU factorization of $A$.
 
-  As in the proof of \Cref{thm:row_column_permutation}, each step reduces the rank of the active matrix by one and the recursion terminates at the zero matrix, so the process performs exactly $r = \rk(A)$ steps. Hence the LU factorization is rank revealing.
 \end{proof}
 
 We now prove a stronger theorem. Please compare this result with \Cref{thm:row_column_permutation}. The sparsity statements below use the colon (slicing) notation of \Cref{tab:notations}~\cite{golub_matrix_2013}. Recall in particular that a trailing colon denotes a range extending to the last index, so that, for example, $L[i_0, i+1:]$ is the part of row $i_0$ from column $i+1$ onward.
@@ -560,12 +559,12 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
     \quad \text{and} \quad
     U_B =
     \begin{pmatrix} U_r & L_r^{-1} B[1:r, r+1:n]
-    \end{pmatrix}
+    \end{pmatrix}.
   \]
   Then $B = L_B U_B$. Furthermore, $A$ admits a rank-revealing factorization
-  \[ A = L U \]
+  \[ A = L U, \]
   where $L = P_r L_B$ is lower triangular and $U = U_B P_c$ is upper triangular. We treat $L$ and $U$ as square $n \times n$ factors, obtained by appending $n - r$ zero columns to $L_B$ and $n - r$ zero rows to $U_B$. Since the factorization is rank revealing, only the first $r$ columns of $L$ and the first $r$ rows of $U$ are populated, so
-  \[ L[:,\, r+1:] = 0, \qquad U[r+1:,\, :] = 0. \]
+  \[ L[:,\, r+1:] = 0, \qquad U[r+1:,\, :] = 0 \,. \]
 
   The remaining entries obey the following sparsity pattern for $L$. Let $i_0$ be the row index in $A$ corresponding to the logical row index $i$ in $B$ (i.e., $e_{i_0} = P_r e_i$). Then:
   \begin{itemize}
@@ -579,10 +578,12 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
   \end{itemize}
 \end{theorem}
 
-\begin{figure}\label{fig:sparsity}
+The sparsity pattern of the $L$ factor in \Cref{thm:main2} is illustrated in \Cref{fig:sparsity}. The sparsity pattern of the $U$ factor is symmetric to that of $L$.
+
+\begin{figure}
   \centering
   \input{sparsity_figure.tex}
-  \caption{Figure illustrating the sparsity pattern of the $L$ factor. Case A corresponds to independent rows, $i \le r$ and $i_0 \ge i$, with $L[i_0, i+1:] = 0$. Case B represents dependent rows, $i > r$ and $i_0 \le r$. Then $L[i_0, i_0:] = 0$. Case C represents $i > r$ and $i_0 > r$ (which from the proof implies $i_0 = i$) for dependent rows.}
+  \caption{\label{fig:sparsity} Figure illustrating the sparsity pattern of the $L$ factor. Case A corresponds to independent rows, $i \le r$ and $i_0 \ge i$, with $L[i_0, i+1:] = 0$. Case B represents dependent rows, $i > r$ and $i_0 \le r$. Then $L[i_0, i_0:] = 0$. Case C represents $i > r$ and $i_0 > r$ (which from the proof implies $i_0 = i$) for dependent rows.}
 \end{figure}
 
 \begin{proof}
@@ -614,7 +615,7 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
     \begin{pmatrix}
       a_{11} & A_{12} \\
       0      & I
-    \end{pmatrix}
+    \end{pmatrix}.
   \]
   We apply the induction hypothesis to $S$. We can define $P_r$ and $P_c$ in terms of the permutations for $S$:
   \[ P_r =
@@ -626,7 +627,7 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
     \begin{pmatrix}
       1 & 0       \\
       0 & P_{c,S}
-    \end{pmatrix}
+    \end{pmatrix}.
   \]
   In this case the first row and first column are the first selected independent row and column. The induction hypothesis gives the stated sparsity pattern for the Schur complement on indices $2,\ldots,n$; adjoining the first pivot only shifts those logical and original indices by one. Since the added first row of the lower factor and first column of the upper factor are triangular, the sparsity claims are preserved.
 
@@ -650,6 +651,7 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
     \qquad
     A = LU.
   \]
+  As in the proof of \Cref{thm:row_column_permutation}, each nonzero-pivot step passes to a Schur complement of rank one less, and the recursion stops exactly when the active matrix is zero. Thus the construction performs exactly $r = \rk(A)$ pivot steps, so the factorization is rank revealing.
 
   The same argument used above for interchanging an identically zero row or column also explains the extra sparsity. Row $i$ of $C$ is the old row $1$ of $A$, hence is zero; because $U_C$ has full row rank on its first $r$ rows, row $i$ of $L_C$ is zero. Thus $\Pi_i L_C$ remains lower triangular, and row $1$ of $L$ is zero. If $j>1$, column $j$ of $C$ is the old column $1$ of $A$, hence is zero; because $L_C$ has full column rank on its first $r$ columns, column $j$ of $U_C$ is zero. Thus $U_C\Pi_j$ remains upper triangular, and column $1$ of $U$ is zero.
 
@@ -657,7 +659,7 @@ We now prove a stronger theorem. Please compare this result with \Cref{thm:row_c
 
   For dependent rows and columns, the zero active row or column is either already beyond the rank-revealing block, in which case it is not moved and $i=i_0$ or $j=j_0$, or it originally occurs at an index at most $r$ and is displaced beyond the first $r$ logical positions. In the latter case its row of $L$ or column of $U$ is zero from the original index onward, giving $L[i_0,i_0:]=0$ or $U[j_0:,j_0]=0$. Since the factorization is rank revealing, the trailing populated parts vanish in all dependent cases:
   \[
-    L[i_0,r+1:] = 0, \qquad U[r+1:,j_0] = 0.
+    L[i_0,r+1:] = 0, \qquad U[r+1:,j_0] = 0 \,.
   \]
 \end{proof}
 
@@ -667,7 +669,7 @@ In \Cref{sec:python_restricted_pivoting}, we provide a Python implementation of 
 
 Please compare against the algorithm with full pivoting in \Cref{sec:python_full_pivoting}, which returns P, Q, L, and U such that \verb|P @ A @ Q = L @ U|. Full pivoting selects the largest pivot for maximum stability. Our algorithm selects the pivot to ensure that the factors L and U remain triangular. We note that magnitude-based pivot selection and the notion of backward stability are specific to ordered or normed fields such as $\mathbb{R}$ and $\mathbb{C}$; over a general field $F$ the existence results still hold, and any nonzero pivot may be selected. The implementations below operate over $\mathbb{R}$ using floating-point arithmetic, but the underlying algorithms only require the field operations of $F$.
 
-\Cref{lst:lu_restricted_pivoting} is vectorized for performance. The internal permutations are done implicitly. For example, line~\ref{copy_leftward} moves column $j$ to column $k$. Line~\ref{zero_column} zeros out column $j$ of $A$ in exact arithmetic.
+\Cref{lst:lu_restricted_pivoting} is vectorized for performance. The internal permutations are done implicitly. For example, line~\ref{copy_leftward} moves the $j$th column to the $k$th column. Line~\ref{zero_column} zeros out the $j$th column of $A$ in exact arithmetic.
 
 This algorithm is not backward stable as we do not control the size of the pivot. Finding a backward stable algorithm will be the topic of future work.
 
@@ -675,9 +677,9 @@ The pseudo-code in~\cite{okunev_necessary_2005} (Algorithm 1, p.~12) does not co
 
 \section{Unit triangular factors}\label{sec:unit_triangular}
 
-We now discuss results where we require one of the factors to be unit triangular. Classical results consider the factorization with partial pivoting $PA = LU$ (\Cref{thm:row_permutation}). The row permutation $P$ allows us to obtain a unit lower triangular factor $L$. When a zero pivot is encountered, we perform a row pivoting to get a non zero pivot. If the entire column is equal to zero, we set the diagonal entry of $L$ to 1, the entries below to 0, and continue the factorization with the next column.
+We now discuss results where we require one of the factors to be unit triangular. Classical results consider the factorization with partial pivoting $PA = LU$ (\Cref{thm:row_permutation}). The row permutation $P$ allows us to obtain a unit lower triangular factor $L$. When a zero pivot is encountered, we perform a row pivoting to get a nonzero pivot. If the entire column is equal to zero, we set the diagonal entry of $L$ to 1, the entries below to 0, and continue the factorization with the next column.
 
-We are interested in conditions for the existence of $A=LU$ where $L$ is unit lower triangular. As before, this requires internal permutations, but this time they can only be applied to the columns. The triangular unit structure of $L$ prevents row permutations. The condition on $A$ is more stringent than in the general LU case and we require
+We are interested in conditions for the existence of $A=LU$ where $L$ is unit lower triangular. As before, this requires internal permutations, but here they may be applied only to the columns: a column permutation acts on the right and is absorbed into $U$, leaving $L$ unit lower triangular, whereas a row permutation would act on the left, $PA=LU$, and $P^{-1}L$ is no longer unit lower triangular. The unit lower triangular structure of $L$ thus forbids row permutations while permitting internal column permutations. The condition on $A$ is more stringent than in the general LU case and we require
 \[
   \nl(A[1:k,1:k]) = \nl(A[:,1:k])
 \]
@@ -689,7 +691,7 @@ We note that, for a general matrix $A$, column pivoting in general is not suffic
   \begin{pmatrix}
     0 & 0 \\
     1 & 1
-  \end{pmatrix}
+  \end{pmatrix}.
 \]
 No column pivoting works. However, row pivoting is sufficient to get a unit lower triangular factor.
 
@@ -704,7 +706,7 @@ No column pivoting works. However, row pivoting is sufficient to get a unit lowe
     General LU            & $\nl(A_{11}) \le \nl(A_{\mathrm{col}}) + \nl(A_{\mathrm{row}}^{T})$ & Least stringent (allows mixed dependencies) \\
     Unit lower $L$        & $\nl(A_{11}) = \nl(A_{\mathrm{col}})$                                & Moderate (requires column dependencies) \\
     Unit upper $U$        & $\nl(A_{11}) = \nl(A_{\mathrm{row}}^{T})$                            & Moderate (requires row dependencies) \\
-    Unit $L$ and unit $U$ & $A$ strongly non-singular                                            & Most stringent (impossible for singular $A$) \\
+    Unit $L$ and unit $U$ & $A$ strongly non-singular                                            & Most stringent (impossible for rank-deficient $A$) \\
     \bottomrule
   \end{tabular}
   \vspace{5pt}
@@ -717,21 +719,21 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
   Let $A$ be a matrix of size $n$ and rank $r \le n$. $A$ has an LU factorization $A = LU$ where $L$ is square unit lower triangular if and only if for all $k = 1, \ldots, n$:
   \begin{equation}
     \label{eq:cond_unit_lower}
-    \nl(A[1:k,1:k]) = \nl(A[:,1:k])
+    \nl(A[1:k,1:k]) = \nl(A[:,1:k]) \,.
   \end{equation}
 
   \noindent\textbf{Construction:} If $A$ satisfies \cref{eq:cond_unit_lower}, there exists a column permutation $P_c$ such that the matrix $B = A P_c^{-1}$ admits a factorization $B = L_B U_B$ where $L_B$ is unit lower triangular. Consequently,
   \[ A = L_B (U_B P_c) = L U \]
   is a valid factorization of $A$ with $L=L_B$ unit lower triangular and $U$ upper triangular.
 
-  \noindent\textbf{Structure:} For the matrix $B$ constructed above, row $j$ is a linear combination of the previous rows if and only if column $j$ is a linear combination of the previous columns.
+  \noindent\textbf{Structure:} For the matrix $B$ constructed above, the $j$th row is a linear combination of the previous rows if and only if the $j$th column is a linear combination of the previous columns.
 
   \noindent\textbf{Sparsity:} Let $j_0$ be the column index in $A$ corresponding to the logical column index $j$ in $B$ (i.e., $e_{j_0} = P_c^T e_j$). The factors exhibit the following sparsity patterns:
   \begin{itemize}
-    \item \textbf{Dependent Case:} If row $j$ of $B$ is a linear combination of the previous rows, then $j_0 \le j$. Furthermore:
-      \[ L[:,j] = e_j, \quad U[j,:] = 0, \quad \text{and} \quad U[j_0:, j_0] = 0 \]
-    \item \textbf{Independent Case:} If row $j$ of $B$ is linearly independent of the previous rows, then $j_0 \ge j$. Furthermore:
-      \[ U[j+1:, j_0] = 0 \]
+    \item \textbf{Dependent Case:} If the $j$th row of $B$ is a linear combination of the previous rows, then $j_0 \le j$. Furthermore:
+      \[ L[:,j] = e_j, \quad U[j,:] = 0, \quad \text{and} \quad U[j_0:, j_0] = 0 \,. \]
+    \item \textbf{Independent Case:} If the $j$th row of $B$ is linearly independent of the previous rows, then $j_0 \ge j$. Furthermore:
+      \[ U[j+1:, j_0] = 0 \,. \]
   \end{itemize}
 \end{theorem}
 
@@ -746,7 +748,7 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
   \textbf{Condition is necessary.} \quad Assume that $A$ admits a factorization $A = LU$, where $L$ is unit lower triangular and $U$ is upper triangular. For any $k \in \{1, \dots, n\}$, since $U$ is upper triangular,
   \begin{align*}
     A[:, 1:k]   & = L\, U[:, 1:k] = L[:, 1:k]\, U[1:k, 1:k], \\
-    A[1:k, 1:k] & = L[1:k, 1:k]\, U[1:k, 1:k].
+    A[1:k, 1:k] & = L[1:k, 1:k]\, U[1:k, 1:k] \,.
   \end{align*}
   Because $L$ is unit lower triangular, $L[1:k, 1:k]$ is invertible (its determinant is $1$), and $L[:, 1:k]$ has full column rank (its top block is $L[1:k, 1:k]$). Multiplying $U[1:k, 1:k]$ on the left by either matrix therefore leaves its null space unchanged: if $L[:, 1:k]$ has full column rank, then $L[:, 1:k] x = 0$ forces $x = 0$, so $A[:, 1:k] x = 0$ if and only if $U[1:k, 1:k] x = 0$, and likewise for the invertible $L[1:k, 1:k]$. Hence
   \[
@@ -760,11 +762,11 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
 
   Assume $a_{11} = 0$. From \cref{eq:cond_unit_lower}, we have $A[:,1] = 0$.
 
-  Case 1: If row 1 of $A$ is non-zero, we can use the same steps as in the proof as \Cref{thm:main2} with a column permutation to prove the result by induction. In addition, this shows that if $e_{j_0} = P_c^T e_j$ and if row $j$ of $B$ is linearly independent of the previous rows then $j_0 \ge j$ and $U[j+1:,j_0] = 0$.
+  Case 1: If row $1$ of $A$ is non-zero, we can use the same steps as in the proof as \Cref{thm:main2} with a column permutation to prove the result by induction. In addition, this shows that if $e_{j_0} = P_c^T e_j$ and if the $j$th row of $B$ is linearly independent of the previous rows then $j_0 \ge j$ and $U[j+1:,j_0] = 0$.
 
   Case 2: If row 1 of $A$ is zero, we cannot use the same proof as \Cref{thm:main2} because we can no longer permute rows. However, since row 1 of $A$ is zero, we can define:
   \[
-    A = IDU
+    A = IDU,
   \]
   with
   \[
@@ -781,7 +783,7 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
     \begin{pmatrix}
       0 & 0 \\
       0 & I
-    \end{pmatrix}
+    \end{pmatrix},
   \]
   and $S=A_{22}$. Since row $1$ and column $1$ of $A$ are zero, for $\ell=1,\ldots,n-1$,
   \[
@@ -820,9 +822,9 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
       0 & U_{B,S}
     \end{pmatrix}.
   \]
-  Then $B = A P_c^{-1}=L_B U_B$, and
+  Then $B = A P_c^{-1}=L_B U_B$,
   \[
-    A = L_B(U_B P_c), \qquad
+    A = L_B(U_B P_c), \quad \text{ and } \quad
     U_B P_c =
     \begin{pmatrix}
       0 & 0   \\
@@ -831,13 +833,13 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
   \]
   is upper triangular. We set $L=L_B$ and $U=U_B P_c$.
 
-  The structure and sparsity statements in this second case are the induction statements for $S$, shifted by one index, together with the new zero first row and column. Row $1$ and column $1$ of $B$ are both zero, so they are both dependent, $j_0=1$, and $L[:,1]=e_1$, $U[1,:]=0$, $U[1:,1]=0$. For $j>1$, write $\ell=j-1$ and $\ell_0=j_0-1$. Dependence of row $j$ of $B$ on the previous rows is equivalent to dependence of row $\ell$ of $B_S$ on the previous rows. The same statement holds for columns. Hence the induction hypothesis for $S$ gives the equivalence between dependent rows and dependent columns for $B$. It also gives, in the dependent case, $\ell_0\le \ell$, $L_S[:,\ell]=e_\ell$, $U_S[\ell,:]=0$, and $U_S[\ell_0:,\ell_0]=0$. Shifting the indices yields $j_0\le j$, $L[:,j]=e_j$, $U[j,:]=0$, and $U[j_0:,j_0]=0$. In the independent case, the induction hypothesis gives $\ell_0\ge\ell$ and $U_S[\ell+1:,\ell_0]=0$, which shifts to $j_0\ge j$ and $U[j+1:,j_0]=0$.
+  The structure and sparsity statements in this second case are the induction statements for $S$, shifted by one index, together with the new zero first row and column. Row $1$ and column $1$ of $B$ are both zero, so they are both dependent, $j_0=1$, and $L[:,1]=e_1$, $U[1,:]=0$, $U[1:,1]=0$. For $j>1$, write $\ell=j-1$ and $\ell_0=j_0-1$. Dependence of the $j$th row of $B$ on the previous rows is equivalent to dependence of the $\ell$th row of $B_S$ on the previous rows. The same statement holds for columns. Hence the induction hypothesis for $S$ gives the equivalence between dependent rows and dependent columns for $B$. It also gives, in the dependent case, $\ell_0\le \ell$, $L_S[:,\ell]=e_\ell$, $U_S[\ell,:]=0$, and $U_S[\ell_0:,\ell_0]=0$. Shifting the indices yields $j_0\le j$, $L[:,j]=e_j$, $U[j,:]=0$, and $U[j_0:,j_0]=0$. In the independent case, the induction hypothesis gives $\ell_0\ge\ell$ and $U_S[\ell+1:,\ell_0]=0$, which shifts to $j_0\ge j$ and $U[j+1:,j_0]=0$.
 
   Note that the step above with $D$ is not a valid step in \Cref{thm:main2}. Indeed:
   \begin{align*}
-    \nl(D[1:k,1:k])   & = \nl(A[1:k,1:k]) - 1 \\
-    \nl(D[:,1:k])     & = \nl(A[:,1:k]) - 1 \\
-    \nl({D[1:k,:]}^T) & = \nl({A[1:k,:]}^T) - 1
+    \nl(D[1:k,1:k])   & = \nl(A[1:k,1:k]) - 1, \\
+    \nl(D[:,1:k])     & = \nl(A[:,1:k]) - 1, \\
+    \nl({D[1:k,:]}^T) & = \nl({A[1:k,:]}^T) - 1 \,.
   \end{align*}
 \end{proof}
 
@@ -847,21 +849,21 @@ We now state the corresponding result where $U$ is unit upper triangular. Please
   Let $A$ be a matrix of size $n$ and rank $r \le n$. $A$ has an LU factorization $A = LU$ where $U$ is unit upper triangular if and only if for all $k = 1, \ldots, n$:
   \begin{equation}
     \label{eq:cond_unit_upper}
-    \nl(A[1:k,1:k]) = \nl({A[1:k,:]}^T)
+    \nl(A[1:k,1:k]) = \nl({A[1:k,:]}^T) \,.
   \end{equation}
 
   \noindent\textbf{Construction:} If $A$ satisfies \cref{eq:cond_unit_upper}, there exists a row permutation $P_r$ such that the matrix $B = P_r^{-1} A$ admits a factorization $B = L_B U_B$ where $U_B$ is unit upper triangular. Consequently,
   \[ A = (P_r L_B) U_B = L U \]
   is a valid factorization of $A$ with $U=U_B$ unit upper triangular and $L$ lower triangular.
 
-  \noindent\textbf{Structure:} For the matrix $B$ constructed above, column $i$ is a linear combination of the previous columns if and only if row $i$ is a linear combination of the previous rows.
+  \noindent\textbf{Structure:} For the matrix $B$ constructed above, the $i$th column is a linear combination of the previous columns if and only if the $i$th row is a linear combination of the previous rows.
 
   \noindent\textbf{Sparsity:} Let $i_0$ be the row index in $A$ corresponding to the logical row index $i$ in $B$ (i.e., $e_{i_0} = P_r e_i$). The factors exhibit the following sparsity patterns:
   \begin{itemize}
-    \item \textbf{Dependent Case:} If column $i$ of $B$ is a linear combination of the previous columns, then $i_0 \le i$. Furthermore:
-      \[ U[i,:] = e_i, \quad L[:,i] = 0, \quad \text{and} \quad L[i_0, i_0:] = 0 \]
-    \item \textbf{Independent Case:} If column $i$ of $B$ is linearly independent of the previous columns, then $i_0 \ge i$. Furthermore:
-      \[ L[i_0, i+1:] = 0 \]
+    \item \textbf{Dependent Case:} If the $i$th column of $B$ is a linear combination of the previous columns, then $i_0 \le i$. Furthermore:
+      \[ U[i,:] = e_i, \quad L[:,i] = 0, \quad \text{and} \quad L[i_0, i_0:] = 0 \,. \]
+    \item \textbf{Independent Case:} If the $i$th column of $B$ is linearly independent of the previous columns, then $i_0 \ge i$. Furthermore:
+      \[ L[i_0, i+1:] = 0 \,. \]
   \end{itemize}
 \end{corollary}
 
@@ -877,9 +879,9 @@ In \Cref{sec:python_unit_lower}, we provide a Python implementation of the algor
 
 In this paper, we have provided an analysis of the necessary and sufficient conditions for the existence of an LU factorization for arbitrary square matrices, without the use of pivoting. We established that the existence of such a factorization is determined by a specific inequality relating the nullity of the leading principal submatrices to the nullity of the corresponding leading column and row blocks. This condition generalizes the classical requirement for non-singular matrices (non-vanishing leading principal minors) to the general rank-deficient case.
 
-Our approach utilizes a constructive proof based on induction. This method not only simplifies the theoretical derivation but also provides explicit insight into how singular blocks can be handled through internal permutations that preserve the overall triangular structure of the factors.
+Our approach utilizes a constructive proof based on induction. This method not only simplifies the theoretical derivation but also provides explicit insight into how rank-deficient blocks can be handled through internal permutations that preserve the overall triangular structure of the factors.
 
-Furthermore, we defined and characterized rank-revealing LU factorizations without global pivoting. We derived tight sparsity bounds for the resulting factors $L$ and $U$, linking the physical indices of the non-zero entries to the logical rank profile of the matrix. Finally, we examined the constrained cases where one factor is required to be unit triangular, identifying the specific rank conditions required and their duality with respect to row and column permutations. These results offer a unified framework for understanding matrix factorizations in the presence of singularity and rank deficiency.
+Furthermore, we defined and characterized rank-revealing LU factorizations without global pivoting. We derived tight sparsity bounds for the resulting factors $L$ and $U$, linking the physical indices of the non-zero entries to the logical rank profile of the matrix. Finally, we examined the constrained cases where one factor is required to be unit triangular, identifying the specific rank conditions required and their duality with respect to row and column permutations. These results offer a unified framework for understanding matrix factorizations in the presence of rank deficiency.
 
 \appendix
 
@@ -888,7 +890,7 @@ Furthermore, we defined and characterized rank-revealing LU factorizations witho
 We recall standard existence results involving permutations. These theorems correspond to Gaussian elimination with partial and full pivoting.
 
 We work over the arbitrary field $F$. Since $F$ need not carry an inner product, we use $Y^T$ purely as the transpose, and for a matrix $Y \in F^{n \by k}$ we write
-\[ Y^\perp = \ker(Y^T) = \{\, v \in F^n : Y^T v = 0 \,\}. \]
+\[ Y^\perp = \ker(Y^T) = \{\, v \in F^n \,:\, Y^T v = 0 \,\}. \]
 This is a purely algebraic construction (the annihilator of the row space under the standard bilinear pairing $x^T y = \sum_i x_i y_i$) and is defined over any field; over $\mathbb{R}$ it coincides with the usual orthogonal complement.
 
 \begin{theorem}[Partial Pivoting]\label{thm:row_permutation}
@@ -1000,11 +1002,13 @@ This is a purely algebraic construction (the annihilator of the row space under 
 \end{corollary}
 
 \begin{proof}
-  Apply \Cref{thm:row_permutation} to $A^T$.
+  Apply \Cref{thm:row_permutation} to $A^T$ and take the transpose of the resulting factorization.
 \end{proof}
 
+In the definition below, a trapezoidal matrix is a matrix that is either lower or upper triangular, but not necessarily square. Precisely, a matrix $A = (a_{ij})$ of size $m \by n$ is \emph{lower trapezoidal} if $a_{ij} = 0$ whenever $i < j$, and \emph{upper trapezoidal} if $a_{ij} = 0$ whenever $i > j$. When $m = n$ these reduce to the usual lower and upper triangular matrices.
+
 \begin{definition}\label{def:rank_revealing}
-  A matrix $A$ of size $m \by n$ is said to have a \emph{rank revealing LU factorization} if it can be written as $A = LU$, where $L$ is a lower triangular matrix of size $m \by r$, $U$ is an upper triangular matrix of size $r \by n$, and $r = \rk(A)$.
+  A matrix $A$ of size $m \by n$ is said to have a \emph{rank revealing LU factorization} if it can be written as $A = LU$, where $L$ is a lower trapezoidal matrix of size $m \by r$, $U$ is an upper trapezoidal matrix of size $r \by n$, and $r = \rk(A)$.
 \end{definition}
 
 If we allow both row and column permutations, we can always obtain such a factorization.
@@ -1092,7 +1096,7 @@ We now consider LU factorizations without permutations. The fundamental result s
 \begin{proposition}\label{prop:sufficient}
   Let $A$ be a non-singular matrix of size $n$. $A$ has an LU factorization if and only if all its leading principal submatrices are non-singular:
   \[
-    \rk(A[1:k,1:k]) = k, \quad k = 1, \ldots, n
+    \rk(A[1:k,1:k]) = k, \quad k = 1, \ldots, n.
   \]
 \end{proposition}
 
@@ -1105,7 +1109,7 @@ We now consider LU factorizations without permutations. The fundamental result s
 
   Assume it is true for $n-1$. By assumption, $a_{11} \neq 0$. We then have the factorization:
   \[
-    A = LDU
+    A = LDU,
   \]
   where
   \[
@@ -1123,7 +1127,7 @@ We now consider LU factorizations without permutations. The fundamental result s
     \begin{pmatrix}
       a_{11} & A_{12} \\
       0      & I
-    \end{pmatrix}
+    \end{pmatrix},
   \]
   and $S = A_{22} - A_{21} a_{11}^{-1} A_{12}$ is the Schur complement. $L$ and $U$ are full rank. So $D$ satisfies the condition of the theorem. Consequently, $S$ also satisfies the condition of the theorem and is of size $n-1$. By the induction hypothesis, $S$ has an LU factorization. Therefore $A$ also has an LU factorization.
 \end{proof}
@@ -1135,7 +1139,7 @@ We recall rank theorems that will be useful in the proof of \Cref{thm:main}.
 \begin{theorem}\label{thm:rank-nullity}
   The rank-nullity theorem states that for any matrix $A$ of size $m \times n$:
   \[
-    \rk(A) + \nl(A) = n
+    \rk(A) + \nl(A) = n \,.
   \]
 \end{theorem}
 
@@ -1145,7 +1149,7 @@ We now state Sylvester's inequality for the rank of a product of matrices.
   Consider $A = BC$. Then:
   \[
     \rk(A) \le \min(\rk(B), \rk(C)), \quad
-    \rk(B) + \rk(C) - k \le \rk(A)
+    \rk(B) + \rk(C) - k \le \rk(A),
   \]
   where $k$ is the number of columns of $B$ and rows of $C$.
 \end{lemma}
@@ -1153,15 +1157,15 @@ We now state Sylvester's inequality for the rank of a product of matrices.
 \begin{corollary}\label{cor:nullity}
   If $A$, $B$, and $C$ are square matrices then:
   \[
-    \nl(A) \le \nl(B) + \nl(C)
+    \nl(A) \le \nl(B) + \nl(C) \,.
   \]
 \end{corollary}
 
 \begin{proof}
   Assume $A = BC$ where $A$, $B$, $C$ are $n \times n$ matrices. From \Cref{lem:rank}:
-  \[ \rk(A) \ge \rk(B) + \rk(C) - n \]
+  \[ \rk(A) \ge \rk(B) + \rk(C) - n \,. \]
   Using \Cref{thm:rank-nullity}, $\rk(M) = n - \nl(M)$:
-  \[ n - \nl(A) \ge (n - \nl(B)) + (n - \nl(C)) - n \]
+  \[ n - \nl(A) \ge (n - \nl(B)) + (n - \nl(C)) - n \,. \]
   Simplifying: $\nl(A) \le \nl(B) + \nl(C)$.
 \end{proof}
 
@@ -1170,22 +1174,22 @@ We now state Sylvester's inequality for the rank of a product of matrices.
 We show that \Cref{prop:rank} is a necessary condition for the existence of an LU factorization.
 
 Assume that $A$, a square matrix of size $n$, has an LU factorization:
-\[ A = LU \]
+\[ A = LU. \]
 Then:
 \begin{align*}
   A[1:k,:]   & = L[1:k,1:k] U[1:k,:], \\
   A[:,1:k]   & = L[:,1:k] U[1:k,1:k], \\
-  A[1:k,1:k] & = L[1:k,1:k] U[1:k,1:k]
+  A[1:k,1:k] & = L[1:k,1:k] U[1:k,1:k] \,.
 \end{align*}
 Using \Cref{lem:rank} and \Cref{cor:nullity}, we have:
 \begin{align*}
   \rk(A[1:k,:])   & \le \rk(L[1:k,1:k]), \\
   \rk(A[:,1:k])   & \le \rk(U[1:k,1:k]), \\
-  \nl(A[1:k,1:k]) & \le \nl(L[1:k,1:k]) + \nl(U[1:k,1:k])
+  \nl(A[1:k,1:k]) & \le \nl(L[1:k,1:k]) + \nl(U[1:k,1:k]) \,.
 \end{align*}
 Using \Cref{thm:rank-nullity}, we get:
 \[
-  \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl({A[1:k,:]}^T)
+  \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl({A[1:k,:]}^T) \,.
 \]
 So \Cref{prop:rank} is a necessary condition for the existence of an LU factorization.
 
@@ -1195,17 +1199,17 @@ We recall a few standard results, included to keep the paper self-contained, tha
 
 \begin{lemma}\label{lem:oblique_projection}
   Denote by $X$ and $Y$ two matrices of size $n \by k$. Assume that $X$ is full rank and that $Y^T X$ is non-singular. Define:
-  \[ P = X {(Y^T X)}^{-1} Y^T \]
+  \[ P = X {(Y^T X)}^{-1} Y^T. \]
   Then $P$ is the oblique projection onto the range of $X$ along $Y^\perp = \ker(Y^T)$. In particular, $\range(X) \oplus \ker(Y^T) = F^n$.
 \end{lemma}
 
 \begin{proof}
   We have:
-  \[ P X = X {(Y^T X)}^{-1} Y^T X = X \]
+  \[ P X = X {(Y^T X)}^{-1} Y^T X = X. \]
   So the range of $P$ contains the range of $X$. Since $\rk(P) \le k$ and $\rk(X)=k$, the range of $P$ is exactly the range of $X$.
 
   Consider $v$ in $Y^\perp = \ker(Y^T)$ (i.e., $Y^T v = 0$). We have:
-  \[ P v = X {(Y^T X)}^{-1} Y^T v = 0 \]
+  \[ P v = X {(Y^T X)}^{-1} Y^T v = 0 \,. \]
   Thus, the null space of $P$ contains $\ker(Y^T)$. By the rank-nullity theorem, the dimensions match, so the null space of $P$ is exactly $\ker(Y^T)$.
 \end{proof}
 
@@ -1213,12 +1217,12 @@ We recall a few standard results, included to keep the paper self-contained, tha
   Denote by $X = [x_1, \ldots, x_k]$ a rank $k$ matrix. Consider the oblique projection $P_o(X)$ onto
   \[ S = \spn\{ x_1,\dots,x_k \} \] % chktex 21
   along the subspace of vectors with the first $k$ entries equal to zero. Assume that $X[1:k,:]$ is non-singular. Then:
-  \[ P_o(X) = X {(X[1:k,:])}^{-1} Y^T \]
+  \[ P_o(X) = X {(X[1:k,:])}^{-1} Y^T, \]
   where
   \[ Y =
     \begin{pmatrix}
       I_k \\ 0
-  \end{pmatrix} \]
+  \end{pmatrix}. \]
 \end{lemma}
 
 \begin{proof}
@@ -1226,7 +1230,7 @@ We recall a few standard results, included to keep the paper self-contained, tha
   \[ Y =
     \begin{pmatrix}
       I_k \\ 0
-  \end{pmatrix} \]
+  \end{pmatrix}. \]
   The range of $Y$ is the span of the first $k$ standard basis vectors. The subspace $\ker(Y^T)$ is exactly the set of vectors with the first $k$ entries equal to zero.
 \end{proof}
 
@@ -1234,10 +1238,10 @@ Denote by $Q_o(X) = I - P_o(X)$ the oblique projection onto the subspace of vect
 
 Consider the state of the matrix after $k$ steps of the LU factorization algorithm (the first $k$ columns have been eliminated). The Schur complement can be interpreted in terms of the oblique projection $Q_o$. Specifically, from \Cref{lem:oblique_projection_specific} applied to the first $k$ columns, we have:
 \[ S^o_k = A[:,k+1:] - A[:,1:k] {(A[1:k,1:k])}^{-1} A[1:k,k+1:]
-  = Q_o(A[:,1:k]) \; A[:,k+1:]
+  = Q_o(A[:,1:k]) \; A[:,k+1:] \,.
 \]
 The standard Schur complement $S_k$, a matrix of size $n-k$, corresponds to the bottom block of this projected matrix:
-\[ S_k = S^o_k[k+1:,:]. \]
+\[ S_k = S^o_k[k+1:,:] \,. \]
 Applying $Q_o(A[:,1:k]) = I - P_o(A[:,1:k])$ to all of $A$, rather than only to its trailing columns, gives
 \[ (I - P_o(A[:,1:k])) \, A =
   \begin{pmatrix}
@@ -1250,16 +1254,16 @@ where $0_k$ is the $k \times k$ zero block.
 This identity makes the link between the projection and Gaussian elimination explicit: the single factor $Q_o(A[:,1:k])$ realizes the first $k$ elimination steps. Its range is the subspace of vectors whose first $k$ entries are zero, so every column of $Q_o(A[:,1:k])\,A$ has zero first $k$ entries; moreover, the first $k$ columns of $A$ are annihilated because they span the range of $P_o(A[:,1:k])$. The first $k$ rows and columns therefore vanish, leaving the $(n-k) \times (n-k)$ Schur complement $S_k$ on which the elimination continues.
 
 \begin{lemma}\label{lem:oblique}
-  If column $j$ of $A$ (where $j > k$) is linearly dependent on columns $1$ to $k$ of $A$, then column $j - k$ of $S^o_k$ is zero.
+  If the $j$th column of $A$ (where $j > k$) is linearly dependent on columns $1$ to $k$ of $A$, then column $j - k$ of $S^o_k$ is zero.
 \end{lemma}
 
 \begin{proof}
-  Since column $j$ of $A$ is linearly dependent on columns $1$ to $k$, we have:
-  \[ A[:,j] \in \spn\{ A[:,1], \ldots, A[:,k] \} \] % chktex 21
+  Since the $j$th column of $A$ is linearly dependent on columns $1$ to $k$, we have:
+  \[ A[:,j] \in \spn\{ A[:,1], \ldots, A[:,k] \} \,. \] % chktex 21
   Let $X = A[:,1:k]$. Then $A[:,j] \in \spn(X)$. By definition of the projection $P_o(X)$:
-  \[ P_o(X) A[:,j] = A[:,j] \]
+  \[ P_o(X) A[:,j] = A[:,j] \,. \]
   Therefore:
-  \[ Q_o(X) A[:,j] = (I - P_o(X)) A[:,j] = 0 \]
+  \[ Q_o(X) A[:,j] = (I - P_o(X)) A[:,j] = 0 \,. \]
 
   Since $S^o_k$ is formed by applying $Q_o(X)$ to the columns $A[:,k+1:]$, the column corresponding to $A[:,j]$ is zero.
 \end{proof}
