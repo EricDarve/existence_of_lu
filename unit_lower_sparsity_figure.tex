@@ -2,8 +2,9 @@
 %  Possibly-nonzero envelope of U in a unit-lower LU factorization.
 %  n = 8, r = 5.  Single 8x8 grid; row j = 1..8 top->bottom,
 %  column j0 = 1..8 left->right.
-%  Case A: independent rows/columns (blue).
-%  Case B: dependent rows/columns (orange).
+%  Case A: independent column (blue envelope).
+%  Case B: dependent column   (orange envelope).
+%  Case C: dependent row      (orange band).
 % ===========================================================================
 
 % ---- palette (chosen to match sparsity_figure.tex) -------------------------
@@ -83,11 +84,21 @@
     \node[font=\tiny,black!55,anchor=east] at (-0.16,-\row+0.5) {\row};
   }
 
-  %% ---------- per-column right annotations: case + (j0,j) -------------------
-  \def\ax{8.55}
-  \foreach \col/\logicalj/\case in {1/1/A, 2/2/B, 3/6/B, 4/4/B, 5/3/A, 6/5/A, 7/7/A, 8/8/A}{
-    \node[anchor=west,font=\scriptsize] at (\ax,-\col+0.5)
-    {\textbf{\case}\,\;$(j{=}\logicalj,\,j_0{=}\col)$};
+  %% ---------- per-column case labels (A/B) beneath each column --------------
+  %% Cases A/B describe COLUMNS, so they are aligned under the columns (not rows).
+  \foreach \col/\logicalj/\case in {
+    1/1/A, 2/2/B, 3/6/B, 4/4/B,
+    5/3/A, 6/5/A, 7/7/A, 8/8/A}{
+    \node[anchor=north,font=\scriptsize\bfseries] at (\col-0.5,-\n-0.12) {\case};
+    \node[anchor=north,font=\tiny] at (\col-0.5,-\n-0.50) {$j{=}\logicalj$};
+  }
+
+  %% ---------- per-row case label (C) for the dependent zero rows ------------
+  %% Zero rows are a ROW property, so case C is aligned with the rows.
+  \def\cx{8.35}
+  \foreach \row in {2,4,6}{
+    \node[anchor=west,font=\scriptsize] at (\cx,-\row+0.5)
+    {\textbf{C}\,\;$(j{=}\row)$};
   }
 
   %% ---------- title ---------------------------------------------------------
@@ -95,7 +106,7 @@
   {Example nonzero envelope of $U$ for unit lower $L$ \;($n=8$,\, $r=5$)};
 
   %% ---------- LEGEND --------------------------------------------------------
-  \begin{scope}[shift={(0,-\n-1.5)}]
+  \begin{scope}[shift={(0,-\n-2)}]
     \node[anchor=south west,font=\small\bfseries] at (0,0.58) {Legend};
     \def\sw{0.40}
     % independent
@@ -115,7 +126,7 @@
     (0,-1.08) rectangle (\sw,-1.08+\sw);
     \draw[unitDepEdge!70,line width=0.4pt] (0,-1.08) rectangle (\sw,-1.08+\sw);
     \node[anchor=west,font=\scriptsize] at (\sw+0.14,-1.08+\sw/2)
-    {dependent row: $U[j,:]=0$ and $L[:,j]=e_j$};
+    {dependent row case C: $U[j,:]=0$ and $L[:,j]=e_j$};
     % upper triangular zero
     \fill[unitZero!12] (0,-1.62) rectangle (\sw,-1.62+\sw);
     \draw[pattern=north east lines,pattern color=unitZero!38]

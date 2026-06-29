@@ -48,13 +48,13 @@ The main changes include:
   \item We clarified the slicing notation with : in Table 1.
   \item We improved the spacing around the : character in the slicing notation to make it easier to read.
   \item We moved known and relatively straightforward results to the appendix to focus the main text on the new results.
-  \item We refactored significantly the proof of Theorem 1.5. We now have a Lemma 1.2 that proves a results regarding pivoting and Property 1.1. This is used in later proofs.
+  \item We significantly refactored the proof of Theorem 1.5. We now have a Lemma 1.2 that proves a result regarding pivoting and Property 1.1. This is used in later proofs.
   \item Corollary 1.3 and 1.4 are derived from Lemma 1.2.
   \item In Theorem 1.5, the necessity condition was moved to the appendix.
   \item We added two figures to illustrate the sparsity patterns of the $L$ and $U$ factors.
-  \item We improved main of the proofs for completeness and clarity.
+  \item We improved the main proofs for completeness and clarity.
   \item We clarified the notations in Table 3.
-  \item Replace the word triangular by trapezoidal where appropriate.
+  \item Replaced the word ``triangular'' with ``trapezoidal'' where appropriate.
 \end{itemize}
 
 Detailed responses to the referee's comments are given below.
@@ -68,13 +68,67 @@ Detailed responses to the referee's comments are given below.
 \end{refereecomment}
 
 \begin{authorresponse}
-  Thank you for this comment. We agree that the manuscript should be more focused on the key new results while deemphasizing the known/more obvious results. To that effect, we moved content with known or relatively straightforward results to the appendix. Previously the main theorem started on page 9. Now it starts on page 6. The author decided to move the previous text to the appendix instead of cutting it so that the manuscript remains self-contained and can be read without consulting other references.
+  Thank you for this comment. We agree that the manuscript should be more focused on the key new results while deemphasizing the known/more obvious results. To that effect, we moved content with known or relatively straightforward results to the appendix. In the original manuscript the central existence theorem (then Theorem 2.5) appeared on page 9. In the revised version the new material now begins in Section 1: the nullity condition (Property 1.1) on page 4, the key pivoting lemma (Lemma 1.2) on page 6, and the main existence theorem (Theorem 1.5) on page 8. We decided to move the previous text to the appendix instead of cutting it so that the manuscript remains self-contained and can be read without consulting other references.
 \end{authorresponse}
 
 \subsection*{Main Point 2}
 
 \begin{refereecomment}
-  The referee asks that the proof of Theorem 1.1 spell out how the permutation and the factorization of the Schur complement are embedded into the full matrix. The referee also asks for the analogous induction step in Theorem 1.4 and for explicit mention of the Schur complement.
+  In the proof of Theorem 1.1, the steps that embed the permutation from $P_s S = L_s U_s$ should be explained to complete the proof for $n$. Form
+  \[
+    \widehat{P}_s =
+    \begin{bmatrix}
+      1 & 0 \\
+      0 & P_s
+    \end{bmatrix},
+  \]
+  then
+  \[
+    \widehat{P}_s A =
+    \begin{bmatrix}
+      1 & 0 \\
+      a_{11}^{-1} P_s A_{21} & P_s
+    \end{bmatrix}
+    \begin{bmatrix}
+      a_{11} & A_{12} \\
+      0 & S
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      1 & 0 \\
+      a_{11}^{-1} P_s A_{21} & L_s
+    \end{bmatrix}
+    \begin{bmatrix}
+      a_{11} & A_{12} \\
+      0 & U_s
+    \end{bmatrix}.
+  \]
+  Besides, it should be mentioned that $S = A_{22} - A_{21} A_{12} / a_{11}$ is the Schur complement (same for the other proofs). Similarly, in the proof of Theorem 1.4 the induction step for $S$ needs be spelt out. For example, $P_s S Q_s = L_s U_s$, such that
+  \[
+    \widehat{P}_s A \widehat{Q}_s =
+    \begin{bmatrix}
+      1 & 0 \\
+      0 & P_s
+    \end{bmatrix}
+    L D U
+    \begin{bmatrix}
+      1 & 0 \\
+      0 & Q_s
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      a_{11} & 0 \\
+      P_s A_{21} & I
+    \end{bmatrix}
+    \begin{bmatrix}
+      a_{11}^{-1} & 0 \\
+      0 & L_s U_s
+    \end{bmatrix}
+    \begin{bmatrix}
+      a_{11} & A_{12} Q_s \\
+      0 & 1
+    \end{bmatrix}.
+  \]
 \end{refereecomment}
 
 \begin{authorresponse}
@@ -86,7 +140,7 @@ Detailed responses to the referee's comments are given below.
 \subsection*{Main Point 3}
 
 \begin{refereecomment}
-  The referee asks for an explanation of why the construction terminates after $r=\operatorname{rank}(A)$ steps, and suggests that the later statement in Theorem 2.5 can refer back to this explanation.
+  In the proof of Theorem 1.4, it would be helpful to comment on why the process must terminate after $r = \operatorname{rank}(A)$ steps. This seems related to the unstated construction of $\widehat{P}_s$ and $\widehat{Q}_s$. The similar statement in the proof of Theorem 2.5 can refer to the comment here.
 \end{refereecomment}
 
 \begin{authorresponse}
@@ -98,7 +152,7 @@ Detailed responses to the referee's comments are given below.
 \subsection*{Main Point 4}
 
 \begin{refereecomment}
-  The referee notes that Property 2.1 is cited as Theorem 2.1, and questions the separation of statements and proofs for the main results.
+  Property 2.1, it is written as “Property 2.1” but being cited throughout as “Theorem 2.1.” In the manuscript I could not see the necessity to separate out the proof from the statement of the theorems (Theorems 2.1 and 2.5–2.6). As I mentioned above, I found this organization of the contents quite unusual for a mathematical journal.
 \end{refereecomment}
 
 \begin{authorresponse}
@@ -110,7 +164,7 @@ Detailed responses to the referee's comments are given below.
 \subsection*{Main Point 5}
 
 \begin{refereecomment}
-  The referee asks for more detail in the proof of Theorem 2.5 explaining why the intermediate matrix $D$ and the Schur complement $S$ inherit the same rank condition.
+  In the proof of Theorem 2.5, “$D$ satisfies Theorem 2.1 if and only if $A$ does. Consequently, $S$ also satisfies Theorem 2.1 and is of size $n-1$.” Given the level of detail in the rest of the manuscript, the authors should elaborate on why $D$ and $S$ inherit the same property. Presumably this follows from the invertibility of the leading principal blocks of $L$ and $U$, but this point deserves an explicit justification.
 \end{refereecomment}
 
 \begin{authorresponse}
@@ -130,13 +184,19 @@ Detailed responses to the referee's comments are given below.
 \subsection*{Main Point 7}
 
 \begin{refereecomment}
-  The referee points out that the necessary direction of Theorem 3.1 can be proved more directly by using
+  In the proof of Theorem 3.1, that the condition is necessary can be proved in few lines. We have
   \[
-    A(:,1:k)=L(:,1:k)U(1:k,1:k),
-    \qquad
-    A(1:k,1:k)=L(1:k,1:k)U(1:k,1:k),
+    A(:,1:k) = LU(:,1:k) = L(:,1:k)U(1:k,1:k)
   \]
-  and the full column rank of $L(:,1:k)$ and $L(1:k,1:k)$.
+  and
+  \[
+    A(1:k,1:k) = L(1:k,1:k)U(1:k,1:k).
+  \]
+  Then
+  \[
+    \operatorname{null}(A(1:k,1:k)) = \operatorname{null}(U(1:k,1:k)) = \operatorname{null}(A(:,1:k))
+  \]
+  by the fact that $L(:,1:k)$ and $L(1:k,1:k)$ have full column rank. The proof is straightforward by using the definition that the null space of a matrix $M$ contains all vectors $x$ such that $Mx = 0$.
 \end{refereecomment}
 
 \begin{authorresponse}
@@ -178,7 +238,14 @@ Detailed responses to the referee's comments are given below.
 \subsection*{Minor Point 4}
 
 \begin{refereecomment}
-  The referee suggests replacing MATLAB-style notation such as $A[:,i]$ by standard numerical linear algebra notation, and using block notation for submatrices.
+  Instead of using the MATLAB-style notations $A[:,i]$ for the $i$th column of $A$, I would suggest the author adopt the widely accepted numerical linear algebra notation $a_i$, where $A = [a_1, \ldots, a_n]$. For submatrices $A[1:i, 1:j]$ of $A$, it is more readable to access through the introduction of
+  \[
+    A =
+    \begin{bmatrix}
+      A_{11} & A_{12} \\
+      A_{21} & A_{22}
+    \end{bmatrix}.
+  \]
 \end{refereecomment}
 
 \begin{authorresponse}
@@ -198,7 +265,7 @@ Detailed responses to the referee's comments are given below.
 \subsection*{Minor Point 6}
 
 \begin{refereecomment}
-  The referee notes that $A_{11}$ appears on page 2 without a proper definition.
+  On page 2, the $A_{11}$ appears without a proper definition.
 \end{refereecomment}
 
 \begin{authorresponse}
@@ -248,7 +315,7 @@ Detailed responses to the referee's comments are given below.
 \subsection*{Minor Point 11}
 
 \begin{refereecomment}
-  Theorem 2.2-Corollary 2.4, linking to my first main point, I think one can just point to the results in the literature, e.g., Exercise 4.5.10 in Carl D. Mayer, Matrix Analysis and Applied Linear Algebra.
+  Theorem 2.2--Corollary 2.4, linking to my first main point, I think one can just point to the results in the literature, e.g., Exercise 4.5.10 in Carl D. Mayer, Matrix Analysis and Applied Linear Algebra.
 \end{refereecomment}
 
 \begin{authorresponse}
@@ -267,7 +334,7 @@ Detailed responses to the referee's comments are given below.
 
   We are pivoting the row but this is equivalent to the statement about pivoting the column in the previous version of the proof.
 
-  Case 1 in the previous proof was not actually needed. Indeed, following the argument in Case 3 of the previous proof, we can always pivot to bring a non-zero column to index 1. Then we pivot a row using Case 2. The new proof essentially follow the path of Case 3, making Case 2 a special case that is handled automatically.
+  Case 1 in the previous proof was not actually needed. Indeed, following the argument in Case 3 of the previous proof, we can always pivot to bring a non-zero column to index 1. Then we pivot a row using Case 2. The new proof essentially follows the path of Case 3, making Case 2 a special case that is handled automatically.
 
   Note that this process is not unique. For example, we can equivalently pivot the first non-zero row, then pivot a column.
 \end{authorresponse}
@@ -311,14 +378,14 @@ Detailed responses to the referee's comments are given below.
 \end{refereecomment}
 
 \begin{authorresponse}
-  We are not sure about the error the referee is referring to. That notation is consistent with Table 1. We added a clarification in the manuscript about this notation:\\
+  These expressions are correct slicing notation rather than typos: a trailing colon denotes a range extending to the last index (Table 1), so $L[i_0, i+1:]$ is the part of row $i_0$ from column $i+1$ onward, and $L[i_0, i_0:]$ from column $i_0$ onward. We suspect the open-ended slices were read as malformed. To remove any ambiguity, we now state this convention explicitly before the sparsity statements:\\
   \hspace*{2em}The sparsity statements below use the colon (slicing) notation of \dots
 \end{authorresponse}
 
 \subsection*{Minor Point 17}
 
 \begin{refereecomment}
-  The referee suggests adding a graphical illustration of the sparsity pattern of the LU factors.
+  Theorem 2.6, it would be helpful to add a graphical illustration of the sparsity pattern of the LU factors.
 \end{refereecomment}
 
 \begin{authorresponse}
@@ -361,10 +428,10 @@ Detailed responses to the referee's comments are given below.
   The paragraph above Lemma A.3, it is not harmful to explicitly state
   \[
     (I-P_o(X)) \, A =
-    \begin{pmatrix}
+    \begin{bmatrix}
       O_{k-1} & O \\
       O & S
-    \end{pmatrix}
+    \end{bmatrix}
   \]
   and add some discussion.
 \end{refereecomment}
@@ -376,11 +443,11 @@ Detailed responses to the referee's comments are given below.
 \subsection*{Minor Point 22}
 
 \begin{refereecomment}
-  Lemma A.1-A.3, if the results are new, I encourage the author to move them to a suitable place in the main text.
+  Lemma A.1--A.3, if the results are new, I encourage the author to move them to a suitable place in the main text.
 \end{refereecomment}
 
 \begin{authorresponse}
-  The results are not commonly published but they are not new.
+  These results are not new, though not commonly stated explicitly, so we have kept them in the appendix."
 \end{authorresponse}
 
 \section*{Closing}
