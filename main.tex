@@ -160,7 +160,7 @@ Handling Editor: \HE. Corresponding Author: \CA}}
   15A23, 15A03, 65F05.
 \end{AMS}
 
-It is well known that for any square matrix $A$, there exists a permutation of rows (and potentially columns) such that an LU factorization exists. Specifically, one can always achieve the form $PA = LU$, where $P$ is a permutation matrix, $L$ is unit lower triangular, and $U$ is upper triangular~\cite{higham_gaussian_2011,lu_numerical_2021}.
+It is well known that for any square matrix $A$, there exists a permutation of rows (and potentially columns) such that an LU factorization exists. Specifically, there exist a permutation matrix $P$, a unit lower triangular matrix $L$, and an upper triangular matrix $U$ such that $PA = LU$~\cite{higham_gaussian_2011,lu_numerical_2021}.
 
 However, the existence of an LU factorization for a matrix $A$ \emph{without} permutations (that is, $A = LU$) is not guaranteed. A classical result states that for a non-singular matrix, such a factorization exists if and only if all its leading principal minors are non-zero. When the matrix is rank-deficient or when leading principal minors vanish, the situation becomes significantly more complex. The standard conditions involving determinants are no longer sufficient to characterize the existence of the factorization.
 
@@ -212,7 +212,7 @@ Moreover, the choice of the LU factorization over other decompositions like QR o
 
 We summarize the contributions of this paper, which include:
 \begin{itemize}
-  \item A Nullity-based characterization: we prove that the factorization exists if and only if, for every leading principal submatrix, its nullity is at most the sum of the nullities of the corresponding leading column block and leading row block. The proofs are original.
+  \item Nullity-based characterization: we prove that the factorization exists if and only if, for every leading principal submatrix, its nullity is at most the sum of the nullities of the corresponding leading column block and leading row block. The proofs are original.
   \item Rank-revealing structure: we show that we obtain a rank-revealing factorization when the LU factorization exists.
   \item Sparsity: we provide tight sparsity bounds for the L and U factors.
   \item Constructive proof: we provide a constructive proof by induction. We include a Python implementation in the appendix to fully characterize the algorithm and allow independent verification of our results.
