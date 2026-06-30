@@ -204,7 +204,7 @@ We summarize the contributions of this paper, which include:
 \end{itemize}
 
 \paragraph{Organization of paper}
-The remainder of the paper is organized as follows. \Cref{sec:classical} reviews classical results regarding factorizations with permutations. \Cref{sec:main} presents the main theorem and the derivation of the nullity condition. \Cref{thm:main2} strengthens this result by characterizing rank-revealing factorizations. Finally, \Cref{sec:unit_triangular} discusses the specific requirements for unit triangular factors. See \Cref{sec:classical} for classical results that will serve as reference for the later sections.
+The remainder of the paper is organized as follows. \Cref{sec:main} presents the main theorem (\Cref{thm:main}), the derivation of the nullity condition, and its strengthening to rank-revealing factorizations (\Cref{thm:main2}). Finally, \Cref{sec:unit_triangular} discusses the specific requirements for unit triangular factors. See \Cref{sec:classical} for classical results that will serve as reference for the later sections.
 
 \section{General necessary and sufficient condition for the existence of an LU factorization}\label{sec:main}
 
@@ -635,7 +635,7 @@ The sparsity pattern of the $L$ factor in \Cref{thm:main2} is illustrated in \Cr
     \qquad
     A = LU.
   \]
-  As in the proof of \Cref{thm:row_column_permutation}, each nonzero-pivot step passes to a Schur complement of rank one less, and the recursion stops exactly when the active matrix is zero. Thus the construction performs exactly $r = \rk(A)$ pivot steps, so the factorization is rank revealing.
+  As in the proof of \Cref{thm:row_column_permutation}, each nonzero-pivot step passes to a Schur complement of rank one less, and the recursion stops once the active rank reaches zero. Thus the construction performs exactly $r = \rk(A)$ pivot steps, so the factorization is rank revealing.
 
   The same argument used above for interchanging an identically zero row or column also explains the extra sparsity. Row $i$ of $C$ is the old row $1$ of $A$, hence is zero; because $U_C$ has full row rank on its first $r$ rows, row $i$ of $L_C$ is zero. Thus $\Pi_i L_C$ remains lower triangular, and row $1$ of $L$ is zero. If $j>1$, column $j$ of $C$ is the old column $1$ of $A$, hence is zero; because $L_C$ has full column rank on its first $r$ columns, column $j$ of $U_C$ is zero. Thus $U_C\Pi_j$ remains upper triangular, and column $1$ of $U$ is zero.
 
@@ -746,7 +746,7 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
 
   Assume $a_{11} = 0$. From \cref{eq:cond_unit_lower}, we have $A[:,1] = 0$.
 
-  Case 1: If row $1$ of $A$ is non-zero, we can use the same steps as in the proof as \Cref{thm:main2} with a column permutation to prove the result by induction. In addition, this shows that if $e_{j_0} = P_c^T e_j$ and if the $j$th row of $B$ is linearly independent of the previous rows then $j_0 \ge j$ and $U[j+1:,j_0] = 0$.
+  Case 1: If row $1$ of $A$ is non-zero, we can use the same steps as in the proof of \Cref{thm:main2} with a column permutation to prove the result by induction. In addition, this shows that if $e_{j_0} = P_c^T e_j$ and if the $j$th row of $B$ is linearly independent of the previous rows then $j_0 \ge j$ and $U[j+1:,j_0] = 0$.
 
   Case 2: If row 1 of $A$ is zero, we cannot use the same proof as \Cref{thm:main2} because we can no longer permute rows. However, since row 1 of $A$ is zero, we can define:
   \[
@@ -1072,7 +1072,7 @@ If we allow both row and column permutations, we can always obtain such a factor
 
   \emph{Case 2: $a_{11} = 0$.} If $A = 0$, then $r = 0$ and the empty factorization $L = U = 0$ works. Otherwise, choose $i$ and $j$ with $a_{ij} \neq 0$, and let $\Pi_i$ and $\Pi_j$ be the permutations swapping rows $1, i$ and columns $1, j$, respectively. The matrix $B = \Pi_i A \Pi_j$ has $b_{11} = a_{ij} \neq 0$, so by Case 1 there exist permutations $\widehat{P}$ and $\widehat{Q}$ such that $\widehat{P} B \widehat{Q} = LU$ is rank revealing. Then $(\widehat{P} \Pi_i) A (\Pi_j \widehat{Q}) = LU$, and $P = \widehat{P} \Pi_i$, $Q = \Pi_j \widehat{Q}$ prove the result for $A$.
 
-  This recursion performs exactly $r=\rk(A)$ pivot steps: each Case 1 step (including the nonzero single-column base case) drops the rank of the active matrix by one, contributing one column to $L$ and one row to $U$. It halts when the active matrix reaches rank $0$: either the $A=0$ subcase of Case 2 or an exhausted (empty) Schur complement. Hence the factorization has inner dimension $r$; that is, it is rank revealing.
+  This recursion performs exactly $r=\rk(A)$ pivot steps: each Case 1 step (including the nonzero single-column base case) drops the rank of the active matrix by one, contributing one column to $L$ and one row to $U$. After $r$ such steps the active rank is $0$, and the recursion stops---either at the $A=0$ subcase of Case 2, or at the empty Schur complement left by the final single-column pivot. Hence the factorization has inner dimension $r$; that is, it is rank revealing. % FIXME
 \end{proof}
 
 We now consider LU factorizations without permutations. The fundamental result states that factorization is possible if and only if the matrix is \emph{strongly non-singular} (i.e., all leading principal minors are non-zero).
