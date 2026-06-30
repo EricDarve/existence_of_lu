@@ -36,12 +36,6 @@
 
 \renewcommand{\theequation}{\thesection.\arabic{equation}}
 
-% cleveref names a theorem-like environment after its *counter*, not its
-% environment name. The SIAM class defines lemma/corollary/proposition/
-% definition (and we add property) so that they all share the single "theorem"
-% counter, so every \Cref came out as "Theorem". We give each environment its
-% own counter that shares the theorem counter's value (via aliascnt); this
-% keeps the shared numbering but lets cleveref report the correct name.
 \usepackage{aliascnt}
 % \siamthmalias{<env>}{<Name>}{<\newtheorem or \renewtheorem>}
 \newcommand{\siamthmalias}[3]{%
@@ -90,16 +84,7 @@
 
 % Treat ":" as an ordinary atom in math mode so that array/matrix slicing such
 % as A[1:k,1:k], A[:,1:k], A[i:,j:] is set tightly. By default LaTeX makes ":"
-% a relation (\mathrel), inserting \thickmuskip on both sides; that is the
-% "extra space" seen around the colon. The colon glyph is unchanged (class 0,
-% family 0, slot "3A); only its inter-atom spacing becomes ordinary. The paper
-% uses ":" only for slicing, so this is safe to apply globally.
-%
-% CAUTION: this makes EVERY math-mode ":" tight (ordinary). If you later add a
-% genuine relation colon -- a ratio a:b, a map f:X\to Y, or a set-builder
-% \{x : P(x)\} -- it will render too tight. For those, write \mathrel{:}
-% explicitly (or remove this line and instead wrap each slice in a scoped macro
-% that makes ":" ordinary only locally).
+% a relation (\mathrel), inserting \thickmuskip on both sides.
 \mathcode`\:="003A
 
 \Crefname{property}{Property}{Properties}
@@ -117,7 +102,6 @@
 \addto\captionsenglish{\renewcommand{\lstlistingname}{Algorithm}}
 \addto\captionsenglish{\renewcommand{\lstlistlistingname}{List of Algorithms}}
 
-% Strongly recommended
 \numberwithin{theorem}{section}
 
 \begin{document}
