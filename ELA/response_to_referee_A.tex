@@ -1,0 +1,456 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7em}
+\setlist[itemize]{leftmargin=2em}
+\setlist[enumerate]{leftmargin=2em}
+
+\definecolor{commentblue}{RGB}{30,80,150}
+\definecolor{responsegreen}{RGB}{20,110,70}
+
+\newenvironment{refereecomment}
+{\par\smallskip\noindent\textbf{\color{commentblue}Referee comment.}
+\begin{quote}\itshape}
+  {
+\end{quote}}
+
+\newenvironment{authorresponse}
+{\par\smallskip\noindent\textbf{\color{responsegreen}Response.}}
+{\par\smallskip}
+
+\newcommand{\changeplaceholder}{\textbf{Change made.} [Describe the manuscript change and give page, theorem, equation, or line references.]}
+\newcommand{\responseplaceholder}{[Write the response here.]}
+
+\begin{document}
+
+\begin{center}
+  {\Large Response to Referee}\\[0.5em]
+  {\large Necessary and Sufficient Conditions for the Existence of an LU Factorization for General Rank Deficient Matrices}\\[0.5em]
+  \today
+\end{center}
+
+Dear Editor,
+
+We are grateful to the referee for the careful reading of the manuscript and for the detailed comments. The revised manuscript addresses the issues raised in the report. Below we give a summary of our changes and a point-by-point response.
+
+\section*{Summary of Main Changes}
+
+The main changes include:
+\begin{itemize}
+  \item We added additional references and context in the introduction to better position the work with respect to existing literature.
+  \item We clarified the slicing notation with : in Table 1.
+  \item We improved the spacing around the : character in the slicing notation to make it easier to read.
+  \item We moved known and relatively straightforward results to the appendix to focus the main text on the new results.
+  \item We significantly refactored the proof of Theorem 1.5. We now have a Lemma 1.2 that proves a result regarding pivoting and Property 1.1. This is used in later proofs.
+  \item Corollaries 1.3 and 1.4 are derived from Lemma 1.2.
+  \item In Theorem 1.5, the necessity condition was moved to the appendix.
+  \item We added two figures to illustrate the sparsity patterns of the $L$ and $U$ factors.
+  \item We improved the main proofs for completeness and clarity.
+  \item We clarified the notations in Table 3.
+  \item Replaced the word ``triangular'' with ``trapezoidal'' where appropriate.
+\end{itemize}
+
+Detailed responses to the referee's comments are given below.
+
+\section*{Main Points}
+
+\subsection*{Main Point 1}
+
+\begin{refereecomment}
+  The new results (in fact, examples) only start from Page 5, and the theoretical contribution does not appear to justify the current length. In my opinion, the manuscript can be substantially cut down by providing only references to known results and, with a proper literature review, emphasizing on how the new theorem improves on existing results.
+\end{refereecomment}
+
+\begin{authorresponse}
+  Thank you for this comment. We agree that the manuscript should be more focused on the key new results while deemphasizing the known/more obvious results. To that effect, we moved content with known or relatively straightforward results to the appendix. In the original manuscript the central existence theorem (then Theorem 2.5) appeared on page 9. In the revised version the new material now begins in Section 1: the nullity condition (Property 1.1) on page 4, the key pivoting lemma (Lemma 1.2) on page 6, and the main existence theorem (Theorem 1.5) on page 8. We decided to move the previous text to the appendix instead of cutting it so that the manuscript remains self-contained and can be read without consulting other references.
+\end{authorresponse}
+
+\subsection*{Main Point 2}
+
+\begin{refereecomment}
+  In the proof of Theorem 1.1, the steps that embed the permutation from $P_s S = L_s U_s$ should be explained to complete the proof for $n$. Form
+  \[
+    \widehat{P}_s =
+    \begin{bmatrix}
+      1 & 0 \\
+      0 & P_s
+    \end{bmatrix},
+  \]
+  then
+  \[
+    \widehat{P}_s A =
+    \begin{bmatrix}
+      1 & 0 \\
+      a_{11}^{-1} P_s A_{21} & P_s
+    \end{bmatrix}
+    \begin{bmatrix}
+      a_{11} & A_{12} \\
+      0 & S
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      1 & 0 \\
+      a_{11}^{-1} P_s A_{21} & L_s
+    \end{bmatrix}
+    \begin{bmatrix}
+      a_{11} & A_{12} \\
+      0 & U_s
+    \end{bmatrix}.
+  \]
+  Besides, it should be mentioned that $S = A_{22} - A_{21} A_{12} / a_{11}$ is the Schur complement (same for the other proofs). Similarly, in the proof of Theorem 1.4 the induction step for $S$ needs be spelt out. For example, $P_s S Q_s = L_s U_s$, such that
+  \[
+    \widehat{P}_s A \widehat{Q}_s =
+    \begin{bmatrix}
+      1 & 0 \\
+      0 & P_s
+    \end{bmatrix}
+    L D U
+    \begin{bmatrix}
+      1 & 0 \\
+      0 & Q_s
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      a_{11} & 0 \\
+      P_s A_{21} & I
+    \end{bmatrix}
+    \begin{bmatrix}
+      a_{11}^{-1} & 0 \\
+      0 & L_s U_s
+    \end{bmatrix}
+    \begin{bmatrix}
+      a_{11} & A_{12} Q_s \\
+      0 & 1
+    \end{bmatrix}.
+  \]
+\end{refereecomment}
+
+\begin{authorresponse}
+  Theorem 1.1 is now Theorem A.1. We made the corrections suggested by the referee.
+
+  Theorem 1.4 is now Theorem A.4. We also followed the referee's suggestion and made the changes accordingly.
+\end{authorresponse}
+
+\subsection*{Main Point 3}
+
+\begin{refereecomment}
+  In the proof of Theorem 1.4, it would be helpful to comment on why the process must terminate after $r = \operatorname{rank}(A)$ steps. This seems related to the unstated construction of $\widehat{P}_s$ and $\widehat{Q}_s$. The similar statement in the proof of Theorem 2.5 can refer to the comment here.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We modified the proof of Theorem A.4 to clarify the point raised by the referee.
+
+  Theorem 2.5 is now Theorem 1.5. The statement about the rank in Theorem 1.5 was moved to Theorem 1.6, where it belongs. In the proof of Theorem 1.6, we added a reference back to Theorem A.4.
+\end{authorresponse}
+
+\subsection*{Main Point 4}
+
+\begin{refereecomment}
+  Property 2.1, it is written as “Property 2.1” but being cited throughout as “Theorem 2.1.” In the manuscript I could not see the necessity to separate out the proof from the statement of the theorems (Theorems 2.1 and 2.5–2.6). As I mentioned above, I found this organization of the contents quite unusual for a mathematical journal.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We apologize for the confusion. Before submission we switched the latex style to \verb|\documentclass[10pt,twoside]{siamart1116}|. As a result, the references and labels were corrupted and we did not notice it. This is now fixed in the revised manuscript.
+
+  Property 1.1 is now correctly listed as a Property and not a Theorem, which was incorrect. The main theorems are 1.5, 1.6, and 2.1.
+\end{authorresponse}
+
+\subsection*{Main Point 5}
+
+\begin{refereecomment}
+  In the proof of Theorem 2.5, “$D$ satisfies Theorem 2.1 if and only if $A$ does. Consequently, $S$ also satisfies Theorem 2.1 and is of size $n-1$.” Given the level of detail in the rest of the manuscript, the authors should elaborate on why $D$ and $S$ inherit the same property. Presumably this follows from the invertibility of the leading principal blocks of $L$ and $U$, but this point deserves an explicit justification.
+\end{refereecomment}
+
+\begin{authorresponse}
+  Theorem 2.5 is now 1.5. We expanded the proof to clarify the point raised by the referee.
+\end{authorresponse}
+
+\subsection*{Main Point 6}
+
+\begin{refereecomment}
+  In the proof of Theorem 2.5, in Case 1 it seems we no longer have $B(1, 2 : k) = 0$ for $k \ge j$. Does the linear independence surely hold in this case? I did not see how a similar proof would proceed in this case.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We refactored the proof of Theorem 1.5 (old 2.5). The point raised by the referee is now addressed in Lemma 1.2. Essentially when $k \ge j$, the interchanges are internal so the rank property is automatically preserved.
+\end{authorresponse}
+
+\subsection*{Main Point 7}
+
+\begin{refereecomment}
+  In the proof of Theorem 3.1, that the condition is necessary can be proved in few lines. We have
+  \[
+    A(:,1:k) = LU(:,1:k) = L(:,1:k)U(1:k,1:k)
+  \]
+  and
+  \[
+    A(1:k,1:k) = L(1:k,1:k)U(1:k,1:k).
+  \]
+  Then
+  \[
+    \operatorname{null}(A(1:k,1:k)) = \operatorname{null}(U(1:k,1:k)) = \operatorname{null}(A(:,1:k))
+  \]
+  by the fact that $L(:,1:k)$ and $L(1:k,1:k)$ have full column rank. The proof is straightforward by using the definition that the null space of a matrix $M$ contains all vectors $x$ such that $Mx = 0$.
+\end{refereecomment}
+
+\begin{authorresponse}
+  Theorem 3.1 is now Theorem 2.1. The original proof was poorly written. We improved it based on the referee's suggestion.
+\end{authorresponse}
+
+\section*{Minor Points}
+
+\subsection*{Minor Point 1}
+
+\begin{refereecomment}
+  For square matrices the terms “singular” and “rank-deficient” are exchangeable. It is therefore sufficient to keep one of them in the abstract and elsewhere applicable.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We agree with the referee. We have replaced ``singular'' by ``rank-deficient'' everywhere in the manuscript. However, we have kept the word ``non-singular'' since this feels more natural than ``full-rank''.
+\end{authorresponse}
+
+\subsection*{Minor Point 2}
+
+\begin{refereecomment}
+  All mathematical expressions shall be treated as part of the sentence and be punctuated.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We made that correction.
+\end{authorresponse}
+
+\subsection*{Minor Point 3}
+
+\begin{refereecomment}
+  Throughout the manuscript, expressions like ‘column i’ and ‘row j’ should be replaced by the more formal ‘the ith column’ and ‘the jth row’.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We replaced all instances of ``column $i$'' and ``row $j$'' by ``the $i$th column'' and ``the $j$th row'', where it reads naturally. In some cases, we kept the original phrasing for clarity.
+\end{authorresponse}
+
+\subsection*{Minor Point 4}
+
+\begin{refereecomment}
+  Instead of using the MATLAB-style notations $A[:,i]$ for the $i$th column of $A$, I would suggest the author adopt the widely accepted numerical linear algebra notation $a_i$, where $A = [a_1, \ldots, a_n]$. For submatrices $A[1:i, 1:j]$ of $A$, it is more readable to access through the introduction of
+  \[
+    A =
+    \begin{bmatrix}
+      A_{11} & A_{12} \\
+      A_{21} & A_{22}
+    \end{bmatrix}.
+  \]
+\end{refereecomment}
+
+\begin{authorresponse}
+  We agree that block notation is helpful when a fixed partition of the matrix is being used, and we use it in those places, for example in the discussion of Schur complements. However, the paper repeatedly refers to variable leading submatrices, row and column blocks, and trailing row or column ranges. For these expressions, the colon-slicing notation is concise and unambiguous, and avoids repeatedly introducing new block symbols. We have therefore kept this notation. We did improve the horizontal spacing around the : character to make the notation easier to read.
+\end{authorresponse}
+
+\subsection*{Minor Point 5}
+
+\begin{refereecomment}
+  On page 2, adding references to the discussion of the physical setting and application background will make it more informative to readers of mathematical background.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We made that change, added some references, and additional clarifying text.
+\end{authorresponse}
+
+\subsection*{Minor Point 6}
+
+\begin{refereecomment}
+  On page 2, the $A_{11}$ appears without a proper definition.
+\end{refereecomment}
+
+\begin{authorresponse}
+  This was fixed.
+\end{authorresponse}
+
+\subsection*{Minor Point 7}
+
+\begin{refereecomment}
+  Proof of Theorem 1.1, in the second line of Case 1, it should be “B has a partially pivoted LU factorization.”
+\end{refereecomment}
+
+\begin{authorresponse}
+  This proof was rewritten and the comment above was addressed.
+\end{authorresponse}
+
+\subsection*{Minor Point 8}
+
+\begin{refereecomment}
+  Proof of Corollary 1.2, for completeness, it should be “Apply Theorem 1.1 to $A^T$ and take the transpose of the result.”
+\end{refereecomment}
+
+\begin{authorresponse}
+  This was fixed in the revised manuscript.
+\end{authorresponse}
+
+\subsection*{Minor Point 9}
+
+\begin{refereecomment}
+  Definition 1.3, triangular matrix $\rightarrow$ trapezoidal matrix.
+\end{refereecomment}
+
+\begin{authorresponse}
+  This was fixed in the revised manuscript.
+\end{authorresponse}
+
+\subsection*{Minor Point 10}
+
+\begin{refereecomment}
+  Line 3 in the proof of Proposition 1.5, the colon after “Therefore” should be a comma.
+\end{refereecomment}
+
+\begin{authorresponse}
+  This was fixed in the revised manuscript.
+\end{authorresponse}
+
+\subsection*{Minor Point 11}
+
+\begin{refereecomment}
+  Theorem 2.2--Corollary 2.4, linking to my first main point, I think one can just point to the results in the literature, e.g., Exercise 4.5.10 in Carl D. Mayer, Matrix Analysis and Applied Linear Algebra.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We have chosen to retain this material so that the manuscript remains self-contained, but we have moved it to the appendix. The main body now focuses more sharply on the new results.
+\end{authorresponse}
+
+\subsection*{Minor Point 12}
+
+\begin{refereecomment}
+  In the proof of Theorem 2.5, a key property following from introducing the smallest index $j$ is that $B(1, 2 : k) = 0$, and this should be mentioned for readability.
+\end{refereecomment}
+
+\begin{authorresponse}
+  The proof of the Theorem was rewritten. The point raised by the referee appears essentially in the paragraph:\\
+  \hspace*{2em}\emph{Row.} Set $C = \Pi_i B$, interchanging the zero row $1$ with row $i$.
+
+  We are pivoting the row but this is equivalent to the statement about pivoting the column in the previous version of the proof.
+
+  Case 1 in the previous proof was not actually needed. Indeed, following the argument in Case 3 of the previous proof, we can always pivot to bring a nonzero column to index 1. Then we pivot a row using Case 2. The new proof essentially follows the path of Case 3, making Case 2 a special case that is handled automatically.
+
+  Note that this process is not unique. For example, we can equivalently pivot the first nonzero row, then pivot a column.
+\end{authorresponse}
+
+\subsection*{Minor Point 13}
+
+\begin{refereecomment}
+  In the proof of Theorem 2.5, second line in Case 3, “non zero” should be “nonzero.”
+\end{refereecomment}
+
+\begin{authorresponse}
+  “non zero” has been replaced everywhere by “nonzero.”
+\end{authorresponse}
+
+\subsection*{Minor Point 14}
+
+\begin{refereecomment}
+  In the proof of Theorem 2.5, third line in Case 3, “B satisfies Case 2.” Case 2 is on A, so I think the author meant “B satisfies the conditions in Case 2.”
+\end{refereecomment}
+
+\begin{authorresponse}
+  In the new proof this statement is no longer present. The cases have been removed to streamline the proof.
+\end{authorresponse}
+
+\subsection*{Minor Point 15}
+
+\begin{refereecomment}
+  On the bottom of Page 10, the rank-revealing factors $L_B$ and $U_B$ exist when $B$ has rank $r$. I got confused whether those standalone paragraphs are all parts of Theorem 2.6.
+\end{refereecomment}
+
+\begin{authorresponse}
+  Yes all these paragraphs are part of Theorem 1.6 (old 2.6). The theorem statement ends when the proof starts.
+
+  We have sharpened slightly the theorem with a few additional points. One of them is that if $i>r$ and $i_0 > r$ then $i = i_0$ (which implies the previous $i_0 \le i$). When $i_0 \le r$, we automatically have the previous condition $i_0 \le i$.
+\end{authorresponse}
+
+\subsection*{Minor Point 16}
+
+\begin{refereecomment}
+  On the top of Page 11, there are typos in expressions such as $L[i_0, i+1 : ]$ and $L[i_0, i_0 : ]$, as well as similar errors elsewhere.
+\end{refereecomment}
+
+\begin{authorresponse}
+  These expressions are correct slicing notation rather than typos: a trailing colon denotes a range extending to the last index (Table 1), so $L[i_0, i+1:]$ is the part of row $i_0$ from column $i+1$ onward, and $L[i_0, i_0:]$ from column $i_0$ onward. We suspect the open-ended slices were read as malformed. To remove any ambiguity, we now state this convention explicitly before the sparsity statements:\\
+  \hspace*{2em}The sparsity statements below use the colon (slicing) notation of \dots
+\end{authorresponse}
+
+\subsection*{Minor Point 17}
+
+\begin{refereecomment}
+  Theorem 2.6, it would be helpful to add a graphical illustration of the sparsity pattern of the LU factors.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We thank the referee for this suggestion. We added two figures to the manuscript. They are very helpful to understand the sparsity patterns and properties of the factorization.
+\end{authorresponse}
+
+\subsection*{Minor Point 18}
+
+\begin{refereecomment}
+  First line on Page 12, “We also have a $j_0$ such that\dots” It should be “an index $j_0$ such that\dots”
+\end{refereecomment}
+
+\begin{authorresponse}
+  This was fixed.
+\end{authorresponse}
+
+\subsection*{Minor Point 19}
+
+\begin{refereecomment}
+  Last line on Page 12, “The triangular unit structure of $L$ prevents row permutations.” To my understanding, the point is no row permutation can be performed to $A$, as unit structure of $L$ prevents column permutation as well.
+\end{refereecomment}
+
+\begin{authorresponse}
+  The referee is right that no row permutation is applied to $A$, and that the unit lower triangular structure of $L$ is precisely what forbids row permutations. We would like to clarify one point, however: this unit structure does \emph{not} prevent column permutations. In fact, internal column permutations are the mechanism on which the construction of Theorem~2.1 relies. A column permutation acts on the right, giving $A P_c^{-1} = L_B U_B$, i.e.\ $A = L_B (U_B P_c) = L U$. $L = L_B$ is untouched and remains unit lower triangular, while the permutation is absorbed into the upper triangular factor $U = U_B P_c$. We note that a row swap is never actually needed: under the nullity condition of Theorem~2.1, a zero pivot $a_{11}=0$ forces the entire first column to vanish, so the case that would require a row exchange (nonzero first column with $a_{11}=0$) cannot arise. One either brings a nonzero entry of the first row into the pivot position by a column move, or peels off a zero first row and column with no permutation. We have rephrased the sentence noted by the referee to make this row-forbidden, column-allowed asymmetry explicit.
+\end{authorresponse}
+
+\subsection*{Minor Point 20}
+
+\begin{refereecomment}
+  Table 3, it seems the Col and Row are with respect to $A_{11}$. This should be made clear.
+\end{refereecomment}
+
+\begin{authorresponse}
+  We thank the referee for pointing this out. We have added a clarifying sentence in the text.
+\end{authorresponse}
+
+\subsection*{Minor Point 21}
+
+\begin{refereecomment}
+  The paragraph above Lemma A.3, it is not harmful to explicitly state
+  \[
+    (I-P_o(X)) \, A =
+    \begin{bmatrix}
+      O_{k-1} & O \\
+      O & S
+    \end{bmatrix}
+  \]
+  and add some discussion.
+\end{refereecomment}
+
+\begin{authorresponse}
+  That change was made. See Page 22 in the revised manuscript.
+\end{authorresponse}
+
+\subsection*{Minor Point 22}
+
+\begin{refereecomment}
+  Lemma A.1--A.3, if the results are new, I encourage the author to move them to a suitable place in the main text.
+\end{refereecomment}
+
+\begin{authorresponse}
+  These results are not new, though not commonly stated explicitly, so we have kept them in the appendix.
+\end{authorresponse}
+
+\section*{Closing}
+
+We hope that the revisions address the referee's concerns and make the manuscript clearer and more useful to readers.
+
+\end{document}
