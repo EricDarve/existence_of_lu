@@ -1,0 +1,551 @@
+\section{Matching normal forms}\label{sec:normalforms}
+
+The engine of both sufficiency proofs is a reduction of $A$ to a sparse
+normal form by invertible triangular transformations.  The normal forms are
+"matrix matchings": in the unsymmetric case a matching between row indices
+and column indices, in the symmetric case a matching of the index set with
+itself.
+
+\begin{definition}[matching matrix]\label{def:matching}
+  A matrix $\Pi \in \F^{n \by n}$ is a \emph{matching matrix} if every row
+  and every column of $\Pi$ contains at most one nonzero entry.
+  Equivalently,
+  \[
+    \Pi = \sum_{(i,j) \in \M} w_{ij} \, e_i e_j^T,
+  \]
+  where the \emph{matching} $\M = \M(\Pi) \subseteq \{1,\ldots,n\}^2$ has
+  pairwise distinct first coordinates and pairwise distinct second
+  coordinates, and the weights $w_{ij} \in \F$ are nonzero.  We call
+  $(i,j) \in \M$ a \emph{matched pair}, a row not appearing as a first
+  coordinate a \emph{zero row}, and a column not appearing as a second
+  coordinate a \emph{zero column}.  When all weights equal $1$, $\Pi$ is a
+  partial permutation matrix.
+\end{definition}
+
+\begin{definition}[symmetric matching matrix]\label{def:sym-matching}
+  A symmetric matrix $P \in \F^{n \by n}$ is a \emph{symmetric matching
+  matrix} if the index set $\{1, \ldots, n\}$ can be partitioned into
+  \begin{itemize}
+    \item \emph{isolated zero} indices, whose rows and columns vanish;
+    \item \emph{singletons} $t$ with $P[t,t] = \gamma_t \neq 0$ and no other
+      nonzero entry in row or column $t$;
+    \item \emph{pairs} $(i,j)$ with $i < j$,
+      \[
+        P[i,j] = P[j,i] = \alpha \neq 0,
+        \qquad
+        P[i,i] = 0,
+        \qquad
+        P[j,j] = \beta \in \F ,
+      \]
+      and no other nonzero entries in rows and columns $i, j$.
+  \end{itemize}
+  Each pair block
+  $\bigl(\begin{smallmatrix} 0 & \alpha\\ \alpha & \beta
+  \end{smallmatrix}\bigr)$ is nonsingular (determinant $-\alpha^2 \neq 0$).
+  Note the asymmetry within a pair: the \emph{earlier} index $i$ carries a
+  zero diagonal entry, while the later index $j$ may carry an arbitrary
+  diagonal weight $\beta$.
+\end{definition}
+
+The nonzero pattern of a symmetric matching matrix is not literally a
+matching when $\beta \neq 0$ (row $j$ then carries two nonzero entries), but
+its \emph{combinatorial content} is the matching that pairs $i$ with $j$ and
+matches each singleton with itself; \Cref{prop:canonical} below makes this
+precise.
+
+\subsection{Reduction of an arbitrary matrix}
+
+\begin{lemma}[triangular equivalence to a matching matrix]\label{lem:reduction-lu}
+  For every $A \in \F^{n \by n}$ there exist an invertible lower triangular
+  $M$, an invertible upper triangular $N$, and a matching matrix $\Pi$ such
+  that
+  \[
+    A = M \, \Pi \, N .
+  \]
+  The construction below computes $M$, $\Pi$, $N$ in $O(n^3)$ field
+  operations, and $M$, $N$ can be taken unit triangular.
+\end{lemma}
+
+\begin{proof}
+  We induct on $k$: we construct invertible unit lower (resp.\ upper)
+  triangular $M^{(k)}, N^{(k)} \in \F^{k \by k}$ and matching matrices
+  $\Pi^{(k)}$ with $A[1:k,1:k] = M^{(k)} \Pi^{(k)} N^{(k)}$.  For $k = 1$
+  take $M^{(1)} = N^{(1)} = (1)$ and $\Pi^{(1)} = (a_{11})$, whose matching
+  is $\{(1,1)\}$ if $a_{11} \neq 0$ and empty otherwise.
+
+  Assume the claim for $k - 1$, write $M = M^{(k-1)}$, $\Pi = \Pi^{(k-1)}$,
+  $N = N^{(k-1)}$, $\M = \M(\Pi)$, and border
+  \[
+    A[1:k,1:k] =
+    \begin{pmatrix}
+      A[1:k-1,1:k-1] & a\\
+      c^T & b
+    \end{pmatrix},
+    \qquad a, c \in \F^{k-1}, \; b \in \F .
+  \]
+  Setting $\widehat a := M^{-1} a$ and $\widehat c^{\,T} := c^T N^{-1}$,
+  \begin{equation}\label{eq:border-lu}
+    A[1:k,1:k] =
+    \begin{pmatrix}
+      M & 0\\
+      0 & 1
+    \end{pmatrix}
+    \begin{pmatrix}
+      \Pi & \widehat a\\
+      \widehat c^{\,T} & b
+    \end{pmatrix}
+    \begin{pmatrix}
+      N & 0\\
+      0 & 1
+    \end{pmatrix},
+  \end{equation}
+  and it remains to reduce the bordered middle matrix by further unit
+  triangular factors.  The reduction has two stages.
+
+  \emph{Stage 1: strip the matched part of the border.}
+  Define $x, y \in \F^{k-1}$ supported on the matched columns and rows of
+  $\Pi$:
+  \[
+    x_j := \widehat a_i / w_{ij},
+    \qquad
+    y_i := \widehat c_j / w_{ij},
+    \qquad (i,j) \in \M,
+  \]
+  with all other components zero.  Then $\Pi x$ agrees with $\widehat a$ on
+  every matched row, and $y^T \Pi$ agrees with $\widehat c^{\,T}$ on every
+  matched column, so
+  \begin{gather*}
+    e := \widehat a - \Pi x
+    \quad \text{is supported on the zero rows of } \Pi,\\
+    g^T := \widehat c^{\,T} - y^T \Pi
+    \quad \text{is supported on the zero columns of } \Pi .
+  \end{gather*}
+  Moreover $y^T e = 0$ and $g^T x = 0$, because in each product the supports
+  are disjoint (matched versus zero indices).  Setting
+  $f := b - y^T \Pi \, x$, a direct block multiplication gives
+  \begin{equation}\label{eq:peel-lu}
+    \begin{pmatrix}
+      \Pi & \widehat a\\
+      \widehat c^{\,T} & b
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      I & 0\\
+      y^T & 1
+    \end{pmatrix}
+    \begin{pmatrix}
+      \Pi & e\\
+      g^T & f
+    \end{pmatrix}
+    \begin{pmatrix}
+      I & x\\
+      0 & 1
+    \end{pmatrix}:
+  \end{equation}
+  indeed the product equals
+  $\bigl(\begin{smallmatrix} \Pi & \Pi x + e\\ y^T \Pi + g^T & y^T \Pi x +
+  y^T e + g^T x + f \end{smallmatrix}\bigr)$, and the corner reduces to
+  $y^T \Pi x + f = b$.
+
+  \emph{Stage 2: absorb the residual border.}
+  The middle matrix of \cref{eq:peel-lu} now has its border supported on
+  previously zero rows and columns of $\Pi$; we convert it into at most two
+  new matched pairs.
+
+  \emph{(2a) Residual column.}
+  If $e \neq 0$, let $i^\star$ be the index of its \emph{first} nonzero
+  component and $\alpha := e_{i^\star}$; by Stage 1, $i^\star$ is a zero row
+  of $\Pi$.  Let
+  \[
+    R := I + (\alpha^{-1} e - u_{i^\star}) \, u_{i^\star}^T \in
+    \F^{(k-1) \by (k-1)},
+  \]
+  where $u_{i^\star}$ is the $i^\star$th standard basis vector.  Since the
+  first nonzero of $e$ sits at $i^\star$, the vector
+  $\alpha^{-1}e - u_{i^\star}$ vanishes at and above position $i^\star$, so
+  $R$ is unit lower triangular.  Because row $i^\star$ of $\Pi$ is zero,
+  $R \, \Pi = \Pi$; and $R \, u_{i^\star} = \alpha^{-1} e$.  Hence
+  \[
+    \begin{pmatrix}
+      \Pi & e\\
+      g^T & f
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      R & 0\\
+      0 & 1
+    \end{pmatrix}
+    \begin{pmatrix}
+      \Pi & \alpha u_{i^\star}\\
+      g^T & f
+    \end{pmatrix}.
+  \]
+  If $e = 0$, skip this step.
+
+  \emph{(2b) Residual row.}
+  Symmetrically, if $g \neq 0$, let $j^\star$ be the first nonzero index of
+  $g$ and $\gamma := g_{j^\star}$; $j^\star$ is a zero column of $\Pi$.  With
+  the unit upper triangular
+  $S := I + u_{j^\star} (\gamma^{-1} g - u_{j^\star})^T$ we have
+  $\Pi S = \Pi$ and $u_{j^\star}^T S = \gamma^{-1} g^T$, so
+  \[
+    \begin{pmatrix}
+      \Pi & v\\
+      g^T & f
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      \Pi & v\\
+      \gamma u_{j^\star}^T & f
+    \end{pmatrix}
+    \begin{pmatrix}
+      S & 0\\
+      0 & 1
+    \end{pmatrix},
+    \qquad v \in \{\alpha u_{i^\star}, 0\},
+  \]
+  where we used that $S$ acts on the columns $1, \ldots, k-1$ only, leaving
+  the border column $v$ untouched.
+
+  \emph{(2c) Corner.}
+  Let $X$ denote the current middle matrix, with border column
+  $v = \alpha u_{i^\star}$ or $0$, border row $\gamma u_{j^\star}^T$ or $0$,
+  and corner $f$.  Three cases:
+  \begin{itemize}
+    \item If $e \neq 0$: row $i^\star$ of $X$ equals $(0, \ldots, 0 \mid
+      \alpha)$, so with the unit lower triangular
+      $T := I_k + (f/\alpha) \, u_k u_{i^\star}^T$ we get $X = T X_0$, where
+      $X_0$ is $X$ with corner $0$.
+    \item Else if $g \neq 0$: column $j^\star$ of $X$ equals
+      $\gamma \, u_k$, so with the unit upper triangular
+      $T' := I_k + (f/\gamma) \, u_{j^\star} u_k^T$ we get $X = X_0 T'$.
+    \item Else $X = \Pi \oplus (f)$.
+  \end{itemize}
+
+  Collecting the factors of Stages 1--2 into the outer factors of
+  \cref{eq:border-lu} yields
+  $A[1:k,1:k] = M^{(k)} \, \Pi^{(k)} \, N^{(k)}$ with unit triangular
+  invertible $M^{(k)}, N^{(k)}$ and
+  \[
+    \M(\Pi^{(k)}) = \M(\Pi) \;\cup\;
+    \begin{cases}
+      \{(i^\star, k)\} & \text{if } e \neq 0 \text{ (weight } \alpha)\\
+      \emptyset & \text{else}
+    \end{cases}
+    \;\cup\;
+    \begin{cases}
+      \{(k, j^\star)\} & \text{if } g \neq 0 \text{ (weight } \gamma)\\
+      \{(k,k)\} & \text{if } e = 0,\ g = 0,\ f \neq 0\\
+      \emptyset & \text{else.}
+    \end{cases}
+  \]
+  This is again a matching: the new pairs occupy row $i^\star$ (previously a
+  zero row), column $j^\star$ (previously a zero column), and the new index
+  $k$, whose row is used by at most one of $(k, j^\star)$, $(k,k)$ and whose
+  column by at most one of $(i^\star, k)$, $(k,k)$.  Taking $k = n$
+  completes the induction.  Each border step costs $O(k^2)$ operations (two
+  triangular solves and rank-one updates of $M$ and $N$), for $O(n^3)$ in
+  total.  Only additions, multiplications, and divisions by the nonzero
+  scalars $w_{ij}, \alpha, \gamma$ are used, so the construction is valid
+  over every field.
+\end{proof}
+
+\begin{remark}[normalizing the weights]\label{rem:normalize-weights}
+  Writing $W$ for the diagonal matrix with $W[j,j] = w_{ij}$ when column $j$
+  is matched by $(i,j) \in \M$ and $W[j,j] = 1$ otherwise, we have
+  $\Pi = \Pi_0 W$ with $\Pi_0$ a partial permutation matrix; absorbing $W$
+  into $N$ shows that the middle factor in \Cref{lem:reduction-lu} can be
+  taken to be a $0$--$1$ partial permutation matrix.  For invertible $A$
+  there are no zero rows or columns, $\Pi_0$ is a permutation, and
+  $A = M \Pi_0 N'$ is the Bruhat (LPU)
+  decomposition~\cite{elsner_bruhat_1979,strang_lpu_2012}; for singular $A$
+  it is the generalized Bruhat (LEU)
+  decomposition~\cite{malaschonok_2010,dumas_pernet_sultan_2017}.
+\end{remark}
+
+\subsection{Reduction of a symmetric matrix}
+
+Under congruence the two outer factors are transposes of one another, and
+weights can no longer be normalized away (only multiplied by squares); this
+is why the symmetric normal form retains the weights $\alpha$ and the
+diagonal fill $\beta$.
+
+\begin{lemma}[triangular congruence to a symmetric matching matrix]\label{lem:reduction-sym}
+  For every symmetric $A \in \F^{n \by n}$ there exist an invertible lower
+  triangular $M$ and a symmetric matching matrix $P$ such that
+  \[
+    A = M \, P \, M^T .
+  \]
+  The construction below computes $M$, $P$ in $O(n^3)$ field operations,
+  and $M$ can be taken unit lower triangular.
+\end{lemma}
+
+\begin{proof}
+  As before we induct on $k$, with base case
+  $A[1:1,1:1] = (1)(a_{11})(1)$: the index $1$ is a singleton if
+  $a_{11} \neq 0$ and an isolated zero otherwise.  Assume
+  $A[1:k-1,1:k-1] = M P M^T$ with $M$ unit lower triangular and $P$ a
+  symmetric matching matrix, and border
+  \[
+    A[1:k,1:k] =
+    \begin{pmatrix}
+      A[1:k-1,1:k-1] & a\\
+      a^T & b
+    \end{pmatrix},
+    \qquad
+    c := M^{-1} a,
+  \]
+  so that
+  \begin{equation}\label{eq:border-sym}
+    A[1:k,1:k] =
+    \begin{pmatrix}
+      M & 0\\
+      0 & 1
+    \end{pmatrix}
+    \begin{pmatrix}
+      P & c\\
+      c^T & b
+    \end{pmatrix}
+    \begin{pmatrix}
+      M^T & 0\\
+      0 & 1
+    \end{pmatrix}.
+  \end{equation}
+
+  \emph{Stage 1: strip the matched part of the border.}
+  $P$ is invertible on each of its nonzero blocks, so we may choose
+  $\xi \in \F^{k-1}$, supported on the singleton and pair indices, with
+  $P \xi$ equal to $c$ there: for a singleton $t$ set
+  $\xi_t = c_t / \gamma_t$; for a pair $(i,j)$ with weights
+  $(\alpha, \beta)$ solve the $2 \by 2$ system, i.e.
+  $\xi_j = c_i / \alpha$ and $\xi_i = (c_j - \beta \xi_j)/\alpha$.  Then
+  \[
+    e := c - P\xi
+  \]
+  is supported on the isolated zero indices of $P$, and $\xi^T e = 0$
+  (disjoint supports).  With $f := b - \xi^T P \xi$, a direct block
+  multiplication (using $\xi^T e = e^T \xi = 0$ in the corner) gives
+  \begin{equation}\label{eq:peel-sym}
+    \begin{pmatrix}
+      P & c\\
+      c^T & b
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      I & 0\\
+      \xi^T & 1
+    \end{pmatrix}
+    \begin{pmatrix}
+      P & e\\
+      e^T & f
+    \end{pmatrix}
+    \begin{pmatrix}
+      I & \xi\\
+      0 & 1
+    \end{pmatrix}.
+  \end{equation}
+
+  \emph{Stage 2: absorb the residual border.}
+  If $e = 0$, the middle matrix is $P \oplus (f)$: append the singleton $k$
+  with weight $\gamma_k = f$ if $f \neq 0$, or the isolated zero $k$ if
+  $f = 0$.  If $e \neq 0$, let $i^\star$ be its first nonzero index and
+  $\alpha := e_{i^\star} \neq 0$; since $e$ is supported on isolated
+  zeros, row and column $i^\star$ of $P$ vanish.  The unit lower triangular
+  $R := I + (\alpha^{-1} e - u_{i^\star}) u_{i^\star}^T$ satisfies
+  $R P R^T = P$ and $R u_{i^\star} = \alpha^{-1} e$, whence
+  \[
+    \begin{pmatrix}
+      P & e\\
+      e^T & f
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      R & 0\\
+      0 & 1
+    \end{pmatrix}
+    \begin{pmatrix}
+      P & \alpha u_{i^\star}\\
+      \alpha u_{i^\star}^T & f
+    \end{pmatrix}
+    \begin{pmatrix}
+      R^T & 0\\
+      0 & 1
+    \end{pmatrix}.
+  \]
+  The middle matrix is the symmetric matching matrix obtained from $P$ by
+  adding the pair $(i^\star, k)$ with weights $\alpha$ and $\beta = f$: the
+  earlier index $i^\star$ (previously isolated) has zero diagonal entry, as
+  required by \Cref{def:sym-matching}.  Absorbing the congruence factors of
+  \cref{eq:peel-sym} and Stage~2 into the outer factors of
+  \cref{eq:border-sym} completes the induction.  The cost analysis and
+  field-generality are as in \Cref{lem:reduction-lu}; in particular no
+  division by $2$ occurs, so the construction is valid in characteristic
+  $2$.
+\end{proof}
+
+\begin{remark}[relation to known canonical forms]\label{rem:known-forms}
+  Symmetric elimination without pivoting was studied by Van Dooren and
+  Strang~\cite{vandooren_strang_2014}, who factor a real symmetric matrix
+  as $A = LPL^T$ with $P$ built from diagonal entries $0, \pm 1$ and
+  symmetric exchange blocks; \Cref{lem:reduction-sym} is a field-general,
+  weighted version of that reduction.  From the canonical-form standpoint,
+  Szechtman~\cite{szechtman_2007} classified symmetric matrices under
+  congruence by triangular groups: for $\operatorname{char} \F \neq 2$ the
+  canonical forms under unit-triangular congruence are weighted symmetric
+  sub-permutation matrices, over any field, while for fields of
+  characteristic $2$ (assuming every element is a square) the list of
+  canonical forms necessarily includes $2 \by 2$ blocks with a nonzero
+  corner --- precisely the $\beta$-entries retained in
+  \Cref{def:sym-matching}.  The proof given above is included because it is
+  short, uniform in the field and the characteristic, and is literally the
+  algorithm implemented in \Cref{sec:validation}.
+\end{remark}
+
+\begin{remark}[signed matching matrices over $\mathbb{R}$]\label{rem:signed}
+  Over $\mathbb{R}$ (more generally, over any field of characteristic
+  $\neq 2$ in which every element or its negative is a square) the
+  symmetric normal form can be normalized further by a diagonal-plus-shear
+  congruence, applied blockwise.  For a pair block, with $i < j$,
+  \[
+    \begin{pmatrix}
+      1 & 0\\
+      -\beta/(2\alpha) & 1
+    \end{pmatrix}
+    \begin{pmatrix}
+      0 & \alpha\\
+      \alpha & \beta
+    \end{pmatrix}
+    \begin{pmatrix}
+      1 & -\beta/(2\alpha)\\
+      0 & 1
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      0 & \alpha\\
+      \alpha & 0
+    \end{pmatrix},
+  \]
+  where the shear adds a multiple of row/column $i$ to row/column $j > i$
+  and is therefore lower triangular; scaling index $j$ by $\alpha^{-1}$
+  turns the block into
+  $\bigl(\begin{smallmatrix} 0 & 1\\ 1 & 0 \end{smallmatrix}\bigr)$, and
+  scaling a singleton $t$ by $|\gamma_t|^{-1/2}$ turns it into
+  $\sgn(\gamma_t)$.  Every real symmetric matrix is thus congruent, by an
+  invertible lower triangular congruence, to a \emph{signed matching
+  matrix}: a symmetric matrix with entries in $\{0, \pm 1\}$, at most one
+  nonzero per row and column, diagonal entries in $\{0, \pm 1\}$, and
+  off-diagonal exchange blocks
+  $\bigl(\begin{smallmatrix} 0 & 1\\ 1 & 0 \end{smallmatrix}\bigr)$.  The
+  division by $2$ makes this normalization unavailable in characteristic
+  $2$, which is why \Cref{lem:reduction-sym} retains $\beta$; over
+  $GF(2)$, e.g., $\bigl(\begin{smallmatrix} 0 & 1\\ 1 & 1
+  \end{smallmatrix}\bigr)$ is not congruent to
+  $\bigl(\begin{smallmatrix} 0 & 1\\ 1 & 0 \end{smallmatrix}\bigr)$: the
+  former is nonalternating, the latter alternating, and congruence
+  preserves this distinction.
+\end{remark}
+
+\subsection{The normal form is canonical}
+
+The matchings produced by
+\Cref{lem:reduction-lu,lem:reduction-sym} are not artifacts of the
+particular construction: they are invariants of $A$, computable from its
+rank profile.  Part~(1) below coincides with the \emph{rank profile matrix}
+of Dumas, Pernet, and Sultan~\cite{dumas_pernet_sultan_2017}; part~(2) is
+the congruence analogue (cf.~\cite{bagno_cherniavsky_2012,szechtman_2007}).
+For $1 \le i, j \le n$ let
+\[
+  r_{ij}(A) := \rk\bigl(A[1:i,1:j]\bigr),
+  \qquad
+  \Delta_{ij}(A) := r_{ij} - r_{i-1,j} - r_{i,j-1} + r_{i-1,j-1},
+\]
+with the convention $r_{0j} = r_{i0} = 0$.  We call $(i,j)$ a
+\emph{rank jump} of $A$ if $\Delta_{ij}(A) = 1$; that
+$\Delta_{ij} \in \{0,1\}$ always holds follows from
+\Cref{lem:reduction-lu} together with part~(1) below (or
+see~\cite{dumas_pernet_sultan_2017}).
+
+\begin{proposition}[canonicity]\label{prop:canonical}
+  \begin{enumerate}
+    \item If $A = M \Pi N$ as in \Cref{lem:reduction-lu}, then
+      \[
+        r_{ij}(A) = \#\{(i',j') \in \M(\Pi) : i' \le i,\ j' \le j\}
+        \quad \text{for all } i, j,
+      \]
+      and consequently $\M(\Pi)$ is exactly the set of rank jumps of $A$.
+      In particular the matching --- and hence the zero rows and zero
+      columns of $\Pi$ --- is uniquely determined by $A$ (the weights are
+      not: diagonal scalings can be absorbed into $M$ or $N$).
+    \item If $A = A^T = M P M^T$ as in \Cref{lem:reduction-sym}, then the
+      singletons of $P$ are the diagonal rank jumps $\{t :
+      \Delta_{tt}(A) = 1\}$ and the pairs of $P$ are the unordered
+      off-diagonal rank jumps $\{\{i,j\} : i \neq j,\ \Delta_{ij}(A) = 1\}$;
+      the partition of \Cref{def:sym-matching} is uniquely determined by
+      $A$.
+  \end{enumerate}
+\end{proposition}
+
+\begin{proof}
+  (1) By \cref{eq:tri-slices},
+  $A[1:i,1:j] = M[1:i,:] \, \Pi \, N[:,1:j] = M_i \, \Pi[1:i,1:j] \, N_j$
+  with $M_i, N_j$ invertible, so $r_{ij}(A) = r_{ij}(\Pi)$ by
+  \Cref{lem:rank-invariance}.  The nonzero columns of $\Pi[1:i,1:j]$ are
+  the vectors $w_{i'j'} e_{i'}$ for the matched pairs with
+  $i' \le i,\ j' \le j$; they occupy distinct rows, hence are linearly
+  independent, giving the rank formula.  The function
+  $(i,j) \mapsto \#\{(i',j') \in \M : i' \le i, j' \le j\}$ is a sum of
+  corner indicators $\mathbf{1}_{\{i \ge i',\, j \ge j'\}}$, and
+  $\Delta_{ij}(\mathbf{1}_{\{i \ge a,\, j \ge b\}}) = \mathbf{1}_{\{(i,j) =
+  (a,b)\}}$, so the rank jumps of $A$ are exactly the matched pairs.
+
+  (2) Congruence is the special case $N = M^T$ of a triangular
+  equivalence, so as in (1), $r_{ij}(A) = r_{ij}(P)$ for all $i,j$.  The
+  nonzero blocks of $P$ occupy pairwise disjoint row sets and column sets,
+  so any rectangle $P[1:i,1:j]$ decomposes, after row and column
+  permutations, into a direct sum of the blocks' restrictions, and its rank
+  is the sum of the blocks' contributions.  A singleton $t$ contributes
+  $\mathbf{1}_{\{i \ge t,\, j \ge t\}}$.  A pair $(i_0, j_0)$, $i_0 < j_0$,
+  restricts to a matrix of rank $2$ when both its rows and columns are
+  present, i.e.\ on the region $\{i \ge j_0,\ j \ge j_0\}$ (the two entries
+  $\alpha$ are then present and the block has determinant
+  $-\alpha^2 \neq 0$, regardless of $\beta$); it restricts to a matrix of
+  rank $\ge 1$ exactly when at least one entry $\alpha$ is present, i.e.\ on
+  the union $\{i \ge i_0,\ j \ge j_0\} \cup \{i \ge j_0,\ j \ge i_0\}$,
+  whose intersection is $\{i \ge j_0,\ j \ge j_0\}$.  Writing the rank
+  contribution as
+  $\mathbf{1}_{\{\text{rank} \ge 1\}} + \mathbf{1}_{\{\text{rank} = 2\}}$
+  and using inclusion--exclusion for the union, the contribution of the pair
+  equals
+  \[
+    \Bigl(
+    \mathbf{1}_{\{i \ge i_0,\, j \ge j_0\}}
+    + \mathbf{1}_{\{i \ge j_0,\, j \ge i_0\}}
+    - \mathbf{1}_{\{i \ge j_0,\, j \ge j_0\}}
+    \Bigr)
+    + \mathbf{1}_{\{i \ge j_0,\, j \ge j_0\}}
+    =
+    \mathbf{1}_{\{i \ge i_0,\, j \ge j_0\}}
+    + \mathbf{1}_{\{i \ge j_0,\, j \ge i_0\}} .
+  \]
+  Taking mixed
+  differences, the rank jumps contributed are exactly $(t,t)$ for
+  singletons and $(i_0, j_0), (j_0, i_0)$ for pairs --- in particular
+  $\beta$ produces no jump at $(j_0, j_0)$.  Since blocks are disjoint, the
+  jump sets are disjoint, and the claim follows.
+\end{proof}
+
+\begin{remark}[compatibility of the two normal forms]\label{rem:compatibility}
+  Let $A$ be symmetric.  By \Cref{prop:canonical}, the rank-jump set of $A$
+  is symmetric ($\Delta_{ij} = \Delta_{ji}$), and the unsymmetric normal
+  form $\Pi$ of $A$ has matching
+  \[
+    \M(\Pi) = \{(t,t) : t \text{ singleton of } P\}
+    \;\cup\;
+    \{(i,j), (j,i) : (i,j) \text{ pair of } P\} .
+  \]
+  Thus each $2 \by 2$ pair block of the congruence normal form corresponds
+  to the \emph{two} matched pairs $(i,j)$ and $(j,i)$ of the equivalence
+  normal form.  This dictionary is what makes
+  \Cref{cor:sym-lu-ldlt} structurally transparent, and we will see it again
+  in the combinatorial conditions of \Cref{sec:combinatorics}.
+\end{remark}

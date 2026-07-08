@@ -1,0 +1,143 @@
+\section{The criteria on the normal forms are prefix conditions}\label{sec:combinatorics}
+
+On a matching matrix, all three nullities entering the criteria are counts
+of simple combinatorial objects, and the criteria collapse to conditions on
+prefixes of the index set.
+
+\subsection{The unsymmetric normal form}
+
+Let $\Pi$ be a matching matrix with matching $\M$.  Relative to the cut
+after index $k$, classify the matched pairs and define
+\begin{align*}
+  \iota_k &:= \#\{(i,j) \in \M : i \le k \text{ and } j \le k\}
+  && \text{(pairs inside the leading block)},\\
+  \chi^R_k &:= \#\{(i,j) \in \M : i \le k < j\}
+  && \text{(pairs crossing the cut row-first)},\\
+  \chi^C_k &:= \#\{(i,j) \in \M : j \le k < i\}
+  && \text{(pairs crossing the cut column-first)},\\
+  r^0_k &:= \#\{\text{zero rows} \le k\},
+  \qquad
+  c^0_k := \#\{\text{zero columns} \le k\}. \hspace{-12em}
+\end{align*}
+
+\begin{lemma}[nullities of a matching matrix]\label{lem:null-matching}
+  For every $k$,
+  \begin{equation}\label{eq:null-matching}
+    \nl(\Pi[1:k,1:k]) = r^0_k + \chi^R_k = c^0_k + \chi^C_k,
+    \qquad
+    \nl(\Pi[:,1:k]) = c^0_k,
+    \qquad
+    \nl({\Pi[1:k,:]}^T) = r^0_k .
+  \end{equation}
+  In particular the \emph{bookkeeping identity}
+  $r^0_k + \chi^R_k = c^0_k + \chi^C_k$ holds.
+\end{lemma}
+
+\begin{proof}
+  The nonzero columns of the $n \by k$ block $\Pi[:,1:k]$ are the vectors
+  $w_{ij} e_i$ over the matched pairs with $j \le k$; they occupy distinct
+  rows and are therefore linearly independent, while the remaining $c^0_k$
+  columns vanish.  Hence $\rk(\Pi[:,1:k]) = k - c^0_k$, giving the second
+  formula, and the third follows by applying the same argument to $\Pi^T$,
+  whose matching is the transpose of $\M$.
+
+  The leading block $\Pi[1:k,1:k]$ is itself a matching matrix whose
+  matched pairs are the $\iota_k$ pairs inside the block, so
+  $\rk(\Pi[1:k,1:k]) = \iota_k$ (as in \Cref{prop:canonical}, its nonzero
+  columns are independent).  Classify the $k$ row indices $\le k$: each is
+  a zero row, or belongs to a pair with $j \le k$, or to a pair with
+  $j > k$; the classes are disjoint and exhaust, so
+  $k = r^0_k + \iota_k + \chi^R_k$ and
+  $\nl(\Pi[1:k,1:k]) = k - \iota_k = r^0_k + \chi^R_k$.  Classifying the
+  column indices instead gives $k = c^0_k + \iota_k + \chi^C_k$ and the
+  alternative expression, whence the bookkeeping identity.
+\end{proof}
+
+\begin{lemma}[prefix form of the LU criterion]\label{lem:comb-lu}
+  For a matching matrix $\Pi$, criterion \cref{eq:lu-crit} at index $k$ is
+  equivalent to each of
+  \[
+    \text{(a) } \chi^R_k \le c^0_k,
+    \qquad
+    \text{(b) } \chi^C_k \le r^0_k,
+    \qquad
+    \text{(c) } \nu_k := \#\{(i,j) \in \M : \min(i,j) \le k\} \ \le\ k .
+  \]
+\end{lemma}
+
+\begin{proof}
+  Substituting \cref{eq:null-matching} into \cref{eq:lu-crit}: using the
+  first expression for the leading nullity,
+  $r^0_k + \chi^R_k \le c^0_k + r^0_k$, i.e.\ (a); using the second,
+  $c^0_k + \chi^C_k \le c^0_k + r^0_k$, i.e.\ (b).  By the bookkeeping
+  identity, (a) and (b) are equivalent (they have equal slack).  For (c):
+  a pair has $\min(i,j) \le k$ iff it is counted by $\iota_k$, $\chi^R_k$,
+  or $\chi^C_k$, so $\nu_k = \iota_k + \chi^R_k + \chi^C_k$; substituting
+  $\iota_k = k - r^0_k - \chi^R_k$ from the proof of
+  \Cref{lem:null-matching} gives
+  $\nu_k \le k \iff \chi^C_k \le r^0_k$, which is (b).
+\end{proof}
+
+\subsection{The symmetric normal form}
+
+Let $P$ be a symmetric matching matrix.  Define
+\[
+  \zeta_k := \#\{\text{isolated zero indices} \le k\},
+  \qquad
+  \chi_k := \#\{\text{pairs } (i,j) \text{ of } P : i \le k < j\} .
+\]
+
+\begin{lemma}[nullities of a symmetric matching matrix]\label{lem:null-sym-matching}
+  For every $k$,
+  \[
+    \nl(P[1:k,1:k]) = \zeta_k + \chi_k,
+    \qquad
+    \nl(P[:,1:k]) = \zeta_k .
+  \]
+\end{lemma}
+
+\begin{proof}
+  The columns $t \le k$ of the $n \by k$ block $P[:,1:k]$ are: zero for
+  isolated $t$; $\gamma_t e_t$ for singletons; for a pair $(i,j)$ of $P$,
+  column $i$ of $P$ equals $\alpha e_j$ and column $j$ equals
+  $\alpha e_i + \beta e_j$ (whichever of the two has index $\le k$ is
+  included).  Distinct blocks occupy disjoint row sets, and within a pair
+  with both $i, j \le k$ the two columns $\alpha e_j$ and
+  $\alpha e_i + \beta e_j$ are independent (restricted to rows $\{i,j\}$
+  they form the pair block, of determinant $-\alpha^2$).  Hence the nonzero
+  columns of $P[:,1:k]$ are independent, exactly the isolated columns
+  vanish, and $\nl(P[:,1:k]) = \zeta_k$.
+
+  The leading block $P[1:k,1:k]$ is block diagonal (up to symmetric
+  permutation) with blocks: zeros at isolated indices ($\zeta_k$ of them);
+  $(\gamma_t)$ at singletons (rank $1$); full pair blocks when
+  $j \le k$ (rank $2$); and, for each crossing pair $i \le k < j$, the
+  single row/column $i$ whose entries within the block all vanish
+  (its only nonzero, $\alpha$, sits in column $j > k$) --- contributing one
+  null direction each.  Hence
+  $\nl(P[1:k,1:k]) = \zeta_k + \chi_k$.
+\end{proof}
+
+\begin{lemma}[prefix form of the $LDL^T$ criterion]\label{lem:comb-sym}
+  For a symmetric matching matrix $P$, criterion \cref{eq:ldlt-crit} at
+  index $k$ is equivalent to
+  \begin{equation}\label{eq:prefix-sym}
+    \chi_k \ \le\ \zeta_k .
+  \end{equation}
+\end{lemma}
+
+\begin{proof}
+  Substitute \Cref{lem:null-sym-matching} into \cref{eq:ldlt-crit}:
+  $\zeta_k + \chi_k \le 2 \zeta_k$.
+\end{proof}
+
+\begin{remark}\label{rem:comb-dictionary}
+  Under the dictionary of \Cref{rem:compatibility} --- a pair $(i,j)$ of
+  $P$ corresponds to the two matched pairs $(i,j)$ and $(j,i)$ of the
+  unsymmetric normal form $\Pi$ of the same symmetric $A$, an isolated zero
+  to a common zero row and column --- we have
+  $\chi^R_k = \chi^C_k = \chi_k$ and $r^0_k = c^0_k = \zeta_k$, and
+  conditions (a), (b) of \Cref{lem:comb-lu} both become
+  \cref{eq:prefix-sym}.  The combinatorial obstruction is thus literally
+  the same in the two problems.
+\end{remark}

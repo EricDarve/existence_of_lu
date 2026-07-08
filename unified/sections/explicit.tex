@@ -1,0 +1,244 @@
+\section{Explicit factorization of the normal forms}\label{sec:explicit}
+
+We now factor the normal forms under the prefix conditions of
+\Cref{sec:combinatorics}.  Both constructions build the factorization as a
+sum of rank-one terms indexed by \emph{slots} $t \in \{1, \ldots, n\}$: for
+$A = LU$,
+\begin{equation}\label{eq:rank-one-lu}
+  LU = \sum_{t=1}^{n} \ell_t \, u_t^T,
+\end{equation}
+where $\ell_t$ is column $t$ of $L$ (supported on rows $\ge t$) and $u_t^T$
+is row $t$ of $U$ (supported on columns $\ge t$); for $A = LDL^T$,
+\begin{equation}\label{eq:rank-one-ldlt}
+  LDL^T = \sum_{t=1}^{n} d_t \, \ell_t \ell_t^T .
+\end{equation}
+The difference between the two problems is now plain: in
+\cref{eq:rank-one-lu} each term is an arbitrary rank-one matrix with the
+required support, whereas in \cref{eq:rank-one-ldlt} each term is
+\emph{symmetric} rank-one.  A single off-diagonal exchange block
+$\alpha(e_i e_j^T + e_j e_i^T)$ has rank $2$ and zero diagonal, and cannot
+equal a sum of terms each supported in rows and columns $\ge i$ unless
+partial sums are allowed to cancel (over any field: the $(i,i)$ entry
+forces $d_t \ell_t[i]^2 = 0$ for every term while the $(i,j)$ entry needs
+some $d_t \ell_t[i] \neq 0$); this forces the telescoping chains of
+\Cref{thm:ldlt-matching}.
+
+\subsection{LU of a matching matrix: greedy slot assignment}
+
+\begin{theorem}\label{thm:lu-matching}
+  Let $\Pi$ be a matching matrix satisfying the prefix condition
+  $\nu_k \le k$ for all $k$ (\Cref{lem:comb-lu}(c)).  Then there is an
+  injection
+  \begin{equation}\label{eq:slot-injection}
+    \sigma : \M(\Pi) \hookrightarrow \{1, \ldots, n\},
+    \qquad
+    \sigma(i,j) \le \min(i,j) \quad \text{for every } (i,j) \in \M(\Pi),
+  \end{equation}
+  computable by a greedy pass, and setting, for each $(i,j) \in \M$ with
+  $t = \sigma(i,j)$,
+  \[
+    \ell_t := e_i,
+    \qquad
+    u_t := w_{ij} \, e_j,
+  \]
+  and $\ell_t = u_t = 0$ for slots $t \notin \range(\sigma)$, the matrices
+  $L = (\ell_1, \ldots, \ell_n)$ and $U$ with rows $u_1^T, \ldots, u_n^T$
+  are lower and upper triangular, respectively, and $L U = \Pi$.
+\end{theorem}
+
+\begin{proof}
+  \emph{The assignment suffices.}
+  Given $\sigma$ as in \cref{eq:slot-injection}, triangularity is immediate:
+  $\ell_t = e_i$ has its support at row $i \ge \min(i,j) \ge t$, and $u_t$
+  at column $j \ge t$.  Since $\sigma$ is injective, each matched pair
+  contributes its own term in \cref{eq:rank-one-lu} and empty slots
+  contribute zero, so
+  $L U = \sum_{(i,j) \in \M} e_i \, (w_{ij} e_j)^T = \Pi$.  Note that both
+  diagonals may carry zeros: slot $t$ has $L[t,t] = 1$ only if
+  $i = t$, and $U[t,t] \neq 0$ only if $j = t$.
+
+  \emph{The assignment exists.}
+  Process the pairs in order of nondecreasing $m(i,j) := \min(i,j)$, ties
+  broken arbitrarily, maintaining the set of free slots (initially
+  $\{1, \ldots, n\}$); assign to each pair the largest free slot
+  $t \le m(i,j)$ (the argument below is valid for \emph{any} choice of
+  free slot $\le m(i,j)$; we fix the largest for definiteness).  Suppose
+  the greedy fails at a pair with bound
+  $m := m(i,j)$: all slots $1, \ldots, m$ are occupied.  Every occupied
+  slot $s \le m$ was assigned to a previously processed pair, whose bound
+  was $\le m$ (bounds are nondecreasing along the pass).  Together with the
+  current pair, this exhibits $m + 1$ pairs with $\min \le m$, i.e.\
+  $\nu_m \ge m + 1$, contradicting the prefix condition.  Hence the greedy
+  assigns every pair and produces $\sigma$.
+\end{proof}
+
+\begin{remark}[which pairs need rerouting]\label{rem:rerouting}
+  Order the pairs by their bound $m(i,j)$.  A diagonal pair $(t,t)$ can
+  take its own slot $t$; a pair $(i,j)$ with $i < j$ (an "above" pair)
+  would naturally take slot $i$, and a "below" pair $(i,j)$ with $i > j$
+  slot $j$.  Conflicts occur exactly at \emph{crossing indices} $t$ that
+  are simultaneously the row of an above pair $(t, j)$ and the column of a
+  below pair $(i, t)$: one of the two must be rerouted to an earlier free
+  slot, whose availability is exactly what the prefix condition
+  guarantees --- in the leanest case the free slot comes from an index that
+  is both a zero row and a zero column.  The exchange matrix $A_2$ of
+  \cref{eq:swap-vs-exchange} is the minimal example: index $2$ is crossing,
+  and the pair $(2,3)$ (or $(3,2)$) is rerouted through slot $1$, whose row
+  and column are zero.  This is the precise sense in which zero diagonal
+  entries are a \emph{resource} for unpivoted factorization.
+\end{remark}
+
+\subsection{$LDL^T$ of a symmetric matching matrix: threads}
+
+Throughout this subsection $P$ is a symmetric matching matrix satisfying
+$\chi_k \le \zeta_k$ for all $k$ (\Cref{lem:comb-sym}).
+
+\begin{lemma}[thread partition]\label{lem:threads}
+  The pairs of $P$ can be partitioned into \emph{threads}
+  \begin{equation}\label{eq:thread}
+    r < i_1 < j_1 < i_2 < j_2 < \cdots < i_m < j_m,
+  \end{equation}
+  where $r$ is an isolated zero index, $(i_q, j_q)$ are pairs of $P$, and
+  distinct threads use disjoint sets of indices.
+\end{lemma}
+
+\begin{proof}
+  Scan the indices from left to right, maintaining a set of \emph{free
+  threads}.  When an isolated zero index $r$ is encountered, create a new
+  free thread rooted at $r$.  When a pair $(i,j)$ starts at index $i$,
+  attach it to any free thread, which becomes busy until index $j$; when
+  the scan reaches $j$, the thread becomes free again.  (Each index belongs
+  to at most one block, so no two events collide at the same index.)  It
+  remains to show a free thread is always available when a pair starts at
+  $i$.  The threads created before index $i$ number $\zeta_{i-1} = \zeta_i$
+  ($i$ is a pair index, not an isolated zero).  The threads busy at that
+  moment are those attached to pairs $(i', j')$ with $i' < i < j'$;
+  together with the new pair, these are exactly the pairs counted by
+  $\chi_i = \#\{(i', j') : i' \le i < j'\}$, so at most $\chi_i - 1$
+  threads are busy when the new pair arrives.  Since $\chi_i \le \zeta_i$,
+  at least $\zeta_i - (\chi_i - 1) \ge 1$ of the created threads are
+  free.  By construction
+  each thread's blocks are attached after its root and after the previous
+  block's end, giving the interleaving \cref{eq:thread}, and every index is
+  used by at most one thread.
+\end{proof}
+
+\begin{lemma}[one thread telescopes]\label{lem:telescope}
+  Fix a thread \cref{eq:thread} and write $\alpha_q \neq 0$ and $\beta_q$
+  for the weights of the pair $(i_q, j_q)$.  Define, backward for
+  $q = m, m-1, \ldots, 1$:
+  \[
+    \delta_{m+1} := 1,
+    \quad
+    s_{m+1} := 0 \in \F^n,
+    \qquad
+    v_q :=
+    \begin{cases}
+      0 & \beta_q \neq 0\\
+      1 & \beta_q = 0
+    \end{cases},
+    \quad
+    \delta_q := \delta_{q+1} v_q^2 - \beta_q,
+    \quad
+    s_q := -\frac{\alpha_q}{\delta_q} e_{i_q}
+    + \frac{\delta_{q+1} v_q}{\delta_q} s_{q+1} .
+  \]
+  Each $\delta_q$ is nonzero ($\delta_q = -\beta_q \neq 0$ in the first
+  case, $\delta_q = \delta_{q+1}$ in the second).  Define the columns and
+  diagonal entries
+  \[
+    \ell_r := s_1, \quad d_r := \delta_1;
+    \qquad
+    \ell_{i_q} := s_q + e_{j_q}, \quad d_{i_q} := -\delta_q;
+    \qquad
+    \ell_{j_q} := s_{q+1} + v_q e_{j_q}, \quad d_{j_q} := \delta_{q+1} .
+  \]
+  Then each $\ell_t$ is supported on rows $\ge t$, and
+  \begin{equation}\label{eq:thread-sum}
+    d_r \ell_r \ell_r^T
+    + \sum_{q=1}^{m}
+    \bigl( d_{i_q} \ell_{i_q} \ell_{i_q}^T + d_{j_q} \ell_{j_q}
+    \ell_{j_q}^T \bigr)
+    =
+    \sum_{q=1}^{m}
+    \Bigl( \alpha_q \bigl( e_{i_q} e_{j_q}^T + e_{j_q} e_{i_q}^T \bigr)
+    + \beta_q \, e_{j_q} e_{j_q}^T \Bigr),
+  \end{equation}
+  i.e.\ the thread's columns reproduce exactly the thread's blocks of $P$.
+\end{lemma}
+
+\begin{proof}
+  \emph{Support.}  By downward induction, $s_q$ is supported on
+  $\{i_q, i_{q+1}, \ldots, i_m\}$.  Hence $\ell_r = s_1$ is supported on
+  indices $\ge i_1 > r$; $\ell_{i_q}$ on
+  $\{i_q, \ldots, i_m\} \cup \{j_q\}$, all $\ge i_q$; and $\ell_{j_q}$ on
+  $\{i_{q+1}, \ldots, i_m\} \cup \{j_q\}$, all $\ge j_q$ since
+  $i_{q+1} > j_q$.
+
+  \emph{Telescoping.}  The recursion gives the two identities
+  \begin{equation}\label{eq:thread-identities}
+    -\delta_q s_q + \delta_{q+1} v_q \, s_{q+1} = \alpha_q e_{i_q},
+    \qquad
+    \delta_{q+1} v_q^2 - \delta_q = \beta_q .
+  \end{equation}
+  Expanding the symmetric rank-one terms of one pair,
+  \begin{align*}
+    d_{i_q} \ell_{i_q} \ell_{i_q}^T + d_{j_q} \ell_{j_q} \ell_{j_q}^T
+    &= -\delta_q (s_q + e_{j_q})(s_q + e_{j_q})^T
+    + \delta_{q+1} (s_{q+1} + v_q e_{j_q})(s_{q+1} + v_q e_{j_q})^T \\
+    &= \bigl( -\delta_q s_q s_q^T + \delta_{q+1} s_{q+1} s_{q+1}^T \bigr)
+    + \bigl( -\delta_q s_q + \delta_{q+1} v_q s_{q+1} \bigr) e_{j_q}^T \\
+    &\qquad
+    + e_{j_q} \bigl( -\delta_q s_q + \delta_{q+1} v_q s_{q+1} \bigr)^T
+    + \bigl( \delta_{q+1} v_q^2 - \delta_q \bigr) e_{j_q} e_{j_q}^T \\
+    &= \bigl( -\delta_q s_q s_q^T + \delta_{q+1} s_{q+1} s_{q+1}^T \bigr)
+    + \alpha_q \bigl( e_{i_q} e_{j_q}^T + e_{j_q} e_{i_q}^T \bigr)
+    + \beta_q \, e_{j_q} e_{j_q}^T,
+  \end{align*}
+  using \cref{eq:thread-identities}.  Summing over $q = 1, \ldots, m$, the
+  first brackets telescope to
+  $-\delta_1 s_1 s_1^T + \delta_{m+1} s_{m+1} s_{m+1}^T
+  = -\delta_1 s_1 s_1^T$, which is cancelled by the root term
+  $d_r \ell_r \ell_r^T = \delta_1 s_1 s_1^T$.  This proves
+  \cref{eq:thread-sum}.
+\end{proof}
+
+\begin{theorem}\label{thm:ldlt-matching}
+  Let $P$ be a symmetric matching matrix with $\chi_k \le \zeta_k$ for all
+  $k$.  Then there are a lower triangular $S$ and a diagonal $E$ with
+  \[
+    P = S E S^T .
+  \]
+\end{theorem}
+
+\begin{proof}
+  Partition the pairs into threads (\Cref{lem:threads}) and apply
+  \Cref{lem:telescope} to each thread, obtaining columns
+  $\ell_t$ and weights $d_t$ for every index $t$ in a thread.  For each
+  singleton $t$ set $\ell_t := e_t$ and $d_t := \gamma_t$; for isolated
+  zero indices not rooting a thread set $\ell_t := 0$, $d_t := 0$.  Let
+  $S := (\ell_1, \ldots, \ell_n)$ and $E := \operatorname{diag}(d_1,
+  \ldots, d_n)$.  Every $\ell_t$ is supported on rows $\ge t$, so $S$ is
+  lower triangular.  Distinct threads and singletons use disjoint index
+  sets, so summing \cref{eq:thread-sum} over threads and adding the
+  singleton terms $\gamma_t e_t e_t^T$ reproduces every block of $P$ and
+  nothing else:
+  $S E S^T = \sum_t d_t \ell_t \ell_t^T = P$.
+\end{proof}
+
+\begin{remark}[the real signed case]\label{rem:signed-threads}
+  Over $\mathbb{R}$, after the normalization of \Cref{rem:signed}
+  ($\alpha_q = 1$, $\beta_q = 0$), the recursion of \Cref{lem:telescope}
+  simplifies to $v_q = 1$, $\delta_q = 1$, and
+  $s_q = s_{q+1} - e_{i_q} = -(e_{i_q} + e_{i_{q+1}} + \cdots + e_{i_m})$,
+  so the thread columns are signed partial sums and
+  \[
+    d_r = 1, \qquad d_{i_q} = -1, \qquad d_{j_q} = 1 :
+  \]
+  the diagonal alternates along each thread, and $D$ can be taken with
+  entries in $\{0, \pm 1\}$.  The factorization
+  \cref{eq:exchange-factorizations} of $A_2$ is exactly the one-thread case
+  $r = 1 < i_1 = 2 < j_1 = 3$, obtained by seeding the recursion with
+  $\delta_{m+1} = -1$ instead of $1$ (valid whenever all $\beta_q = 0$),
+  which flips the sign of every $\delta_q$ and $s_q$.
+\end{remark}

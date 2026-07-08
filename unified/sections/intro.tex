@@ -1,0 +1,162 @@
+\section{Introduction}\label{sec:intro}
+
+Let $\F$ be an arbitrary field and let $A \in \F^{n \by n}$.  It is classical
+that when $A$ is nonsingular, a factorization $A = LU$ with $L$ lower
+triangular and $U$ upper triangular exists if and only if every leading
+principal submatrix $A[1:k,1:k]$ is nonsingular~\cite{higham_gaussian_2011,golub_matrix_2013}.
+The standard remedy when this condition fails is pivoting: for any $A$ there
+are permutations $P$ (and $Q$) such that $PA = LU$ or $PAQ = LU$.  Pivoting,
+however, changes the problem.  When the row and column indices carry meaning
+--- temporal order in autoregressive models, causal order in structural
+equation models, or a fixed elimination order imposed by an application ---
+the factorization must respect the original indexing, and the correct
+question becomes: \emph{for which matrices $A$ does $A = LU$ hold with no
+permutations at all?}  We refer to~\cite{darve_lu_2026} for an extended
+discussion of this motivation.
+
+Two features make the unpivoted question fundamentally different from the
+classical one.  First, $A$ may be singular, or may have singular leading
+principal blocks, and yet admit a perfectly good factorization.  Second, the
+factors must then be allowed to carry \emph{zeros on their diagonals}: we
+require only that $L$ be lower triangular and $U$ upper triangular, not that
+they be invertible.  The classical minor criterion says nothing in this
+regime.  For example,
+\begin{equation}\label{eq:swap-vs-exchange}
+  A_1 =
+  \begin{pmatrix}
+    0 & 1\\
+    1 & 0
+  \end{pmatrix},
+  \qquad
+  A_2 =
+  \begin{pmatrix}
+    0 & 0 & 0\\
+    0 & 0 & 1\\
+    0 & 1 & 0
+  \end{pmatrix}
+\end{equation}
+are both symmetric with singular leading blocks.  The swap matrix $A_1$ has
+no factorization $A_1 = LU$ (from $a_{11} = l_{11}u_{11} = 0$, either the
+first row or the first column of $LU$ must vanish).  Yet the larger, more
+degenerate matrix $A_2$ factors:
+\begin{equation}\label{eq:exchange-factorizations}
+  A_2 =
+  \underbrace{\begin{pmatrix} 0 & 0 & 0\\ 0 & 1 & 0\\ 1 & 0 & 0 \end{pmatrix}
+  \begin{pmatrix} 0 & 1 & 0\\ 0 & 0 & 1\\ 0 & 0 & 0 \end{pmatrix}}_{LU}
+  =
+  \underbrace{\begin{pmatrix} 0 & 0 & 0\\ 1 & 1 & 0\\ 0 & 1 & 1 \end{pmatrix}
+  \begin{pmatrix} -1 & & \\ & 1 & \\ & & -1 \end{pmatrix}
+  \begin{pmatrix} 0 & 1 & 0\\ 0 & 1 & 1\\ 0 & 0 & 1 \end{pmatrix}}_{LDL^T} .
+\end{equation}
+Both factorizations essentially require zero diagonal entries: the leading
+zero index of $A_2$ acts as a resource that later off-diagonal structure can
+be routed through.  Understanding exactly when such routing is possible is
+the subject of this paper.
+
+We answer the question for both the unsymmetric and the symmetric form of
+the problem, over an arbitrary field, in a unified way.  Write
+$\nl(X) = (\#\text{cols of } X) - \rk(X)$ for the (right) nullity.  Our two
+main results are the following (\Cref{thm:lu,thm:ldlt}):
+\begin{itemize}
+  \item $A \in \F^{n \by n}$ admits a factorization $A = LU$ with $L$ lower
+    triangular and $U$ upper triangular, zeros allowed on both diagonals, if
+    and only if for every $k = 1, \ldots, n$,
+    \[
+      \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl({A[1:k,:]}^T) .
+    \]
+  \item A symmetric $A \in \F^{n \by n}$ admits a factorization $A = LDL^T$
+    with $L$ lower triangular (zeros allowed on the diagonal) and $D$
+    diagonal if and only if for every $k = 1, \ldots, n$,
+    \[
+      \nl(A[1:k,1:k]) \le 2 \, \nl(A[:,1:k]) .
+    \]
+\end{itemize}
+The first criterion is equivalent to the rank inequality of Okunev and
+Johnson~\cite{okunev_johnson_2005,johnson_okunev_2025}, restated in the
+nullity form introduced in~\cite{darve_lu_2026}.  The second criterion, and
+the fact that for symmetric matrices the two criteria coincide --- so that a
+symmetric matrix admits an unpivoted $LU$ factorization if and only if it
+admits an unpivoted $LDL^T$ factorization --- appear to be new.
+
+\paragraph{The unified method}
+Both sufficiency proofs follow the same three-step strategy, which is the
+main methodological contribution of this paper.
+\begin{enumerate}
+  \item \emph{Reduce.}  Every $A \in \F^{n \by n}$ can be written
+    $A = M \Pi N$ with $M$ invertible lower triangular, $N$ invertible upper
+    triangular, and $\Pi$ a \emph{matching matrix}: a matrix with at most one
+    nonzero entry in every row and every column
+    (\Cref{lem:reduction-lu}).  Every symmetric $A$ can be written
+    $A = M P M^T$ with $M$ invertible lower triangular and $P$ a
+    \emph{symmetric matching matrix}, whose nonzero blocks are $1 \by 1$
+    diagonal entries and $2 \by 2$ blocks
+    $\bigl(\begin{smallmatrix} 0 & \alpha\\ \alpha & \beta
+    \end{smallmatrix}\bigr)$ (\Cref{lem:reduction-sym}); over $\mathbb{R}$
+    the normal form can be scaled to a \emph{signed matching matrix} with
+    entries in $\{0, \pm 1\}$ (\Cref{rem:signed}), recovering the
+    unpivoted symmetric elimination of Van Dooren and
+    Strang~\cite{vandooren_strang_2014}.  The nonzero pattern of the
+    normal form is uniquely determined by $A$ through its rank profile
+    (\Cref{prop:canonical}); for invertible $A$ this is the Bruhat
+    decomposition, and in general it is the rank profile
+    matrix~\cite{dumas_pernet_sultan_2017} and its congruence analogue
+    (cf.~\cite{szechtman_2007}).
+  \item \emph{Transfer.}  All the nullities appearing in the criteria are
+    invariant under $A \mapsto MAN$ with $M, N$ invertible triangular
+    (\Cref{lem:transfer}).  Hence $A$ satisfies a criterion if and only if
+    its normal form does, and on the normal form the criterion collapses to
+    a purely combinatorial \emph{prefix condition} on the matching
+    (\Cref{lem:comb-lu,lem:comb-sym}).
+  \item \emph{Thread.}  A matching matrix whose matching satisfies the
+    prefix condition is factored explicitly.  In the unsymmetric case each
+    matched entry is realized by its own rank-one term
+    $\ell_t u_t^T$, and the prefix condition is exactly Hall's condition for
+    assigning a distinct diagonal slot $t \le \min(i,j)$ to each matched pair
+    $(i,j)$; a greedy assignment succeeds (\Cref{thm:lu-matching}).  In the
+    symmetric case the rank-one terms $d_t \ell_t \ell_t^T$ are symmetric and
+    a single off-diagonal pair cannot be realized in isolation; instead, the
+    pairs are threaded into disjoint chains rooted at isolated zero indices,
+    and each chain is realized by a telescoping sum of symmetric rank-one
+    terms (\Cref{thm:ldlt-matching}).
+\end{enumerate}
+Necessity of the criteria is a short consequence of Sylvester's rank
+inequality; for the symmetric case it follows directly from the unsymmetric
+case since $A = LDL^T = L \, (DL^T)$ is itself an $LU$ factorization.
+
+\paragraph{Contributions}
+\begin{itemize}
+  \item A unified, self-contained, constructive proof method (reduce,
+    transfer, thread) that yields necessary and sufficient conditions for
+    unpivoted $LU$ and unpivoted $LDL^T$ factorizations of possibly singular
+    matrices over an arbitrary field, including fields of characteristic
+    $2$.
+  \item A necessary and sufficient condition for the existence of an
+    unpivoted $LDL^T$ factorization with a truly diagonal $D$ and possibly
+    singular $L$, which we believe is new, together with the corollary that
+    for symmetric matrices unpivoted $LU$ and $LDL^T$ existence are
+    equivalent.
+  \item A self-contained account of the matching normal forms and their
+    canonicity under triangular equivalence and congruence, connecting the
+    existence theory to the generalized Bruhat decomposition and rank
+    profile matrix~\cite{elsner_bruhat_1979,malaschonok_2010,dumas_pernet_sultan_2017}
+    and to the symmetric canonical forms of Van Dooren--Strang and
+    Szechtman~\cite{vandooren_strang_2014,szechtman_2007}, with short
+    elimination-style proofs valid over every field.
+  \item An explicit $O(n^3)$ algorithm that either produces the
+    factorization or certifies its nonexistence, implemented in exact
+    arithmetic and validated exhaustively against brute-force enumeration
+    over small finite fields (\Cref{sec:validation}).
+\end{itemize}
+
+\paragraph{Organization}
+\Cref{sec:related} surveys related work.  \Cref{sec:notation} fixes notation.
+\Cref{sec:results} states the main theorems and their corollaries.
+\Cref{sec:necessity} proves necessity.  \Cref{sec:normalforms} introduces
+matching matrices and proves the two reduction lemmas and the canonical-form
+proposition.  \Cref{sec:transfer} proves the invariance of the criteria.
+\Cref{sec:combinatorics} converts the criteria into prefix conditions on the
+matching.  \Cref{sec:explicit} factors the normal forms explicitly.
+\Cref{sec:assembly} assembles the proofs of the main theorems and works
+through examples.  \Cref{sec:validation} describes the algorithm and its
+numerical validation.  The Python implementation is listed in
+\Cref{sec:appendix-code}.

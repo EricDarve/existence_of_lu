@@ -1,0 +1,47 @@
+\section{Invariance of the criteria}\label{sec:transfer}
+
+\begin{lemma}[transfer]\label{lem:transfer}
+  Let $M \in \F^{n \by n}$ be invertible lower triangular, $N \in
+  \F^{n \by n}$ invertible upper triangular, and $B = M A N$.  Then for
+  every $k = 1, \ldots, n$,
+  \begin{align}
+    \nl(B[1:k,1:k]) &= \nl(A[1:k,1:k]), \label{eq:transfer-lead}\\
+    \nl(B[:,1:k]) &= \nl(A[:,1:k]), \label{eq:transfer-cols}\\
+    \nl({B[1:k,:]}^T) &= \nl({A[1:k,:]}^T). \label{eq:transfer-rows}
+  \end{align}
+  Consequently $A$ satisfies \cref{eq:lu-crit} for every $k$ if and only if
+  $B$ does; and, taking $N = M^T$, a symmetric $A$ satisfies
+  \cref{eq:ldlt-crit} for every $k$ if and only if the congruent matrix
+  $B = M A M^T$ does.
+\end{lemma}
+
+\begin{proof}
+  Write $M_k = M[1:k,1:k]$ and $N_k = N[1:k,1:k]$; both are invertible
+  (\Cref{sec:notation}).  Using \cref{eq:tri-slices} three times:
+  \begin{itemize}
+    \item $B[1:k,1:k] = M[1:k,:] \, A \, N[:,1:k]
+      = M_k \, A[1:k,1:k] \, N_k$, since the zero blocks in
+      \cref{eq:tri-slices} suppress the rows of $A$ beyond $k$ on the left
+      and the columns beyond $k$ on the right;
+    \item $B[:,1:k] = M A \, N[:,1:k] = M \, A[:,1:k] \, N_k$;
+    \item $B[1:k,:] = M[1:k,:] \, A N = M_k \, A[1:k,:] \, N$, and hence
+      ${B[1:k,:]}^T = N^T \, {A[1:k,:]}^T \, M_k^T$.
+  \end{itemize}
+  In each identity the outer factors are invertible and the two sides have
+  the same number of columns, so \Cref{lem:rank-invariance} gives
+  \cref{eq:transfer-lead,eq:transfer-cols,eq:transfer-rows}.  The
+  congruence case follows because $M^T$ is invertible upper triangular, and
+  for symmetric $A$ the quantity $\nl({A[1:k,:]}^T)$ in \cref{eq:lu-crit}
+  equals $\nl(A[:,1:k])$.
+\end{proof}
+
+Combining \Cref{lem:transfer} with the reductions of
+\Cref{sec:normalforms} (applied with $M^{-1}$ and $N^{-1}$, which are again
+invertible triangular):
+
+\begin{corollary}\label{cor:transfer-to-normal}
+  Let $A = M \Pi N$ as in \Cref{lem:reduction-lu}.  Then $A$ satisfies
+  \cref{eq:lu-crit} for every $k$ if and only if $\Pi$ does.  Let
+  $A = M P M^T$ as in \Cref{lem:reduction-sym}.  Then $A$ satisfies
+  \cref{eq:ldlt-crit} for every $k$ if and only if $P$ does.
+\end{corollary}

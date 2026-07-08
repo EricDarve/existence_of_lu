@@ -1,0 +1,166 @@
+\documentclass[10pt,twoside]{siamart1116}
+
+\usepackage[english]{babel}
+\usepackage{fancyhdr,amsfonts,amssymb}
+\usepackage{array}
+\usepackage{xcolor}
+
+\setlength{\textheight}{210mm}
+\setlength{\textwidth}{165mm}
+\topmargin = -10mm
+\renewcommand{\baselinestretch}{1.1}
+\setlength{\parskip}{.1in}
+
+\newcommand{\CA}{Eric Darve}
+\newcommand{\Names}{Eric Darve}
+\newcommand{\Title}{A Unified Theory for the Existence of LU and $LDL^T$ Factorizations without Pivoting}
+
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+\usepackage{aliascnt}
+% \siamthmalias{<env>}{<Name>}{<\newtheorem or \renewtheorem>}
+\newcommand{\siamthmalias}[3]{%
+  \newaliascnt{#1}{theorem}%
+  \theoremstyle{plain}%
+  \theoremheaderfont{\normalfont\sc}%
+  \theorembodyfont{\normalfont\itshape}%
+  \theoremseparator{.}%
+  \theoremsymbol{}%
+  #3{#1}{#2}%
+  \expandafter\def\csname the#1\endcsname{\thetheorem}%
+}
+\siamthmalias{property}{Property}{\newtheorem}
+\siamthmalias{lemma}{Lemma}{\renewtheorem}
+\siamthmalias{corollary}{Corollary}{\renewtheorem}
+\siamthmalias{proposition}{Proposition}{\renewtheorem}
+\siamthmalias{definition}{Definition}{\renewtheorem}
+\siamthmalias{remark}{Remark}{\newtheorem}
+\siamthmalias{example}{Example}{\newtheorem}
+
+\usepackage{booktabs,listings}
+\usepackage{csquotes}
+\MakeOuterQuote{"}
+
+\lstdefinestyle{PythonStyle}{
+  language=Python,
+  basicstyle=\ttfamily\fontsize{7pt}{8pt}\selectfont,
+  keywordstyle=\color{blue}\bfseries,
+  stringstyle=\color{red},
+  commentstyle=\color{green}\itshape,
+  showstringspaces=false,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  captionpos=b,
+  escapeinside={(*@}{@*)},
+}
+
+\DeclareMathOperator{\rk}{rank}
+\DeclareMathOperator{\nl}{null}
+\DeclareMathOperator{\spn}{span}
+\DeclareMathOperator{\range}{range}
+\DeclareMathOperator{\sgn}{sgn}
+
+\newcommand{\by}{\times}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\F}{F}
+
+% Treat ":" as an ordinary atom in math mode so that slicing such as
+% A[1:k,1:k] is set tightly.
+\mathcode`\:="003A
+
+\Crefname{property}{Property}{Properties}
+\crefname{property}{property}{properties}
+\Crefname{corollary}{Corollary}{Corollaries}
+\crefname{corollary}{corollary}{corollaries}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{lemma}{lemma}{lemmas}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefname{proposition}{proposition}{propositions}
+\Crefname{theorem}{Theorem}{Theorems}
+\crefname{theorem}{theorem}{theorems}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{definition}{definition}{definitions}
+\Crefname{remark}{Remark}{Remarks}
+\crefname{remark}{remark}{remarks}
+\Crefname{example}{Example}{Examples}
+\crefname{example}{example}{examples}
+\Crefname{lstlisting}{Listing}{Listings}
+\crefname{lstlisting}{listing}{listings}
+
+\numberwithin{theorem}{section}
+
+\begin{document}
+
+\setcounter{page}{1}
+\thispagestyle{empty}
+
+\title{\Title\thanks{Corresponding Author: \CA}}
+
+\author{
+  Eric Darve\thanks{Institute for Computational and Mathematical Engineering,
+    Mechanical Engineering Department,
+    Stanford University,
+    Stanford, CA 94305, USA
+  (darve@stanford.edu).}
+}
+
+\maketitle
+
+\begin{abstract}
+  We give a unified treatment of two existence questions for triangular
+  factorizations without pivoting: when does a square matrix $A$ with entries
+  in an arbitrary field $\F$ admit a factorization $A = LU$ with $L$ lower
+  triangular and $U$ upper triangular, and, when $A$ is symmetric, a
+  factorization $A = LDL^T$ with $L$ lower triangular and $D$ diagonal?  No
+  permutations are allowed, $A$ may be singular, and zeros are allowed on the
+  diagonals of all factors; this distinguishes the problem from the classical
+  theory, which assumes that all leading principal minors are nonzero.  Both
+  questions are answered by nullity inequalities comparing each leading
+  principal submatrix with the corresponding leading block of columns and
+  rows.  The unsymmetric criterion recovers the theorem of Okunev and Johnson;
+  the symmetric criterion appears to be new.  Both sufficiency proofs follow a
+  single strategy: reduce $A$ by an invertible triangular equivalence (a
+  congruence in the symmetric case) to a \emph{matching normal form} --- a
+  matrix whose nonzero pattern is a matching, unique for a given $A$ and
+  closely related to the Bruhat decomposition --- observe that the criterion
+  is invariant under such reductions and becomes a simple combinatorial prefix
+  condition on the matching, and then factor the normal form explicitly by a
+  greedy slot assignment (unsymmetric case) or by threading telescoping chains
+  through the isolated indices (symmetric case).  The proofs are constructive
+  and yield an $O(n^3)$ factorization algorithm.  We validate all results
+  with exact arithmetic over $\mathbb{Q}$, $GF(2)$, and $GF(3)$, including
+  exhaustive comparisons with brute-force enumeration of all triangular
+  factorizations for small dimensions.
+\end{abstract}
+
+\begin{keywords}
+  LU factorization, $LDL^T$ factorization, singular matrices, rank-deficient
+  matrices, pivoting, nullity, Bruhat decomposition, matching.
+\end{keywords}
+\begin{AMS}
+  15A23, 15A03, 15A21, 65F05.
+\end{AMS}
+
+\input{sections/intro}
+\input{sections/related}
+\input{sections/notation}
+\input{sections/results}
+\input{sections/necessity}
+\input{sections/normalforms}
+\input{sections/transfer}
+\input{sections/combinatorics}
+\input{sections/explicit}
+\input{sections/assembly}
+\input{sections/validation}
+\input{sections/conclusion}
+
+\appendix
+\input{sections/appendix_code}
+
+\clearpage
+\phantomsection
+\bibliographystyle{siamplain}
+\bibliography{ref}
+
+\end{document}

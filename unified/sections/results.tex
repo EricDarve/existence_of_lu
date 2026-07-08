@@ -1,0 +1,134 @@
+\section{Main results}\label{sec:results}
+
+\begin{theorem}[unpivoted LU]\label{thm:lu}
+  Let $A \in \F^{n \by n}$.  The following are equivalent:
+  \begin{enumerate}
+    \item there exist a lower triangular $L \in \F^{n \by n}$ and an upper
+      triangular $U \in \F^{n \by n}$, with zeros allowed on both diagonals,
+      such that $A = LU$;
+    \item for every $k = 1, \ldots, n$,
+      \begin{equation}\label{eq:lu-crit}
+        \nl(A[1:k,1:k]) \ \le\ \nl(A[:,1:k]) + \nl({A[1:k,:]}^T) .
+      \end{equation}
+  \end{enumerate}
+\end{theorem}
+
+By the rank--nullity relations of \Cref{sec:notation}, \cref{eq:lu-crit} is
+equivalent to the rank form
+$\rk(A[1:k,1:k]) + k \ge \rk(A[1:k,:]) + \rk(A[:,1:k])$ of Okunev and
+Johnson~\cite{okunev_johnson_2005,johnson_okunev_2025}.
+
+\begin{theorem}[unpivoted $LDL^T$]\label{thm:ldlt}
+  Let $A \in \F^{n \by n}$ with $A = A^T$.  The following are equivalent:
+  \begin{enumerate}
+    \item there exist a lower triangular $L \in \F^{n \by n}$, with zeros
+      allowed on the diagonal, and a diagonal $D \in \F^{n \by n}$ such that
+      $A = LDL^T$;
+    \item for every $k = 1, \ldots, n$,
+      \begin{equation}\label{eq:ldlt-crit}
+        \nl(A[1:k,1:k]) \ \le\ 2 \, \nl(A[:,1:k]) .
+      \end{equation}
+  \end{enumerate}
+\end{theorem}
+
+Equivalently, in rank form, $\rk(A[1:k,1:k]) + k \ge 2 \rk(A[:,1:k])$ for
+all $k$.  Note that \cref{eq:ldlt-crit} is precisely \cref{eq:lu-crit}
+specialized to a symmetric matrix: when $A = A^T$ we have
+${A[1:k,:]}^T = A[:,1:k]$, so the two terms on the right-hand side of
+\cref{eq:lu-crit} coincide.  This gives immediately:
+
+\begin{corollary}[symmetric matrices: LU and $LDL^T$ are equivalent]\label{cor:sym-lu-ldlt}
+  A symmetric matrix $A \in \F^{n \by n}$ admits an unpivoted $LU$
+  factorization if and only if it admits an unpivoted $LDL^T$ factorization.
+\end{corollary}
+
+\begin{proof}
+  If $A = LDL^T$ then $A = L \, (DL^T)$ is an LU factorization.  Conversely,
+  if $A = LU$ exists then \cref{eq:lu-crit} holds by \Cref{thm:lu}, which
+  for symmetric $A$ is \cref{eq:ldlt-crit}, and \Cref{thm:ldlt} produces an
+  $LDL^T$ factorization.
+\end{proof}
+
+The next corollaries show that the criteria specialize to the familiar
+statements in the two regimes covered by the classical theory.
+
+\begin{corollary}[nonsingular case]\label{cor:nonsingular}
+  Let $A$ be nonsingular.  Then \cref{eq:lu-crit} holds if and only if all
+  leading principal submatrices $A[1:k,1:k]$ are nonsingular.  In
+  particular, \Cref{thm:lu,thm:ldlt} recover the classical criteria for
+  nonsingular (symmetric) matrices.
+\end{corollary}
+
+\begin{proof}
+  If $A$ is nonsingular, its first $k$ columns are linearly independent and
+  its first $k$ rows are linearly independent, so
+  $\nl(A[:,1:k]) = \nl({A[1:k,:]}^T) = 0$.  Thus \cref{eq:lu-crit} reads
+  $\nl(A[1:k,1:k]) \le 0$, i.e., $A[1:k,1:k]$ is nonsingular, for every
+  $k$.  The same computation applies to \cref{eq:ldlt-crit}.
+\end{proof}
+
+\begin{corollary}[positive semidefinite case]\label{cor:psd}
+  Let $\F = \mathbb{R}$ and let $A$ be symmetric positive semidefinite.
+  Then \cref{eq:ldlt-crit} holds, so $A = LDL^T$ exists without pivoting;
+  moreover $\nl(A[1:k,1:k]) = \nl(A[:,1:k])$ for every $k$.
+\end{corollary}
+
+\begin{proof}
+  Write $A = B^T B$.  Then $A[:,1:k] = B^T \, B[:,1:k]$ and
+  $A[1:k,1:k] = {B[:,1:k]}^T B[:,1:k]$.  For real $B$,
+  $B[:,1:k] x = 0 \iff {B[:,1:k]}^T B[:,1:k] x = 0$ (multiply by $x^T$), so
+  $\rk(A[1:k,1:k]) = \rk(B[:,1:k]) \ge \rk(A[:,1:k]) \ge
+  \rk(A[1:k,1:k])$, where the last inequality holds because $A[1:k,1:k]$
+  consists of rows of $A[:,1:k]$.  Hence
+  $\nl(A[1:k,1:k]) = \nl(A[:,1:k]) \le 2\,\nl(A[:,1:k])$.
+\end{proof}
+
+\Cref{cor:psd} is consistent with the classical fact that a singular
+positive semidefinite matrix admits an unpivoted Cholesky factorization
+$A = LL^T$ with possibly zero diagonal entries in
+$L$~\cite{higham_cholesky_1990}.  Indefinite symmetric matrices, by
+contrast, may fail \cref{eq:ldlt-crit} --- the swap matrix $A_1$ of
+\cref{eq:swap-vs-exchange} fails it at $k=1$ --- which is why the classical
+unpivoted theory for indefinite matrices resorts to block-diagonal $D$ with
+symmetric pivoting~\cite{bunch_parlett_1971,bunch_kaufman_1977}.
+
+\begin{remark}[zeros on the diagonals are essential]\label{rem:zeros}
+  If $L$ is required to be invertible (e.g., unit lower triangular), the
+  existence conditions become strictly stronger and different in kind; see
+  \cite{dopico_multiple_2006} and \cite[Sec.~3]{darve_lu_2026}.  The matrix
+  $A_2$ of \cref{eq:swap-vs-exchange} satisfies
+  \cref{eq:lu-crit,eq:ldlt-crit} but admits no factorization with $L$ or
+  $U$ invertible.  Indeed, if $A_2 = LU$ with $L$ invertible, then
+  $0 = A_2[1:2,1:2] = L[1:2,1:2] \, U[1:2,1:2]$ forces $U[1:2,1:2] = 0$,
+  hence $U[:,1:2] = 0$ by \cref{eq:tri-slices} and
+  $A_2[:,1:2] = L \, U[:,1:2] = 0$, contradicting $A_2[3,2] = 1$; the case
+  of invertible $U$ follows by transposing the symmetric $A_2$.  Every
+  factorization must instead route the exchange pair $(2,3)$ through the
+  zero index $1$, forcing zero diagonal entries, as in
+  \cref{eq:exchange-factorizations}.
+\end{remark}
+
+\begin{remark}[field generality]\label{rem:field}
+  Both theorems hold over every field $\F$, including characteristic $2$;
+  all constructions below use only the field operations, and no square
+  roots, no signs, and no division by $2$.  The criteria are also
+  insensitive to field extensions: ranks do not change under extension, so
+  $A$ factors over $\F$ if and only if it factors over any extension of
+  $\F$ (this was observed for LU in~\cite{johnson_okunev_2025}).
+  A subtlety specific to characteristic $2$ is that a symmetric matrix with
+  zero diagonal is alternating, and, e.g., $A_1$ over $GF(2)$ is not
+  congruent to any diagonal matrix; the symmetric normal form of
+  \Cref{sec:normalforms} keeps genuine $2 \by 2$ blocks for exactly this
+  reason.
+\end{remark}
+
+\begin{remark}[singular $A$, singular blocks]\label{rem:singular}
+  Neither theorem places any restriction on $\rk(A)$.  The nonsingular
+  matrix $\bigl(\begin{smallmatrix} 0 & 1\\ 1 & 1\end{smallmatrix}\bigr)$
+  fails \cref{eq:lu-crit} at $k = 1$ (its leading entry vanishes while its
+  first row and column are nonzero), whereas the rank-two matrix $A_2$ of
+  \cref{eq:swap-vs-exchange} satisfies both criteria.  Existence is
+  governed not by how singular $A$ is, but by whether every deficiency of a
+  leading block is matched by global deficiencies of the corresponding rows
+  and columns.
+\end{remark}

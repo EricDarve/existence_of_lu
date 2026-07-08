@@ -1,0 +1,43 @@
+\section{Conclusion}\label{sec:conclusion}
+
+We gave a unified treatment of the existence of triangular factorizations
+without pivoting for possibly singular matrices over an arbitrary field.
+The unsymmetric criterion (\Cref{thm:lu}) recovers the theorem of Okunev
+and Johnson; the symmetric criterion (\Cref{thm:ldlt}) --- existence of
+$A = LDL^T$ with truly diagonal $D$ and possibly singular $L$ --- appears
+to be new, as does the corollary that for symmetric matrices unpivoted
+$LU$ and $LDL^T$ existence coincide.  The proof method is uniform: reduce
+to a matching normal form by triangular equivalence or congruence,
+transfer the nullity criterion to the normal form where it becomes a
+prefix condition on the matching, and factor the normal form explicitly
+--- by greedy slot assignment in the unsymmetric case, by telescoping
+threads rooted at isolated zero indices in the symmetric case.  The
+normal forms tie the existence theory to the generalized Bruhat
+decomposition and rank profile matrix, and, in the symmetric case, to the
+factorization of Van Dooren and Strang and the congruence canonical forms
+of Szechtman.  Everything is constructive, and the resulting $O(n^3)$
+algorithm was validated exhaustively in exact arithmetic.
+
+Several directions remain open.
+\begin{itemize}
+  \item \emph{Numerical stability.}  The construction selects pivots for
+    algebraic, not numerical, reasons; a backward-stable variant over
+    $\mathbb{R}$ (perhaps with size-aware choices among the admissible
+    threads and slots, which are far from unique) is an open problem, as
+    in~\cite{darve_lu_2026}.
+  \item \emph{Multiplicity.}  Dopico, Johnson, and
+    Molera~\cite{dopico_multiple_2006} parametrized all LU factorizations
+    of a singular matrix with $L$ unit lower triangular.  Parametrizing
+    all unpivoted $LDL^T$ factorizations --- equivalently, all thread
+    systems and weight choices --- would quantify the freedom our greedy
+    constructions exploit.
+  \item \emph{Structure of the factors.}  The rank-revealing and sparsity
+    results of~\cite{darve_lu_2026} for LU should have $LDL^T$ analogues;
+    the thread construction suggests that the columns of $L$ can be
+    localized to their threads.
+  \item \emph{Hermitian and other variants.}  Over $\mathbb{C}$ with
+    conjugate transposition, congruence becomes $\ast$-congruence and the
+    pair blocks acquire Hermitian weights; we expect the theory to carry
+    over with $\beta$ real, but have not pursued it.  Rectangular and
+    block versions of the criteria are also natural.
+\end{itemize}
