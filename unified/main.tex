@@ -1719,9 +1719,8 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
   Again we induct on $k$.  For $k=1$, take $P=(0)$ if $a_{11}=0$; otherwise
   scale by $|a_{11}|^{-1/2}$, i.e.\ take $M=(|a_{11}|^{1/2})$ and
   $P=(\sgn a_{11})$.  Assume
-  $A[1:k-1,1:k-1]=MPM^T$, with $M$ lower triangular and $P$ a symmetric
-  matching matrix in the normalized real sense of \Cref{def:sym-matching}.  For
-  the next border write
+  $A[1:k-1,1:k-1]=MPM^T$, with $M$ lower triangular and $P$ a signed
+  matching matrix.  For the next border write
   \[
     A[1:k,1:k]=
     \begin{pmatrix}
@@ -1785,7 +1784,10 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
   exactly $\bigl(
     \begin{smallmatrix}0&1\\1&0
   \end{smallmatrix}\bigr)$, and the
-  induction closes.
+  induction closes.  As in \Cref{lem:reduction-lu}, the $k$th border costs
+  $O(k^2)$ operations --- one triangular solve $c = M^{-1}a$ and a constant
+  number of rank-one updates and scalings --- so the reduction runs in
+  $O(n^3)$ operations overall.
 \end{proof}
 
 \begin{proof}[Proof of \Cref{prop:canonical}]
