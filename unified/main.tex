@@ -1072,8 +1072,8 @@ both terms supported on $\{i, j\}$.
   zero index and $(i_q, j_q)$ pairs of $P$ --- a left-to-right scan that
   attaches each pair to a free thread and roots new threads at isolated
   zeros succeeds under $\chi_k \le \zeta_k$ --- and, with the partial sums
-  $s_q = -(e_{i_q} + e_{i_{q+1}} + \cdots + e_{i_m})$, take the columns and
-  alternating weights
+  $s_q = -(e_{i_q} + e_{i_{q+1}} + \cdots + e_{i_m})$ (so $s_{m+1} = 0$),
+  take the columns and alternating weights
   \[
     \ell_r = s_1, \; d_r = 1;
     \qquad
@@ -1664,10 +1664,14 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
   \[
     R=I+(\alpha^{-1}e-u_{i^\star})u_{i^\star}^T
   \]
-  satisfies $R\Pi=\Pi$ and $Ru_{i^\star}=\alpha^{-1}e$, converting the residual
-  column to $\alpha u_{i^\star}$.  If $g\ne0$, an analogous unit upper
-  triangular matrix converts the residual row to $\gamma u_{j^\star}^T$, where
-  $j^\star$ is a zero column of $\Pi$ and $\gamma=g_{j^\star}\ne0$.
+  satisfies $R\Pi=\Pi$ and $Ru_{i^\star}=\alpha^{-1}e$, so
+  $R^{-1}\Pi=\Pi$ and $R^{-1}e=\alpha u_{i^\star}$.  Left-multiplying by $R^{-1}$ fixes $\Pi$ and
+  converts the residual column $e$ to $\alpha u_{i^\star}$, while
+  $R$, unit lower triangular, is absorbed into the lower factor.  If $g\ne0$,
+  let $j^\star$ be the first nonzero index of $g$ and $\gamma=g_{j^\star}\ne0$;
+  since $g$ is supported on zero columns, $j^\star$ is a zero column of $\Pi$,
+  and an analogous unit upper triangular matrix, applied on the right,
+  converts the residual row to $\gamma u_{j^\star}^T$.
 
   After these operations, the only possible nonzeros outside $\Pi$ are the
   entries $(i^\star,k)$, $(k,j^\star)$, and the corner $(k,k)$.  If a residual
@@ -1742,12 +1746,14 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
   \[
     R=I+(\alpha^{-1}e-u_{i^\star})u_{i^\star}^T
   \]
-  satisfies $RPR^T=P$ and $Ru_{i^\star}=\alpha^{-1}e$, so the residual block is
-  congruent to one with pair block
+  satisfies $RPR^T=P$ and $Ru_{i^\star}=\alpha^{-1}e$, so
+  $R^{-1}PR^{-T}=P$ and $R^{-1}e=\alpha u_{i^\star}$.  The congruence by $R^{-1}$ fixes $P$ and reduces the
+  residual block to the pair block
   $\bigl(
     \begin{smallmatrix}0&\alpha\\\alpha&f
   \end{smallmatrix}\bigr)$ on
-  indices $(i^\star,k)$.  Normalize this real block as follows.  Scale the new
+  indices $(i^\star,k)$, while its inverse $R$, lower triangular, is absorbed
+  into $M$.  Normalize this real block as follows.  Scale the new
   index $k$ by $\alpha^{-1}$, making the off-diagonal entry equal to $1$ and
   the lower-right entry $f/\alpha^2$.  Then replace row and column $k$ by row
   and column $k$ plus
