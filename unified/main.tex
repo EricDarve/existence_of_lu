@@ -1100,10 +1100,9 @@ both terms supported on $\{i, j\}$.
     \ell_{j_q} = s_{q+1} + e_{j_q}, \; d_{j_q} = 1 .
   \]
   The sum $\sum_t d_t \ell_t \ell_t^T$ telescopes to the thread's pair
-  blocks.  This variant survives in characteristic $2$ (where
-  \cref{eq:pair-split} is unavailable) and keeps each column inside its
-  thread, but it spends one column on every root, so it is not
-  column-minimal; see \Cref{sec:sparsity}.
+  blocks.  This variant uses only the values $0, \pm 1$ and keeps each
+  column inside its thread, but it spends one column on every root, so it
+  is not column-minimal; see \Cref{sec:sparsity}.
 \end{remark}
 % ===== End inlined from sections/explicit.tex =====
 
