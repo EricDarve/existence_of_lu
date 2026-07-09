@@ -1320,9 +1320,10 @@ unavoidable: crossing pairs genuinely cost two columns each at the cut.
 \end{proposition}
 
 \begin{proof}
-  Discarding columns with $D[t,t] = 0$ changes neither $A$ nor decreases
-  the count, so assume all diagonal weights of the retained columns are
-  nonzero.  Fix $k$, let $C = \{t : L[1:k,t] \neq 0\}$, $c = |C|$, and let
+  Discarding columns with $D[t,t] = 0$ leaves $A$ unchanged and can only
+  decrease the count $\#\{t : L[1:k,t] \neq 0\}$, so a lower bound proved
+  after discarding them holds a fortiori for the original; assume then that
+  all diagonal weights of the retained columns are nonzero.  Fix $k$, let $C = \{t : L[1:k,t] \neq 0\}$, $c = |C|$, and let
   $X = L[1:k, C]$ and $X' = L[:, C]$.  Columns outside $C$ contribute
   nothing to the first $k$ rows, so
   \[
