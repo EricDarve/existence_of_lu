@@ -1179,6 +1179,55 @@ factorization.
   \Cref{lem:null-matching}, transported to $A$ by \Cref{lem:transfer}).
 \end{proof}
 
+\begin{remark}[LDU form, and the absence of an unsymmetric inertia]\label{rem:ldu}
+  Factoring the leading entries out of the rows of $U$ in
+  \Cref{thm:lu-sparsity} gives an unpivoted three-factor form $A = LDU$:
+  $L$ lower triangular whose nonzero columns have unit leading entries, $U$
+  upper triangular whose nonzero rows have unit leading entries, and $D$
+  diagonal with exactly $r$ nonzero entries $w_1, \ldots, w_r$ --- so $D$
+  is rank-revealing.  It is natural to ask, by analogy with
+  \Cref{thm:ldlt-rr}, whether $D$ can also be made \emph{inertia}
+  revealing.  For unsymmetric $A$ the question dissolves, at two levels.
+  First, the signs in $D$ are gauge, not data: rescaling
+  $(L, D, U) \mapsto (LS,\, S^{-1}T^{-1}D,\, TU)$ with \emph{independent}
+  invertible diagonal matrices $S, T$ preserves the product and the
+  triangular supports, so every nonzero entry of $D$ can be given an
+  arbitrary nonzero value --- for instance, all $+1$.  It is precisely the
+  symmetric tie $T = S^T$ of the $LDL^T$ problem that restricts this gauge
+  to $d_t \mapsto s_t^2\, d_t$ and pins the signs; this is why an inertia
+  exists there and not here.  Second, even after fixing the normalization
+  above --- which makes $D$ canonical in the strongly nonsingular case,
+  where $w_t = \det A[1:t,1:t] / \det A[1:t-1,1:t-1]$ --- the pivot signs
+  carry no spectral information:
+  \[
+    A =
+    \begin{pmatrix}
+      -1 & 2\\
+      -4 & 5
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      1 & 0\\
+      4 & 1
+    \end{pmatrix}
+    \begin{pmatrix}
+      -1 & 0\\
+      0 & -3
+    \end{pmatrix}
+    \begin{pmatrix}
+      1 & -2\\
+      0 & 1
+    \end{pmatrix}
+  \]
+  has eigenvalues $1$ and $3$, both positive, while both pivots are
+  negative.  The classical fact that pivot signs count negative
+  eigenvalues (Jacobi's theorem) is a statement about \emph{symmetric
+  congruence}, and it is exactly what \Cref{thm:ldlt-rr} extends to the
+  singular unpivoted case.  For unsymmetric $A$, the invariant refined by
+  the factorization is not an inertia but the rank-jump matching of
+  \Cref{prop:canonical}, and the invariant content of $D$ is its rank.
+\end{remark}
+
 \subsection{The symmetric factors: a rank-revealing $LDL^T$}
 
 The construction of \Cref{thm:ldlt-matching} becomes rank-revealing when
