@@ -728,7 +728,11 @@ normalization used here, they are given in \Cref{app:normalform-proofs}.
 \subsection{Canonicity}
 
 The matching produced by the reductions is not an artifact of the construction:
-it is determined by the rank profile of $A$.  For $1 \le i, j \le n$ let
+its pattern is determined by the rank profile of $A$.  One caveat is needed in
+the symmetric case: the diagonal entries of $P$ carry signs $\gamma_t = \pm 1$,
+and ranks alone cannot see signs.  The signs are nevertheless also invariants
+of $A$ --- determined by the \emph{inertias} of its leading principal blocks,
+as part (2) below makes precise.  For $1 \le i, j \le n$ let
 \[
   r_{ij}(A) := \rk\bigl(A[1:i,1:j]\bigr),
   \qquad
@@ -749,7 +753,21 @@ with the convention $r_{0j} = r_{i0} = 0$.  We call $(i,j)$ a
       singletons of $P$ are the diagonal rank jumps
       $\{t : \Delta_{tt}(A) = 1\}$ and the pairs of $P$ are the unordered
       off-diagonal rank jumps
-      $\{\{i,j\} : i \neq j,\ \Delta_{ij}(A) = 1\}$.
+      $\{\{i,j\} : i \neq j,\ \Delta_{ij}(A) = 1\}$.  Moreover, write
+      $n_+(B)$ and $n_-(B)$ for the numbers of positive and negative
+      eigenvalues of a symmetric matrix $B$, and, as the block grows from
+      order $t-1$ to order $t$, set
+      \begin{align*}
+        \delta^+_t &= n_+\bigl(A[1:t,1:t]\bigr) - n_+\bigl(A[1:t-1,1:t-1]\bigr),\\
+        \delta^-_t &= n_-\bigl(A[1:t,1:t]\bigr) - n_-\bigl(A[1:t-1,1:t-1]\bigr)
+      \end{align*}
+      for the amounts by which the positive and negative indices of inertia
+      increase at step $t$.  Then at every singleton index $t$ one of
+      $\delta^+_t$, $\delta^-_t$ equals $1$ and the other equals $0$, and
+      $\gamma_t = +1$ in the first case, $\gamma_t = -1$ in the second.  In
+      particular the signed matching matrix $P$ --- pattern \emph{and} signs
+      --- is uniquely determined by $A$, the pattern by its rank profile and
+      the signs by the inertias of its leading principal blocks.
   \end{enumerate}
 \end{proposition}
 
@@ -1795,7 +1813,25 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
   \]
   whose mixed differences are the two off-diagonal jumps $(i_0,j_0)$ and
   $(j_0,i_0)$.  Since distinct blocks use disjoint row and column sets, the
-  contributions add, proving part (2).
+  contributions add, proving the pattern claims of part (2).
+
+  For the sign claim, note that for every $k$,
+  $A[1:k,1:k] = M_k \, P[1:k,1:k] \, M_k^T$ with $M_k$ invertible, so by
+  Sylvester's law of inertia $A[1:k,1:k]$ and $P[1:k,1:k]$ have the same
+  inertia for every $k$.  Blockwise,
+  \[
+    n_+\bigl(P[1:k,1:k]\bigr)
+    = \#\{\text{singletons } t \le k : \gamma_t = +1\}
+    + \#\{\text{pairs } (i,j) : j \le k\},
+  \]
+  and symmetrically for $n_-$ (a completed pair block has eigenvalues
+    $\pm 1$; crossing pairs and isolated zeros contribute only to the
+  nullity).  Passing from $k = t-1$ to $k = t$: at an isolated zero or a
+  pair-start index both increments are $0$; at a pair-end index both are
+  $1$; and at a singleton index exactly one of $n_+, n_-$ increases, by
+  $1$, according to $\sgn \gamma_t$.  Hence the singleton signs are read
+  off the sequence of leading-block inertias of $A$, which proves the sign
+  claim and the uniqueness of $P$.
 \end{proof}
 % ===== End inlined from sections/appendix_normalforms.tex =====
 
