@@ -1,6 +1,8 @@
 *ignore
 build
 __pycache__
+elsarticle
+.omx
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

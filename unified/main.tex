@@ -1,6 +1,7 @@
-\documentclass[10pt,twoside]{siamart1116}
+\documentclass[preprint,12pt]{elsarticle}
 
 \usepackage[english]{babel}
+\usepackage{amsmath}
 \usepackage{fancyhdr,amsfonts,amssymb}
 \usepackage{array}
 \usepackage{xcolor}
@@ -13,33 +14,51 @@
 
 \newcommand{\CA}{Eric Darve}
 \newcommand{\Names}{Eric Darve}
-\newcommand{\Title}{A Unified Theory for the Existence of LU and $LDL^T$ Factorizations without Pivoting}
-
-\renewcommand{\theequation}{\thesection.\arabic{equation}}
-
-\usepackage{aliascnt}
-% \siamthmalias{<env>}{<Name>}{<\newtheorem or \renewtheorem>}
-\newcommand{\siamthmalias}[3]{%
-  \newaliascnt{#1}{theorem}%
-  \theoremstyle{plain}%
-  \theoremheaderfont{\normalfont\sc}%
-  \theorembodyfont{\normalfont\itshape}%
-  \theoremseparator{.}%
-  \theoremsymbol{}%
-  #3{#1}{#2}%
-  \expandafter\def\csname the#1\endcsname{\thetheorem}%
-}
-\siamthmalias{property}{Property}{\newtheorem}
-\siamthmalias{lemma}{Lemma}{\renewtheorem}
-\siamthmalias{corollary}{Corollary}{\renewtheorem}
-\siamthmalias{proposition}{Proposition}{\renewtheorem}
-\siamthmalias{definition}{Definition}{\renewtheorem}
-\siamthmalias{remark}{Remark}{\newtheorem}
-\siamthmalias{example}{Example}{\newtheorem}
+\newcommand{\Title}{Existence of LU and $LDL^T$ Factorizations without Pivoting}
 
 \usepackage{booktabs,listings}
 \usepackage{csquotes}
 \MakeOuterQuote{"}
+
+\usepackage{hyperref}
+\usepackage[amsmath,thmmarks,hyperref]{ntheorem}
+\usepackage{aliascnt}
+\usepackage{cleveref}
+
+\theoremstyle{plain}
+\theoremheaderfont{\normalfont\scshape}
+\theorembodyfont{\normalfont\itshape}
+\theoremseparator{.}
+\theoremsymbol{}
+\newtheorem{theorem}{Theorem}
+
+% \thmalias{<env>}{<Name>}: an environment sharing the `theorem` counter.
+\newcommand{\thmalias}[2]{%
+  \newaliascnt{#1}{theorem}%
+  \theoremstyle{plain}%
+  \theoremheaderfont{\normalfont\scshape}%
+  \theorembodyfont{\normalfont\itshape}%
+  \theoremseparator{.}%
+  \theoremsymbol{}%
+  \newtheorem{#1}{#2}%
+  \expandafter\def\csname the#1\endcsname{\thetheorem}%
+}
+\thmalias{property}{Property}
+\thmalias{lemma}{Lemma}
+\thmalias{corollary}{Corollary}
+\thmalias{proposition}{Proposition}
+\thmalias{definition}{Definition}
+\thmalias{remark}{Remark}
+\thmalias{example}{Example}
+
+\theoremstyle{nonumberplain}
+\theoremheaderfont{\normalfont\itshape}
+\theorembodyfont{\normalfont}
+\theoremseparator{.}
+\theoremsymbol{\ensuremath{\square}}
+\newtheorem{proof}{Proof}
+
+\numberwithin{equation}{section}
 
 \lstdefinestyle{PythonStyle}{
   language=Python,
@@ -63,7 +82,6 @@
 
 \newcommand{\by}{\times}
 \newcommand{\M}{\mathcal{M}}
-\newcommand{\F}{F}
 
 % Treat ":" as an ordinary atom in math mode so that slicing such as
 % A[1:k,1:k] is set tightly.
@@ -87,80 +105,1711 @@
 \crefname{example}{example}{examples}
 \Crefname{lstlisting}{Listing}{Listings}
 \crefname{lstlisting}{listing}{listings}
+% Refer to equations by their (parenthesized) number only, with no "eq."/"Eq." prefix.
+\crefname{equation}{}{}
+\Crefname{equation}{}{}
+\crefformat{equation}{(#2#1#3)}
+\Crefformat{equation}{(#2#1#3)}
 
 \numberwithin{theorem}{section}
+
+\journal{Linear Algebra and its Applications}
 
 \begin{document}
 
 \setcounter{page}{1}
-\thispagestyle{empty}
 
-\title{\Title\thanks{Corresponding Author: \CA}}
+\begin{frontmatter}
 
-\author{
-  Eric Darve\thanks{Institute for Computational and Mathematical Engineering,
-    Mechanical Engineering Department,
-    Stanford University,
-    Stanford, CA 94305, USA
-  (darve@stanford.edu).}
-}
+  \title{\Title}
 
-\maketitle
+  \author{Eric Darve}
+  \ead{darve@stanford.edu}
+  \affiliation{organization={Institute for Computational and Mathematical
+    Engineering, Mechanical Engineering Department, Stanford University},
+    city={Stanford},
+    state={CA},
+    postcode={94305},
+  country={USA}}
 
-\begin{abstract}
-  We give a unified treatment of two existence questions for triangular
-  factorizations without pivoting: when does a square matrix $A$ with entries
-  in an arbitrary field $\F$ admit a factorization $A = LU$ with $L$ lower
-  triangular and $U$ upper triangular, and, when $A$ is symmetric, a
-  factorization $A = LDL^T$ with $L$ lower triangular and $D$ diagonal?  No
-  permutations are allowed, $A$ may be singular, and zeros are allowed on the
-  diagonals of all factors; this distinguishes the problem from the classical
-  theory, which assumes that all leading principal minors are nonzero.  Both
-  questions are answered by nullity inequalities comparing each leading
-  principal submatrix with the corresponding leading block of columns and
-  rows.  The unsymmetric criterion recovers the theorem of Okunev and Johnson;
-  the symmetric criterion appears to be new.  Both sufficiency proofs follow a
-  single strategy: reduce $A$ by an invertible triangular equivalence (a
-  congruence in the symmetric case) to a \emph{matching normal form} --- a
-  matrix whose nonzero pattern is a matching, unique for a given $A$ and
-  closely related to the Bruhat decomposition --- observe that the criterion
-  is invariant under such reductions and becomes a simple combinatorial prefix
-  condition on the matching, and then factor the normal form explicitly by a
-  greedy slot assignment (unsymmetric case) or by threading telescoping chains
-  through the isolated indices (symmetric case).  The proofs are constructive
-  and yield an $O(n^3)$ factorization algorithm.  We validate all results
-  with exact arithmetic over $\mathbb{Q}$, $GF(2)$, and $GF(3)$, including
-  exhaustive comparisons with brute-force enumeration of all triangular
-  factorizations for small dimensions.
-\end{abstract}
+  \begin{abstract}
+    We give a unified treatment of two existence questions for triangular
+    factorizations without pivoting over $\mathbb{R}$: when does a square matrix
+    $A$ admit a factorization $A = LU$ with $L$ lower triangular and $U$ upper
+    triangular, and, when $A$ is symmetric, a factorization $A = LDL^T$ with $L$
+    lower triangular and $D$ diagonal?  No permutations are allowed, $A$ may be
+    singular, and zeros are allowed on the diagonals of all factors; this
+    distinguishes the problem from the classical theory, which assumes that all
+    leading principal minors are nonzero.  Both questions are answered by
+    nullity inequalities comparing each leading principal submatrix with the
+    corresponding leading block of columns and rows.  The unsymmetric criterion
+    recovers the theorem of Okunev and Johnson; the symmetric criterion appears
+    to be new.  Both sufficiency proofs follow a single strategy: reduce $A$ by
+    an invertible triangular equivalence (a congruence in the symmetric case) to
+    a matching normal form, observe that the criterion is invariant under such
+    reductions and becomes a combinatorial prefix condition on the matching, and
+    then factor the normal form explicitly by a greedy slot assignment
+    (unsymmetric case) or by threading telescoping chains through isolated zero
+    indices (symmetric case).
+  \end{abstract}
 
-\begin{keywords}
-  LU factorization, $LDL^T$ factorization, singular matrices, rank-deficient
-  matrices, pivoting, nullity, Bruhat decomposition, matching.
-\end{keywords}
-\begin{AMS}
-  15A23, 15A03, 15A21, 65F05.
-\end{AMS}
+  \begin{keyword}
+    LU factorization \sep $LDL^T$ factorization \sep singular matrices \sep
+    rank-deficient matrices \sep pivoting \sep nullity \sep
+    Bruhat decomposition \sep matching
+    \MSC[2020] 15A23 \sep 15A03 \sep 15A21 \sep 65F05
+  \end{keyword}
 
-\input{sections/intro}
-\input{sections/related}
-\input{sections/notation}
-\input{sections/results}
-\input{sections/necessity}
-\input{sections/normalforms}
-\input{sections/transfer}
-\input{sections/combinatorics}
-\input{sections/explicit}
-\input{sections/assembly}
-\input{sections/validation}
-\input{sections/conclusion}
+\end{frontmatter}
+
+% \thispagestyle{empty}
+
+% ===== Inlined from sections/intro.tex =====
+\section{Introduction}\label{sec:intro}
+
+Let $A \in \mathbb{R}^{n \by n}$.  It is classical that when $A$ is
+nonsingular, a factorization $A = LU$ with $L$ lower triangular and $U$ upper
+triangular exists if and only if every leading principal submatrix
+$A[1:k,1:k]$ is nonsingular~\cite{higham_gaussian_2011,golub_matrix_2013}.
+The standard remedy when this condition fails is pivoting: for any $A$ there
+are permutations $P$ (and $Q$) such that $PA = LU$ or $PAQ = LU$.  Pivoting,
+however, changes the problem.  When the row and column indices carry meaning
+--- temporal order in autoregressive models, causal order in structural
+equation models, or a fixed elimination order imposed by an application --- the
+factorization must respect the original indexing, and the correct question
+becomes: \emph{for which matrices $A$ does $A = LU$ hold with no permutations
+at all?}
+
+Two features make the unpivoted question fundamentally different from the
+classical one.  First, $A$ may be singular, or may have singular leading
+principal blocks, and yet admit a perfectly good factorization.  Second, the
+factors must then be allowed to carry \emph{zeros on their diagonals}: we
+require only that $L$ be lower triangular and $U$ upper triangular, not that
+they be invertible.  The classical minor criterion says nothing in this regime.
+For example,
+\begin{equation}\label{eq:swap-vs-exchange}
+  A_1 =
+  \begin{pmatrix}
+    0 & 1\\
+    1 & 0
+  \end{pmatrix},
+  \qquad
+  A_2 =
+  \begin{pmatrix}
+    0 & 0 & 0\\
+    0 & 0 & 1\\
+    0 & 1 & 0
+  \end{pmatrix}
+\end{equation}
+are both symmetric with singular leading blocks.  The swap matrix $A_1$ has no
+factorization $A_1 = LU$ (from $a_{11}=l_{11}u_{11}=0$, either the first row or
+the first column of $LU$ must vanish).  Yet the larger, more degenerate matrix
+$A_2$ factors:
+\begin{equation}\label{eq:exchange-factorizations}
+  A_2 =
+  \underbrace{
+    \begin{pmatrix} 0 & 0 & 0\\ 0 & 1 & 0\\ 1 & 0 & 0
+    \end{pmatrix}
+    \begin{pmatrix} 0 & 1 & 0\\ 0 & 0 & 1\\ 0 & 0 & 0
+  \end{pmatrix}}_{LU}
+  =
+  \underbrace{
+    \begin{pmatrix} 0 & 0 & 0\\ -1 & -1 & 0\\ 0 & 1 & 1
+    \end{pmatrix}
+    \begin{pmatrix} 1 & & \\ & -1 & \\ & & 1
+    \end{pmatrix}
+    \begin{pmatrix} 0 & -1 & 0\\ 0 & -1 & 1\\ 0 & 0 & 1
+  \end{pmatrix}}_{LDL^T} .
+\end{equation}
+Both factorizations require zero diagonal entries: the leading zero index of
+$A_2$ acts as a resource that later off-diagonal structure can be routed
+through.  Understanding exactly when such routing is possible is the subject of
+this paper.
+
+We answer the question for both the unsymmetric and symmetric forms of the
+problem.  Write $\nl(X)=(\#\text{cols of }X)-\rk(X)$ for the right nullity.
+Our two main results are the following (\Cref{thm:lu,thm:ldlt}):
+\begin{itemize}
+  \item $A \in \mathbb{R}^{n \by n}$ admits a factorization $A = LU$ with $L$
+    lower triangular and $U$ upper triangular, zeros allowed on both diagonals,
+    if and only if for every $k = 1, \ldots, n$,
+    \[
+      \nl(A[1:k,1:k]) \le \nl(A[:,1:k]) + \nl({A[1:k,:]}^T) .
+    \]
+  \item A symmetric $A \in \mathbb{R}^{n \by n}$ admits a factorization
+    $A = LDL^T$ with $L$ lower triangular, zeros allowed on the diagonal, and
+    $D$ diagonal if and only if for every $k = 1, \ldots, n$,
+    \[
+      \nl(A[1:k,1:k]) \le 2\,\nl(A[:,1:k]) .
+    \]
+\end{itemize}
+The first criterion is equivalent to the rank inequality of Okunev and
+Johnson~\cite{okunev_johnson_2005,johnson_okunev_2025}.  The second criterion,
+and the fact that for symmetric matrices the two criteria coincide --- so that
+a symmetric matrix admits an unpivoted $LU$ factorization if and only if it
+admits an unpivoted $LDL^T$ factorization --- appear to be new.
+
+\paragraph{The unified method}
+Both sufficiency proofs follow the same three-step strategy.
+\begin{enumerate}
+  \item \emph{Reduce.}  Every $A$ can be written $A=M\Pi N$ with $M$
+    invertible lower triangular, $N$ invertible upper triangular, and $\Pi$ a
+    matching matrix.  Every symmetric $A$ can be written $A=MPM^T$ with $M$
+    invertible lower triangular and $P$ a signed matching matrix whose pair
+    blocks have the normalized real form
+    $\bigl(
+      \begin{smallmatrix}0&1\\1&0
+    \end{smallmatrix}\bigr)$
+    and whose diagonal entries lie in $\{0, \pm 1\}$
+    (\Cref{lem:reduction-lu,lem:reduction-sym}).
+  \item \emph{Transfer.}  The nullities appearing in the criteria are
+    invariant under these triangular equivalences and congruences, so the
+    criteria may be checked on the normal forms.  On normal forms they become
+    prefix conditions on matchings (\Cref{lem:comb-lu,lem:comb-sym}).
+  \item \emph{Thread.}  A matching matrix satisfying the prefix condition is
+    factored by assigning each matched entry a diagonal slot
+    $t\le\min(i,j)$.  In the symmetric case, off-diagonal pairs must instead
+    be threaded into disjoint chains rooted at isolated zero indices, and each
+    chain is realized by a telescoping sum of symmetric rank-one terms
+    (\Cref{thm:lu-matching,thm:ldlt-matching}).
+\end{enumerate}
+Necessity is a short rank argument, and the standard normal-form reductions and
+invariance facts are relegated to the appendices so that the main text can
+focus on the new prefix-condition and threading mechanisms.
+
+\paragraph{Contributions}
+\begin{itemize}
+  \item A unified normal-form proof of unpivoted $LU$ existence and unpivoted
+    $LDL^T$ existence for real matrices with possibly singular triangular
+    factors.
+  \item A necessary and sufficient condition for the existence of an unpivoted
+    $LDL^T$ factorization with a truly diagonal $D$ and possibly singular $L$,
+    together with the corollary that for symmetric matrices unpivoted $LU$ and
+    $LDL^T$ existence are equivalent.
+  \item An explicit combinatorial mechanism for the symmetric problem: the
+    prefix condition supplies enough earlier isolated zero indices to thread
+    all off-diagonal pairs and cancel the unwanted diagonal terms.
+  \item Canonical sparsity and rank-revealing structure
+    (\Cref{sec:sparsity}): both constructions can be steered to
+    factorizations with exactly $\rk(A)$ populated columns, whose sparsity
+    envelope is determined by the rank-jump matching of $A$ and is
+    simultaneously optimal, over all unpivoted factorizations, for every
+    leading block at once
+    (\Cref{thm:lu-sparsity,thm:ldlt-rr,prop:ldlt-lower}).
+\end{itemize}
+
+\paragraph{Organization}
+\Cref{sec:related} positions the paper.  \Cref{sec:notation} fixes notation,
+and \Cref{sec:results} states the main theorems.  \Cref{sec:normalforms}
+states the matching normal forms.  \Cref{sec:combinatorics} converts the
+criteria into prefix conditions, \Cref{sec:explicit} factors the normal forms,
+\Cref{sec:sparsity} develops the sparsity and rank-revealing structure of the
+factors, and \Cref{sec:assembly} assembles the proofs.  The appendices contain the
+standard rank facts, necessity and transfer arguments, normal-form proofs, and
+an additional example.
+% ===== End inlined from sections/intro.tex =====
+
+% ===== Inlined from sections/related.tex =====
+\section{Related work}\label{sec:related}
+
+\paragraph{Unpivoted LU for nonsingular matrices}
+The classical existence theory assumes invertibility.  If $A$ is nonsingular,
+then $A = LU$ exists if and only if all leading principal submatrices are
+nonsingular, in which case $L$ and $U$ are invertible and the factorization
+with unit lower triangular $L$ is unique; see
+Higham~\cite{higham_gaussian_2011} for a survey and
+\cite{golub_matrix_2013} for textbook treatments.  Higham notes explicitly
+that when a proper leading principal submatrix is singular a factorization
+"may exist, but if so it is not unique," without characterizing when.  Lau
+and Markham~\cite{lau_markham_1979} and Johnson, Olesky, and van den
+Driessche~\cite{johnson_inherited_1989} showed that a possibly singular $A$
+has a \emph{unique} unit LU factorization precisely when the $n-1$
+\emph{proper} leading principal minors are nonzero; the analysis
+of~\cite{johnson_inherited_1989} (inheritance of entries, fill-in) assumes
+this condition throughout and does not address existence when it fails.
+
+\paragraph{Unpivoted LU for arbitrary matrices}
+The existence question for arbitrary, possibly singular $A$ was settled by
+Okunev and Johnson.  Their result, circulated as a 1997 manuscript and posted
+as~\cite{okunev_johnson_2005}, recently appeared
+as~\cite{johnson_okunev_2025}: over a field, $A$ admits $A = LU$, with no
+invertibility requirement on the factors, if and only if
+\begin{equation}\label{eq:oj}
+  \rk(A[1:k,1:k]) + k \ \ge\ \rk(A[1:k,:]) + \rk(A[:,1:k]),
+  \qquad k = 1, \ldots, n .
+\end{equation}
+Their sufficiency proof is an induction on "factor complements"
+(generalized Schur complements), choosing the first column of $L$ and the
+first row of $U$ case by case; the published version also develops
+"near-LU" factorizations with almost-triangular factors when \cref{eq:oj}
+fails, and re-derives $PLU$ and three-factor decompositions.
+Darve~\cite{darve_lu_2026} restates \cref{eq:oj} in the nullity form used in
+this paper, gives a different constructive proof based on \emph{restricted
+pivoting} (only rows or columns that are zero in the active Schur complement
+  are moved, so that undoing the internal permutations preserves
+triangularity), and develops rank-revealing structure, tight sparsity bounds
+for the factors, and criteria for one-sided unit-triangular factors.  The
+present paper gives a third, normal-form proof of the same criterion, whose
+main advantage is that it extends verbatim to the symmetric $LDL^T$ problem.
+
+Dopico, Johnson, and Molera~\cite{dopico_multiple_2006} study the related
+question in which $L$ is required to be unit lower triangular (hence
+invertible): existence is characterized through a canonical form of $A$
+under left multiplication by unit lower triangular matrices (the
+rank-revealing minimal canonical form), and, importantly, all LU
+factorizations of a singular matrix are parametrized, quantifying their
+non-uniqueness.  Our normal form differs in that the reduction acts on both
+sides (or by congruence), and the middle factor --- not an upper triangular
+matrix --- carries the combinatorial obstruction.
+Nagarajan, Devasahayam, and Soundararajan~\cite{nagarajan_products_1999}
+showed that \emph{every} square matrix over a field is a product of three
+triangular matrices $LUM$; the two-factor existence question is exactly the
+question of when the third factor can be dispensed with.
+Jeffrey~\cite{jeffrey_lu_2010} standardizes full-rank LU factorings of
+rectangular and rank-deficient matrices in the form $P_r L D^{-1} U P_c$;
+since row and column permutations are built in, existence is unconditional
+and the unpivoted question does not arise.  For the structured class of
+M-matrices, McDonald and Schneider~\cite{mcdonald_schneider_1998} gave
+graph-theoretic necessary and sufficient conditions for a singular M-matrix
+to admit an unpivoted (block) LU factorization into possibly singular
+M-matrix factors.  Rank-revealing LU with pivoting chosen for numerical
+size, rather than algebraic existence, is developed by Miranian and
+Gu~\cite{miranian_gu_2003}, and the conditioning of the triangular factors
+of pivoted factorizations is analyzed by
+Stewart~\cite{stewart_triangular_1997}.  General surveys of matrix
+factorizations include~\cite{lu_numerical_2021}.
+
+\paragraph{Symmetric factorizations}
+For symmetric positive semidefinite matrices over $\mathbb{R}$, an unpivoted
+Cholesky-type factorization always exists even in the singular case: $A =
+LL^T$ with $L$ lower triangular, possibly with zero diagonal entries; see
+Higham~\cite{higham_cholesky_1990} for a detailed treatment.  Our symmetric
+criterion is consistent with this: positive semidefiniteness forces
+$\nl(A[1:k,1:k]) = \nl(A[:,1:k])$ for all $k$, so the criterion of
+\Cref{thm:ldlt} holds automatically (\Cref{cor:psd}).  For symmetric
+\emph{indefinite} matrices the classical approach abandons the diagonal $D$:
+with symmetric pivoting, $PAP^T = LDL^T$ always exists when $D$ is allowed
+to be block diagonal with $1 \by 1$ and $2 \by 2$ blocks, as introduced by
+Bunch and Parlett~\cite{bunch_parlett_1971} and made efficient by Bunch and
+Kaufman~\cite{bunch_kaufman_1977}; a rank-profile-revealing variant over
+arbitrary fields, still with symmetric pivoting and with $2 \by 2$
+antidiagonal blocks in $D$, is given by Dumas and
+Pernet~\cite{dumas_pernet_2018}.  Closest in spirit to our symmetric
+reduction is the elegant paper of Van Dooren and
+Strang~\cite{vandooren_strang_2014}, which factors a real symmetric matrix
+as $A = L P L^T$ \emph{without pivoting}, where $P$ is a signed-matching
+middle factor built from diagonal entries $0, \pm 1$ and symmetric exchange
+blocks; our \Cref{lem:reduction-sym} can be read as a real normalized version of their reduction.  Neither
+\cite{vandooren_strang_2014} nor \cite{dumas_pernet_2018} addresses when
+the middle factor can be made \emph{truly diagonal}, which is exactly the
+step from $A = MPM^T$ to $A = LDL^T$ taken in
+\Cref{sec:combinatorics,sec:explicit}.  The $2 \by 2$ blocks of
+Bunch--Parlett reappear in our theory in a different role: they are the
+irreducible blocks of the signed matching normal form, i.e., the
+obstruction that must be threaded through earlier zero indices rather than a
+device enabled by pivoting.  We are not aware of a previously published
+necessary and sufficient condition for the unpivoted diagonal-$D$ problem
+with possibly singular $L$.
+
+\paragraph{Triangular canonical forms and the Bruhat decomposition}
+Our reduction lemma states that every $A$ equals $M \Pi N$ with $M, N$
+invertible triangular and $\Pi$ a matching matrix, and that the matching is
+an invariant of $A$.  For invertible $A$ this is a form of the Bruhat
+decomposition $A = LPU$, whose permutation $P$ is uniquely determined by
+$A$; see Elsner~\cite{elsner_bruhat_1979} and
+Strang~\cite{strang_pnas_2010,strang_lpu_2012} for elimination-based
+accounts, and~\cite{dopico_multiple_2006} for the related one-sided
+canonical form.  For singular matrices the permutation becomes a partial
+permutation: this is the generalized Bruhat (or LEU)
+decomposition~\cite{malaschonok_2010}, and the invariant matching is the
+\emph{rank profile matrix} of Dumas, Pernet, and
+Sultan~\cite{dumas_pernet_sultan_2017}, with which part~(1) of our
+\Cref{prop:canonical} coincides.  On the symmetric side,
+Szechtman~\cite{szechtman_2007} classified symmetric matrices under
+congruence by triangular groups, and Bagno and Cherniavsky~\cite{bagno_cherniavsky_2012}
+studied the corresponding rank-control invariants of congruence $B$-orbits
+over $\mathbb{C}$.  Our
+\Cref{lem:reduction-sym,prop:canonical} thus recover known canonical forms;
+we include short elimination-style constructive proofs to keep the paper
+self-contained and to fix the normalization used in the symmetric threading
+argument.
+
+\paragraph{Positioning}
+In summary: the unsymmetric criterion in \Cref{thm:lu} is due to Okunev and
+Johnson~\cite{okunev_johnson_2005,johnson_okunev_2025}, with alternative
+proofs and structural refinements in~\cite{darve_lu_2026}; the triangular
+canonical forms we use connect to the generalized Bruhat decomposition
+\cite{elsner_bruhat_1979,malaschonok_2010,dumas_pernet_sultan_2017} and, in
+the symmetric case, to Van Dooren--Strang~\cite{vandooren_strang_2014} and
+Szechtman~\cite{szechtman_2007}.  The contributions of the present paper
+are the unified normal-form route to \emph{existence} theorems, the
+symmetric $LDL^T$ criterion (\Cref{thm:ldlt}) together with the equivalence
+of $LU$ and $LDL^T$ existence for symmetric matrices
+(\Cref{cor:sym-lu-ldlt}), the prefix-condition combinatorics and threading
+constructions of \Cref{sec:combinatorics,sec:explicit}.
+% ===== End inlined from sections/related.tex =====
+
+% ===== Inlined from sections/notation.tex =====
+\section{Notation}\label{sec:notation}
+
+Throughout, matrices have real entries.  We use the slicing notation standard in
+numerical linear algebra~\cite{golub_matrix_2013}: $A[i:j, k:l]$ is the
+submatrix of $A$ with rows $i$ through $j$ and columns $k$ through $l$; a bare
+colon denotes the full range, so $A[:,1:k]$ is the block of the first $k$
+columns and $A[1:k,:]$ the block of the first $k$ rows.  We write $e_i$ for the
+$i$th standard basis vector, $I_n$ for the identity, and $u^T$ for the
+transpose.
+
+For an $m \by p$ matrix $X$, $\rk(X)$ is its rank and
+\[
+  \nl(X) = p - \rk(X)
+\]
+is the dimension of its \emph{right} null space.  In particular, for the three
+blocks entering our criteria --- each of which has exactly $k$ columns --- we
+have
+\begin{gather*}
+  \nl(A[1:k,1:k]) = k - \rk(A[1:k,1:k]),
+  \qquad
+  \nl(A[:,1:k]) = k - \rk(A[:,1:k]),\\
+  \nl({A[1:k,:]}^T) = k - \rk(A[1:k,:]) .
+\end{gather*}
+
+A matrix $L$ is \emph{lower triangular} if $L[i,j] = 0$ for $i < j$, and $U$
+is \emph{upper triangular} if $U[i,j] = 0$ for $i > j$.  We emphasize that
+triangular factors in this paper are \emph{not} assumed invertible: zeros are
+allowed on their diagonals.  A triangular matrix is invertible if and only if
+its diagonal entries are all nonzero, in which case its inverse is triangular
+of the same kind, and products of lower (resp.\ upper) triangular matrices are
+lower (resp.\ upper) triangular.  We will also use repeatedly that if $M$ is
+lower triangular and $N$ is upper triangular, then
+\begin{equation}\label{eq:tri-slices}
+  M[1:k,:] =
+  \begin{pmatrix}
+    M_k & 0
+  \end{pmatrix},
+  \qquad
+  N[:,1:k] =
+  \begin{pmatrix}
+    N_k \\ 0
+  \end{pmatrix},
+\end{equation}
+where $M_k = M[1:k,1:k]$ and $N_k = N[1:k,1:k]$; if $M$ (resp.\ $N$) is
+invertible then so is $M_k$ (resp.\ $N_k$), since the leading block of a
+triangular matrix carries its first $k$ diagonal entries.
+
+The elementary rank facts used below, together with the short necessity and
+transfer arguments, are collected in \Cref{app:standard-proofs}.
+% ===== End inlined from sections/notation.tex =====
+
+% ===== Inlined from sections/results.tex =====
+\section{Main results}\label{sec:results}
+
+\begin{theorem}[unpivoted LU]\label{thm:lu}
+  Let $A \in \mathbb{R}^{n \by n}$.  The following are equivalent:
+  \begin{enumerate}
+    \item there exist a lower triangular $L \in \mathbb{R}^{n \by n}$ and an upper
+      triangular $U \in \mathbb{R}^{n \by n}$, with zeros allowed on both diagonals,
+      such that $A = LU$;
+    \item for every $k = 1, \ldots, n$,
+      \begin{equation}\label{eq:lu-crit}
+        \nl(A[1:k,1:k]) \ \le\ \nl(A[:,1:k]) + \nl({A[1:k,:]}^T) .
+      \end{equation}
+  \end{enumerate}
+\end{theorem}
+
+By the rank--nullity relations of \Cref{sec:notation}, \cref{eq:lu-crit} is
+equivalent to the rank form
+$\rk(A[1:k,1:k]) + k \ge \rk(A[1:k,:]) + \rk(A[:,1:k])$ of Okunev and
+Johnson~\cite{okunev_johnson_2005,johnson_okunev_2025}.
+
+\begin{theorem}[unpivoted $LDL^T$]\label{thm:ldlt}
+  Let $A \in \mathbb{R}^{n \by n}$ with $A = A^T$.  The following are equivalent:
+  \begin{enumerate}
+    \item there exist a lower triangular $L \in \mathbb{R}^{n \by n}$, with zeros
+      allowed on the diagonal, and a diagonal $D \in \mathbb{R}^{n \by n}$ such that
+      $A = LDL^T$;
+    \item for every $k = 1, \ldots, n$,
+      \begin{equation}\label{eq:ldlt-crit}
+        \nl(A[1:k,1:k]) \ \le\ 2 \, \nl(A[:,1:k]) .
+      \end{equation}
+  \end{enumerate}
+\end{theorem}
+
+Equivalently, in rank form, $\rk(A[1:k,1:k]) + k \ge 2 \rk(A[:,1:k])$ for
+all $k$.  Note that \cref{eq:ldlt-crit} is precisely \cref{eq:lu-crit}
+specialized to a symmetric matrix: when $A = A^T$ we have
+${A[1:k,:]}^T = A[:,1:k]$, so the two terms on the right-hand side of
+\cref{eq:lu-crit} coincide.  This gives immediately:
+
+\begin{corollary}[symmetric matrices: LU and $LDL^T$ are equivalent]\label{cor:sym-lu-ldlt}
+  A symmetric matrix $A \in \mathbb{R}^{n \by n}$ admits an unpivoted $LU$
+  factorization if and only if it admits an unpivoted $LDL^T$ factorization.
+\end{corollary}
+
+\begin{proof}
+  If $A = LDL^T$ then $A = L \, (DL^T)$ is an LU factorization.  Conversely,
+  if $A = LU$ exists then \cref{eq:lu-crit} holds by \Cref{thm:lu}, which
+  for symmetric $A$ is \cref{eq:ldlt-crit}, and \Cref{thm:ldlt} produces an
+  $LDL^T$ factorization.
+\end{proof}
+
+The next corollaries show that the criteria specialize to the familiar
+statements in the two regimes covered by the classical theory.
+
+\begin{corollary}[nonsingular case]\label{cor:nonsingular}
+  Let $A$ be nonsingular.  Then \cref{eq:lu-crit} holds if and only if all
+  leading principal submatrices $A[1:k,1:k]$ are nonsingular.  In
+  particular, \Cref{thm:lu,thm:ldlt} recover the classical criteria for
+  nonsingular (symmetric) matrices.
+\end{corollary}
+
+\begin{proof}
+  If $A$ is nonsingular, its first $k$ columns are linearly independent and
+  its first $k$ rows are linearly independent, so
+  $\nl(A[:,1:k]) = \nl({A[1:k,:]}^T) = 0$.  Thus \cref{eq:lu-crit} reads
+  $\nl(A[1:k,1:k]) \le 0$, i.e., $A[1:k,1:k]$ is nonsingular, for every
+  $k$.  The same computation applies to \cref{eq:ldlt-crit}.
+\end{proof}
+
+\begin{corollary}[positive semidefinite case]\label{cor:psd}
+  Let $A$ be symmetric positive semidefinite.
+  Then \cref{eq:ldlt-crit} holds, so $A = LDL^T$ exists without pivoting;
+  moreover $\nl(A[1:k,1:k]) = \nl(A[:,1:k])$ for every $k$.
+\end{corollary}
+
+\begin{proof}
+  Write $A = B^T B$.  Then $A[:,1:k] = B^T \, B[:,1:k]$ and
+  $A[1:k,1:k] = {B[:,1:k]}^T B[:,1:k]$.  For real $B$,
+  $B[:,1:k] x = 0 \iff {B[:,1:k]}^T B[:,1:k] x = 0$ (multiply by $x^T$), so
+  $\rk(A[1:k,1:k]) = \rk(B[:,1:k]) \ge \rk(A[:,1:k]) \ge
+  \rk(A[1:k,1:k])$, where the last inequality holds because $A[1:k,1:k]$
+  consists of rows of $A[:,1:k]$.  Hence
+  $\nl(A[1:k,1:k]) = \nl(A[:,1:k]) \le 2\,\nl(A[:,1:k])$.
+\end{proof}
+
+\Cref{cor:psd} is consistent with the classical fact that a singular
+positive semidefinite matrix admits an unpivoted Cholesky factorization
+$A = LL^T$ with possibly zero diagonal entries in
+$L$~\cite{higham_cholesky_1990}.  Indefinite symmetric matrices, by
+contrast, may fail \cref{eq:ldlt-crit} --- the swap matrix $A_1$ of
+\cref{eq:swap-vs-exchange} fails it at $k=1$ --- which is why the classical
+unpivoted theory for indefinite matrices resorts to block-diagonal $D$ with
+symmetric pivoting~\cite{bunch_parlett_1971,bunch_kaufman_1977}.
+
+\begin{remark}[zeros on the diagonals are essential]\label{rem:zeros}
+  If $L$ is required to be invertible (e.g., unit lower triangular), the
+  existence conditions become strictly stronger and different in kind; see
+  \cite{dopico_multiple_2006} and \cite[Sec.~3]{darve_lu_2026}.  The matrix
+  $A_2$ of \cref{eq:swap-vs-exchange} satisfies
+  \cref{eq:lu-crit,eq:ldlt-crit} but admits no factorization with $L$ or
+  $U$ invertible.  Indeed, if $A_2 = LU$ with $L$ invertible, then
+  $0 = A_2[1:2,1:2] = L[1:2,1:2] \, U[1:2,1:2]$ forces $U[1:2,1:2] = 0$,
+  hence $U[:,1:2] = 0$ by \cref{eq:tri-slices} and
+  $A_2[:,1:2] = L \, U[:,1:2] = 0$, contradicting $A_2[3,2] = 1$; the case
+  of invertible $U$ follows by transposing the symmetric $A_2$.  Every
+  factorization must instead route the exchange pair $(2,3)$ through the
+  zero index $1$, forcing zero diagonal entries, as in
+  \cref{eq:exchange-factorizations}.
+\end{remark}
+
+\begin{remark}[singular $A$, singular blocks]\label{rem:singular}
+  Neither theorem places any restriction on $\rk(A)$.  The nonsingular
+  matrix $\bigl(
+    \begin{smallmatrix} 0 & 1\\ 1 & 1
+  \end{smallmatrix}\bigr)$
+  fails \cref{eq:lu-crit} at $k = 1$ (its leading entry vanishes while its
+  first row and column are nonzero), whereas the rank-two matrix $A_2$ of
+  \cref{eq:swap-vs-exchange} satisfies both criteria.  Existence is
+  governed not by how singular $A$ is, but by whether every deficiency of a
+  leading block is matched by global deficiencies of the corresponding rows
+  and columns.
+\end{remark}
+% ===== End inlined from sections/results.tex =====
+
+% ===== Inlined from sections/normalforms.tex =====
+\section{Matching normal forms}\label{sec:normalforms}
+
+The engine of the sufficiency proof is a reduction of $A$ to a sparse normal
+form by invertible triangular transformations.  In the unsymmetric case the
+normal form is a matching between row and column indices.  In the symmetric
+real case, we use a triangular congruence to normalize every two-index block to
+one fixed representative.
+
+\begin{definition}[matching matrix]\label{def:matching}
+  A \emph{matching matrix} $\Pi \in \mathbb{R}^{n \by n}$ is a partial
+  permutation matrix: a $0$--$1$ matrix with at most one $1$ in each row and
+  in each column.  Equivalently, $\Pi = D\Pi_0$ for a permutation matrix
+  $\Pi_0$ and a $0$--$1$ diagonal matrix $D$ --- a permutation matrix with
+  some rows zeroed out (or $\Pi = \Pi_0 D'$, with some columns zeroed out).
+  We write
+  \[
+    \M = \M(\Pi) := \{(i,j) : \Pi[i,j] = 1\},
+    \qquad\text{so that}\qquad
+    \Pi = \sum_{(i,j) \in \M} e_i e_j^T,
+  \]
+  and call the elements of $\M$ \emph{matched pairs}; the defining property
+  says precisely that no two matched pairs share a row index $i$, and no two
+  share a column index $j$.
+\end{definition}
+
+Note that diagonal pairs $(t,t)$ --- the nonzero diagonal entries of $\Pi$
+--- are allowed; they will correspond to the classical nonzero pivots.
+
+\begin{definition}[signed matching matrix]\label{def:sym-matching}
+  A \emph{signed matching matrix} is a symmetric matrix
+  $P \in \mathbb{R}^{n \by n}$ with at most one nonzero entry in each row
+  (equivalently, in each column), all of whose off-diagonal nonzero entries
+  equal $1$ and all of whose diagonal nonzero entries equal $\pm 1$.
+\end{definition}
+
+Despite the parallel name, a signed matching matrix is \emph{not} a special
+case of \Cref{def:matching}: its diagonal entries may equal $-1$.  This
+discrepancy is forced by the congruence action.  A congruence rescales a
+diagonal entry $\gamma_t$ by a nonzero \emph{square}
+($\gamma_t \mapsto s^2 \gamma_t$ when index $t$ is scaled by $s$), so
+$\sgn \gamma_t$ is a congruence invariant --- it carries the inertia of
+$A$, as the example $A = (-1)$ already shows --- and negative diagonal
+entries are therefore unavoidable in any normal form for congruence.  The
+diagonal signs are also the \emph{only} discrepancy: a signed matching
+matrix with no $-1$ entries is precisely a matching matrix that is
+symmetric, and $|\gamma_t|$ can be, and in \Cref{def:sym-matching} has
+been, normalized to $1$ (the one step in the paper that uses real square
+roots; everything else is rational in the entries of $A$).
+
+Symmetry sorts the indices into three classes, for which we fix
+terminology: an index $t$ with $P[t,t] = \gamma_t \in \{\pm 1\}$ is a
+\emph{singleton}; indices $i < j$ with $P[i,j] = P[j,i] = 1$ form a
+\emph{pair}, and the sparsity forces $P[i,i] = P[j,j] = 0$, so a pair
+carries the exchange block
+$P[\{i,j\},\{i,j\}] = \bigl(
+  \begin{smallmatrix} 0 & 1\\ 1 & 0
+\end{smallmatrix}\bigr)$; every remaining index is an \emph{isolated zero}
+index, whose row and column vanish.
+
+\begin{lemma}[triangular equivalence to a matching matrix]\label{lem:reduction-lu}
+  For every $A \in \mathbb{R}^{n \by n}$ there exist an invertible lower
+  triangular $M$, an invertible upper triangular $N$, and a matching matrix
+  $\Pi$ such that
+  \[
+    A = M \, \Pi \, N .
+  \]
+  The decomposition can be computed in $O(n^3)$ arithmetic operations.
+\end{lemma}
+
+When $A$ is nonsingular, the factorization in \Cref{lem:reduction-lu} is the
+usual Bruhat decomposition.  In the singular case, the permutation matrix is
+replaced by a partial permutation matrix, giving the generalized Bruhat, or
+rank profile, decomposition.
+
+\begin{lemma}[triangular congruence to a signed matching matrix]\label{lem:reduction-sym}
+  For every symmetric $A \in \mathbb{R}^{n \by n}$ there exist an invertible
+  lower triangular $M$ and a signed matching matrix $P$ such that
+  \[
+    A = M \, P \, M^T .
+  \]
+  The decomposition can be computed in $O(n^3)$ arithmetic operations.
+\end{lemma}
+
+The proofs are standard elimination arguments closely related to the Bruhat
+and generalized Bruhat decompositions; for completeness, and to fix the exact
+normalization used here, they are given in \Cref{app:normalform-proofs}.
+
+\subsection{Canonicity}
+
+The matching produced by the reductions is not an artifact of the construction:
+it is determined by the rank profile of $A$.  For $1 \le i, j \le n$ let
+\[
+  r_{ij}(A) := \rk\bigl(A[1:i,1:j]\bigr),
+  \qquad
+  \Delta_{ij}(A) := r_{ij} - r_{i-1,j} - r_{i,j-1} + r_{i-1,j-1},
+\]
+with the convention $r_{0j} = r_{i0} = 0$.  We call $(i,j)$ a
+\emph{rank jump} of $A$ if $\Delta_{ij}(A) = 1$.
+
+\begin{proposition}[canonicity]\label{prop:canonical}
+  \begin{enumerate}
+    \item If $A = M \Pi N$ as in \Cref{lem:reduction-lu}, then
+      \[
+        r_{ij}(A) = \#\{(i',j') \in \M(\Pi) : i' \le i,\ j' \le j\}
+        \quad \text{for all } i, j,
+      \]
+      and consequently $\M(\Pi)$ is exactly the set of rank jumps of $A$.
+    \item If $A = A^T = M P M^T$ as in \Cref{lem:reduction-sym}, then the
+      singletons of $P$ are the diagonal rank jumps
+      $\{t : \Delta_{tt}(A) = 1\}$ and the pairs of $P$ are the unordered
+      off-diagonal rank jumps
+      $\{\{i,j\} : i \neq j,\ \Delta_{ij}(A) = 1\}$.
+  \end{enumerate}
+\end{proposition}
+
+Thus, for symmetric $A$, the unsymmetric normal form contains the two matched
+pairs $(i,j)$ and $(j,i)$ corresponding to each symmetric pair $(i,j)$ of
+$P$, while each singleton of $P$ gives one diagonal matched pair.  This is the
+rank-profile dictionary behind the equivalence between the LU and $LDL^T$
+criteria.
+% ===== End inlined from sections/normalforms.tex =====
+
+% ===== Inlined from sections/combinatorics.tex =====
+\section{The criteria on the normal forms are prefix conditions}\label{sec:combinatorics}
+
+On a matching matrix, all three nullities entering the criteria are counts
+of simple combinatorial objects, and the criteria collapse to conditions on
+prefixes of the index set.
+
+\subsection{The unsymmetric normal form}
+
+Let $\Pi$ be a matching matrix with matching $\M$.  Relative to the cut
+after index $k$, classify the matched pairs and define
+\begin{align*}
+  \iota_k &:= \#\{(i,j) \in \M : i \le k \text{ and } j \le k\}
+  && \text{(pairs inside the leading block)},\\
+  \chi^R_k &:= \#\{(i,j) \in \M : i \le k < j\}
+  && \text{(pairs crossing the cut row-first)},\\
+  \chi^C_k &:= \#\{(i,j) \in \M : j \le k < i\}
+  && \text{(pairs crossing the cut column-first)},\\
+  r^0_k &:= \#\{\text{zero rows} \le k\},
+  \qquad
+  c^0_k := \#\{\text{zero columns} \le k\}. \hspace{-12em}
+\end{align*}
+
+\begin{lemma}[nullities of a matching matrix]\label{lem:null-matching}
+  For every $k$,
+  \begin{align}\label{eq:null-matching}
+    \nl(\Pi[1:k,1:k]) &= r^0_k + \chi^R_k = c^0_k + \chi^C_k,\\
+    \nl(\Pi[:,1:k]) &= c^0_k,\notag\\
+    \nl({\Pi[1:k,:]}^T) &= r^0_k .\notag
+  \end{align}
+  In particular the \emph{bookkeeping identity}
+  $r^0_k + \chi^R_k = c^0_k + \chi^C_k$ holds.
+\end{lemma}
+
+\begin{proof}
+  The nonzero columns of the $n \by k$ block $\Pi[:,1:k]$ are the vectors
+  $e_i$ over the matched pairs with $j \le k$; they occupy distinct
+  rows and are therefore linearly independent, while the remaining $c^0_k$
+  columns vanish.  Hence $\rk(\Pi[:,1:k]) = k - c^0_k$, giving the second
+  formula, and the third follows by applying the same argument to $\Pi^T$,
+  whose matching is the transpose of $\M$.
+
+  The leading block $\Pi[1:k,1:k]$ is itself a matching matrix whose
+  matched pairs are the $\iota_k$ pairs inside the block, so
+  $\rk(\Pi[1:k,1:k]) = \iota_k$ (as in \Cref{prop:canonical}, its nonzero
+  columns are independent).  Classify the $k$ row indices $\le k$: each is
+  a zero row, or belongs to a pair with $j \le k$, or to a pair with
+  $j > k$; the classes are disjoint and exhaust, so
+  $k = r^0_k + \iota_k + \chi^R_k$ and
+  $\nl(\Pi[1:k,1:k]) = k - \iota_k = r^0_k + \chi^R_k$.  Classifying the
+  column indices instead gives $k = c^0_k + \iota_k + \chi^C_k$ and the
+  alternative expression, whence the bookkeeping identity.
+\end{proof}
+
+\begin{lemma}[prefix form of the LU criterion]\label{lem:comb-lu}
+  For a matching matrix $\Pi$, criterion \cref{eq:lu-crit} at index $k$ is
+  equivalent to each of
+  \[
+    \text{(a) } \chi^R_k \le c^0_k,
+    \qquad
+    \text{(b) } \chi^C_k \le r^0_k,
+    \qquad
+    \text{(c) } \nu_k := \#\{(i,j) \in \M : \min(i,j) \le k\} \ \le\ k .
+  \]
+\end{lemma}
+
+\begin{proof}
+  Substituting \cref{eq:null-matching} into \cref{eq:lu-crit}: using the
+  first expression for the leading nullity,
+  $r^0_k + \chi^R_k \le c^0_k + r^0_k$, i.e.\ (a); using the second,
+  $c^0_k + \chi^C_k \le c^0_k + r^0_k$, i.e.\ (b).  By the bookkeeping
+  identity, (a) and (b) are equivalent (they have equal slack).  For (c):
+  a pair has $\min(i,j) \le k$ iff it is counted by $\iota_k$, $\chi^R_k$,
+  or $\chi^C_k$, so $\nu_k = \iota_k + \chi^R_k + \chi^C_k$; substituting
+  $\iota_k = k - r^0_k - \chi^R_k$ from the proof of
+  \Cref{lem:null-matching} gives
+  $\nu_k \le k \iff \chi^C_k \le r^0_k$, which is (b).
+\end{proof}
+
+\subsection{The symmetric normal form}
+
+Let $P$ be a signed matching matrix.  Define
+\[
+  \zeta_k := \#\{\text{isolated zero indices} \le k\},
+  \qquad
+  \chi_k := \#\{\text{pairs } (i,j) \text{ of } P : i \le k < j\} .
+\]
+
+\begin{lemma}[nullities of a signed matching matrix]\label{lem:null-sym-matching}
+  For every $k$,
+  \[
+    \nl(P[1:k,1:k]) = \zeta_k + \chi_k,
+    \qquad
+    \nl(P[:,1:k]) = \zeta_k .
+  \]
+\end{lemma}
+
+\begin{proof}
+  The columns $t \le k$ of the $n \by k$ block $P[:,1:k]$ are: zero for
+  isolated $t$; $\gamma_t e_t$ for singletons; for a pair $(i,j)$ of $P$,
+  column $i$ of $P$ equals $e_j$ and column $j$ equals
+  $e_i$ (whichever of the two has index $\le k$ is included).
+  Distinct blocks occupy disjoint row sets, and within a pair
+  with both $i, j \le k$ the two columns $e_j$ and
+  $e_i$ are independent (restricted to rows $\{i,j\}$
+  they form the pair block, of determinant $-1$).  Hence the nonzero
+  columns of $P[:,1:k]$ are independent, exactly the isolated columns
+  vanish, and $\nl(P[:,1:k]) = \zeta_k$.
+
+  The leading block $P[1:k,1:k]$ is block diagonal (up to symmetric
+  permutation) with blocks: zeros at isolated indices ($\zeta_k$ of them);
+  $(\gamma_t)$ at singletons (rank $1$); full pair blocks when
+  $j \le k$ (rank $2$); and, for each crossing pair $i \le k < j$, the
+  single row/column $i$ whose entries within the block all vanish
+  (its only nonzero sits in column $j > k$) --- contributing one
+  null direction each.  Hence
+  $\nl(P[1:k,1:k]) = \zeta_k + \chi_k$.
+\end{proof}
+
+\begin{lemma}[prefix form of the $LDL^T$ criterion]\label{lem:comb-sym}
+  For a signed matching matrix $P$, criterion \cref{eq:ldlt-crit} at
+  index $k$ is equivalent to
+  \begin{equation}\label{eq:prefix-sym}
+    \chi_k \ \le\ \zeta_k .
+  \end{equation}
+\end{lemma}
+
+\begin{proof}
+  Substitute \Cref{lem:null-sym-matching} into \cref{eq:ldlt-crit}:
+  $\zeta_k + \chi_k \le 2 \zeta_k$.
+\end{proof}
+
+\begin{remark}\label{rem:comb-dictionary}
+  Under the rank-profile dictionary of \Cref{prop:canonical} --- a pair $(i,j)$ of
+  $P$ corresponds to the two matched pairs $(i,j)$ and $(j,i)$ of the
+  unsymmetric normal form $\Pi$ of the same symmetric $A$, an isolated zero
+  to a common zero row and column --- we have
+  $\chi^R_k = \chi^C_k = \chi_k$ and $r^0_k = c^0_k = \zeta_k$, and
+  conditions (a), (b) of \Cref{lem:comb-lu} both become
+  \cref{eq:prefix-sym}.  The combinatorial obstruction is thus literally
+  the same in the two problems.
+\end{remark}
+% ===== End inlined from sections/combinatorics.tex =====
+
+% ===== Inlined from sections/explicit.tex =====
+\section{Explicit factorization of the normal forms}\label{sec:explicit}
+
+We now factor the normal forms under the prefix conditions of
+\Cref{sec:combinatorics}.  Both constructions build the factorization as a
+sum of rank-one terms indexed by \emph{slots} $t \in \{1, \ldots, n\}$: for
+$A = LU$,
+\begin{equation}\label{eq:rank-one-lu}
+  LU = \sum_{t=1}^{n} \ell_t \, u_t^T,
+\end{equation}
+where $\ell_t$ is column $t$ of $L$ (supported on rows $\ge t$) and $u_t^T$
+is row $t$ of $U$ (supported on columns $\ge t$); for $A = LDL^T$,
+\begin{equation}\label{eq:rank-one-ldlt}
+  LDL^T = \sum_{t=1}^{n} d_t \, \ell_t \ell_t^T .
+\end{equation}
+The difference between the two problems is now plain: in
+\cref{eq:rank-one-lu} each term is an arbitrary rank-one matrix with the
+required support, whereas in \cref{eq:rank-one-ldlt} each term is
+\emph{symmetric} rank-one.  A single off-diagonal exchange block
+$\alpha(e_i e_j^T + e_j e_i^T)$ has rank $2$ and zero diagonal, and cannot
+equal a sum of terms each supported in rows and columns $\ge i$ unless
+partial sums are allowed to cancel (over any field: the $(i,i)$ entry
+  forces $d_t \ell_t[i]^2 = 0$ for every term while the $(i,j)$ entry needs
+some $d_t \ell_t[i] \neq 0$); this forces the telescoping chains of
+\Cref{thm:ldlt-matching}.
+
+\subsection{LU of a matching matrix: greedy slot assignment}
+
+\begin{theorem}\label{thm:lu-matching}
+  Let $\Pi$ be a matching matrix satisfying the prefix condition
+  $\nu_k \le k$ for all $k$ (\Cref{lem:comb-lu}(c)).  Then there is an
+  injection
+  \begin{equation}\label{eq:slot-injection}
+    \sigma : \M(\Pi) \hookrightarrow \{1, \ldots, n\},
+    \qquad
+    \sigma(i,j) \le \min(i,j) \quad \text{for every } (i,j) \in \M(\Pi),
+  \end{equation}
+  computable by a greedy pass, and setting, for each $(i,j) \in \M$ with
+  $t = \sigma(i,j)$,
+  \[
+    \ell_t := e_i,
+    \qquad
+    u_t := e_j,
+  \]
+  and $\ell_t = u_t = 0$ for slots $t \notin \range(\sigma)$, the matrices
+  $L = (\ell_1, \ldots, \ell_n)$ and $U$ with rows $u_1^T, \ldots, u_n^T$
+  are lower and upper triangular, respectively, and $L U = \Pi$.
+\end{theorem}
+
+\begin{proof}
+  \emph{The assignment suffices.}
+  Given $\sigma$ as in \cref{eq:slot-injection}, triangularity is immediate:
+  $\ell_t = e_i$ has its support at row $i \ge \min(i,j) \ge t$, and $u_t$
+  at column $j \ge t$.  Since $\sigma$ is injective, each matched pair
+  contributes its own term in \cref{eq:rank-one-lu} and empty slots
+  contribute zero, so
+  $L U = \sum_{(i,j) \in \M} e_i e_j^T = \Pi$.  Note that both
+  diagonals may carry zeros: slot $t$ has $L[t,t] = 1$ only if
+  $i = t$, and $U[t,t] \neq 0$ only if $j = t$.
+
+  \emph{The assignment exists.}
+  Process the pairs in order of nondecreasing $m(i,j) := \min(i,j)$, ties
+  broken arbitrarily, maintaining the set of free slots (initially
+  $\{1, \ldots, n\}$); assign to each pair the largest free slot
+  $t \le m(i,j)$ (the argument below is valid for \emph{any} choice of
+  free slot $\le m(i,j)$; we fix the largest for definiteness).  Suppose
+  the greedy fails at a pair with bound
+  $m := m(i,j)$: all slots $1, \ldots, m$ are occupied.  Every occupied
+  slot $s \le m$ was assigned to a previously processed pair, whose bound
+  was $\le m$ (bounds are nondecreasing along the pass).  Together with the
+  current pair, this exhibits $m + 1$ pairs with $\min \le m$, i.e.\
+  $\nu_m \ge m + 1$, contradicting the prefix condition.  Hence the greedy
+  assigns every pair and produces $\sigma$.
+\end{proof}
+
+\begin{remark}[which pairs need rerouting]\label{rem:rerouting}
+  Order the pairs by their bound $m(i,j)$.  A diagonal pair $(t,t)$ can
+  take its own slot $t$; a pair $(i,j)$ with $i < j$ (an "above" pair)
+  would naturally take slot $i$, and a "below" pair $(i,j)$ with $i > j$
+  slot $j$.  Conflicts occur exactly at \emph{crossing indices} $t$ that
+  are simultaneously the row of an above pair $(t, j)$ and the column of a
+  below pair $(i, t)$: one of the two must be rerouted to an earlier free
+  slot, whose availability is exactly what the prefix condition
+  guarantees --- in the leanest case the free slot comes from an index that
+  is both a zero row and a zero column.  The exchange matrix $A_2$ of
+  \cref{eq:swap-vs-exchange} is the minimal example: index $2$ is crossing,
+  and the pair $(2,3)$ (or $(3,2)$) is rerouted through slot $1$, whose row
+  and column are zero.  This is the precise sense in which zero diagonal
+  entries are a \emph{resource} for unpivoted factorization.
+\end{remark}
+
+\subsection{$LDL^T$ of a signed matching matrix: threads}
+
+Throughout this subsection $P$ is a signed matching matrix satisfying
+$\chi_k \le \zeta_k$ for all $k$ (\Cref{lem:comb-sym}).  Thus every pair block
+has the normalized real form
+$\bigl(
+  \begin{smallmatrix}0&1\\1&0
+\end{smallmatrix}\bigr)$.
+
+\begin{lemma}[thread partition]\label{lem:threads}
+  The pairs of $P$ can be partitioned into \emph{threads}
+  \begin{equation}\label{eq:thread}
+    r < i_1 < j_1 < i_2 < j_2 < \cdots < i_m < j_m,
+  \end{equation}
+  where $r$ is an isolated zero index, $(i_q, j_q)$ are pairs of $P$, and
+  distinct threads use disjoint sets of indices.
+\end{lemma}
+
+\begin{proof}
+  Scan the indices from left to right, maintaining a set of \emph{free
+  threads}.  When an isolated zero index $r$ is encountered, create a new free
+  thread rooted at $r$.  When a pair $(i,j)$ starts at index $i$, attach it to
+  any free thread, which becomes busy until index $j$; when the scan reaches
+  $j$, the thread becomes free again.  It remains to show a free thread is
+  always available when a pair starts at $i$.  The threads created before index
+  $i$ number $\zeta_{i-1}=\zeta_i$, while the busy threads are those attached
+  to pairs $(i',j')$ with $i'<i<j'$.  Together with the new pair, these are
+  exactly the pairs counted by $\chi_i$, so at most $\chi_i-1$ threads are busy
+  when the new pair arrives.  Since $\chi_i\le\zeta_i$, at least one thread is
+  free.  The construction gives the interleaving in \cref{eq:thread} and uses
+  disjoint index sets.
+\end{proof}
+
+\begin{lemma}[one thread telescopes]\label{lem:telescope}
+  Fix a thread \cref{eq:thread}.  Define vectors backward by
+  \[
+    s_{m+1}:=0,
+    \qquad
+    s_q:=s_{q+1}-e_{i_q}
+    \quad (q=m,m-1,\ldots,1).
+  \]
+  Set
+  \[
+    \ell_r:=s_1,\quad d_r:=1;
+    \qquad
+    \ell_{i_q}:=s_q+e_{j_q},\quad d_{i_q}:=-1;
+    \qquad
+    \ell_{j_q}:=s_{q+1}+e_{j_q},\quad d_{j_q}:=1.
+  \]
+  Then each $\ell_t$ is supported on rows $\ge t$, and
+  \begin{equation}\label{eq:thread-sum}
+    d_r \ell_r\ell_r^T
+    +\sum_{q=1}^m
+    \bigl(d_{i_q}\ell_{i_q}\ell_{i_q}^T
+    + d_{j_q}\ell_{j_q}\ell_{j_q}^T\bigr)
+    =
+    \sum_{q=1}^{m}
+    \left(e_{i_q}e_{j_q}^T + e_{j_q}e_{i_q}^T\right).
+  \end{equation}
+\end{lemma}
+
+\begin{proof}
+  By downward induction, $s_q=-(e_{i_q}+e_{i_{q+1}}+\cdots+e_{i_m})$.  Thus
+  $\ell_r$ is supported after $r$, $\ell_{i_q}$ is supported at indices at
+  least $i_q$, and $\ell_{j_q}$ is supported at $j_q$ and at the later indices
+  $i_{q+1},\ldots,i_m$, all of which are at least $j_q$.
+
+  For each $q$,
+  \begin{align*}
+    - (s_q+e_{j_q})(s_q+e_{j_q})^T
+    + (s_{q+1}+e_{j_q})(s_{q+1}+e_{j_q})^T
+    &= (-s_qs_q^T+s_{q+1}s_{q+1}^T) \\
+    &\quad + (s_{q+1}-s_q)e_{j_q}^T
+    + e_{j_q}(s_{q+1}-s_q)^T .
+  \end{align*}
+  Since $s_{q+1}-s_q=e_{i_q}$, this equals
+  \[
+    (-s_qs_q^T+s_{q+1}s_{q+1}^T)
+    + e_{i_q}e_{j_q}^T + e_{j_q}e_{i_q}^T .
+  \]
+  Summing over $q$ telescopes the first brackets to $-s_1s_1^T$, which is
+  cancelled by the root term $d_r\ell_r\ell_r^T=s_1s_1^T$.  This proves
+  \cref{eq:thread-sum}.
+\end{proof}
+
+\begin{theorem}\label{thm:ldlt-matching}
+  Let $P$ be a signed matching matrix with $\chi_k \le \zeta_k$ for all
+  $k$.  Then there are a lower triangular $S$ and a diagonal $E$ with
+  \[
+    P = S E S^T .
+  \]
+\end{theorem}
+
+\begin{proof}
+  Partition the pairs into threads (\Cref{lem:threads}) and apply
+  \Cref{lem:telescope} to each thread, obtaining columns $\ell_t$ and diagonal entries
+  $d_t$ for every index $t$ in a thread.  For each singleton $t$ set
+  $\ell_t:=e_t$ and $d_t:=\gamma_t$; for isolated zero indices not rooting a
+  thread set $\ell_t:=0$, $d_t:=0$.  Let
+  $S=(\ell_1,\ldots,\ell_n)$ and $E=\operatorname{diag}(d_1,\ldots,d_n)$.
+  Every $\ell_t$ is supported on rows $\ge t$, so $S$ is lower triangular.
+  Distinct threads and singletons use disjoint index sets, so summing
+  \cref{eq:thread-sum} over threads and adding the singleton terms reproduces
+  every block of $P$ and nothing else.
+\end{proof}
+% ===== End inlined from sections/explicit.tex =====
+
+\section{Sparsity and rank-revealing structure}\label{sec:sparsity}
+
+Unpivoted factorizations of a singular matrix are far from unique, so no
+sparsity pattern can be forced on \emph{every} factorization.  Nevertheless,
+the normal-form construction can be steered to a factorization whose
+sparsity pattern is canonical: its envelope is read off the rank-jump
+matching of $A$, which by \Cref{prop:canonical} is an invariant of $A$, and
+it is optimal among all factorizations in a precise leading-block sense.
+This parallels the rank-revealing and sparsity theorems
+of~\cite{darve_lu_2026}, with two differences: no internal permutations
+appear, and the envelope is expressed directly through the rank jumps.  The
+dictionary between the two formulations is that the matched rows of $\Pi$
+are exactly the rows of $A$ that are linearly independent of their
+predecessors, and likewise for columns (specialize \Cref{prop:canonical} to
+the rank functions $k \mapsto \rk(A[1:k,:])$ and $k \mapsto \rk(A[:,1:k])$).
+
+\subsection{The unsymmetric factors}
+
+Let $A$ satisfy \cref{eq:lu-crit}, let
+$\M = \{(i_1,j_1), \ldots, (i_r,j_r)\}$ be its rank-jump matching, and note
+$r = \rk(A)$.  Order the pairs so that the bounds $m_t := \min(i_t, j_t)$
+are nondecreasing, with any fixed tie-breaking rule (at most two jumps share
+a bound: one of the form $(m, j)$ and one of the form $(i, m)$).  The prefix
+condition of \Cref{lem:comb-lu}(c) states $\nu_k \le k$ for all $k$, which
+is equivalent to $m_t \ge t$ for all $t$: if $m_t < t$ then
+$\nu_{m_t} \ge t > m_t$, and if $\nu_k > k$ then $m_{k+1} \le k$.  Hence
+assigning the $t$th pair to slot $t$ is an admissible assignment in
+\Cref{thm:lu-matching}; we call the resulting factorization, with all
+matched scalars absorbed into the upper factor, the \emph{sorted}
+factorization.
+
+\begin{theorem}[canonical sparsity of the LU factors]\label{thm:lu-sparsity}
+  Let $A$ satisfy \cref{eq:lu-crit}.  The sorted factorization $A = LU$
+  has the following properties.
+  \begin{enumerate}
+    \item \emph{Rank-revealing:} only the first $r$ columns of $L$ and the
+      first $r$ rows of $U$ are nonzero: $L[:, r+1:] = 0$ and
+      $U[r+1:, :] = 0$.
+    \item \emph{Canonical envelope:} for $t \le r$, column $t$ of $L$
+      vanishes above row $i_t$ and $L[i_t, t] = 1$; row $t$ of $U$ vanishes
+      left of column $j_t$ and $U[t, j_t] \neq 0$.
+    \item \emph{Diagonals:} $L[t,t] = 1$ if $i_t = t$ and $L[t,t] = 0$
+      otherwise; $U[t,t] \neq 0$ if and only if $j_t = t$.
+    \item \emph{Simultaneous envelope optimality:} for \emph{every}
+      unpivoted factorization $A = \widetilde L \widetilde U$ and every
+      $k$,
+      \[
+        \#\{t : \widetilde L[1:k, t] \neq 0\} \ \ge\ \rk(A[1:k,:])
+        = k - r^0_k,
+        \qquad
+        \#\{t : \widetilde U[t, 1:k] \neq 0\} \ \ge\ \rk(A[:,1:k])
+        = k - c^0_k,
+      \]
+      and the sorted factorization attains both bounds for every $k$
+      simultaneously.
+  \end{enumerate}
+  The data $(i_t, j_t)_{t \le r}$ --- hence the entire envelope pattern ---
+  is uniquely determined by $A$, up to the tie-breaking rule.
+\end{theorem}
+
+\begin{proof}
+  Write $A = M \Pi N$ as in \Cref{lem:reduction-lu}.  Since each matched
+  scalar occupies its own column of the pre-normalized pattern, all scalars
+  can be pulled into a diagonal factor on the right and absorbed into $N$;
+  with this convention $M$ is unit lower triangular, $N$ is invertible
+  upper triangular, and $\Pi = \sum_t e_{i_t} e_{j_t}^T$.  The sorted
+  assignment gives $L = M \, \bigl( \sum_{t \le r} e_{i_t} e_t^T \bigr)$
+  and $U = \bigl( \sum_{t \le r} e_t e_{j_t}^T \bigr) N$, i.e.,
+  \[
+    L[:, t] = M[:, i_t],
+    \qquad
+    U[t, :] = N[j_t, :]
+    \qquad (t \le r),
+  \]
+  and $L[:, t] = 0$, $U[t, :] = 0$ for $t > r$.  Claims (1)--(3) follow
+  from the triangularity of $M$ and $N$: $M[:, i_t]$ vanishes above row
+  $i_t$ with $M[i_t, i_t] = 1$, and $M[t, i_t] = 0$ whenever
+  $i_t > t$; similarly for $N$, whose diagonal entries are nonzero.
+
+  For (4), the lower bounds hold for every factorization: from
+  $A[1:k,:] = \widetilde L[1:k,:] \, \widetilde U$,
+  \[
+    \rk(A[1:k,:]) \le \rk(\widetilde L[1:k,:])
+    \le \#\{t : \widetilde L[1:k,t] \neq 0\},
+  \]
+  and dually for $\widetilde U$.  The sorted factorization attains them:
+  $L[1:k, t] \neq 0$ if and only if $i_t \le k$, and the number of matched
+  rows $\le k$ equals $\rk(A[1:k,:]) = k - r^0_k$ (as in the proof of
+  \Cref{lem:null-matching}, transported to $A$ by \Cref{lem:transfer}).
+\end{proof}
+
+\subsection{The symmetric factors: a rank-revealing $LDL^T$}
+
+The thread construction of \Cref{thm:ldlt-matching} produces a factor $L$
+with $r + (\#\text{threads})$ nonzero columns: each nonempty thread spends
+one column on its root.  Over the reals this overhead can be removed
+entirely, because a normalized pair block splits into \emph{two} symmetric
+rank-one terms sharing the same leading row:
+\begin{equation}\label{eq:pair-split}
+  e_i e_j^T + e_j e_i^T
+  =
+  u u^T - v v^T,
+  \qquad
+  u = e_i + \tfrac12 e_j,
+  \quad
+  v = e_i - \tfrac12 e_j .
+\end{equation}
+Both $u$ and $v$ are supported on $\{i, j\}$ and have leading row $i$.
+This split trades the telescoping chains for a per-pair construction at
+the cost of the division by $2$ (and, unlike the threads, it produces the
+minimum possible number of nonzero columns; see below).
+
+For a signed matching matrix $P$ and a cut $k$, let $s_k$ be the number of
+singletons $\le k$ and $\iota_k$ the number of pairs $(i,j)$ with
+$j \le k$, so that, counting the index classes of \Cref{def:sym-matching},
+$k = \zeta_k + s_k + 2\iota_k + \chi_k$.
+
+\begin{theorem}[rank-revealing $LDL^T$]\label{thm:ldlt-rr}
+  Let $A = A^T$ satisfy \cref{eq:ldlt-crit} and let $r = \rk(A)$.  There
+  is an unpivoted factorization $A = LDL^T$ such that:
+  \begin{enumerate}
+    \item only the first $r$ columns of $L$ are nonzero, and $D$ has
+      exactly $r$ nonzero entries, namely $D[t,t] \in \{\pm 1\}$ for
+      $t \le r$;
+    \item each singleton $t$ of the signed matching form of $A$
+      contributes one column with support starting at row $t$, and each
+      pair $(i,j)$ contributes two columns with support starting at row
+      $i$, with $D$-entries $+1$ and $-1$;
+    \item for every $k$,
+      \begin{equation}\label{eq:ldlt-envelope}
+        \#\{t : L[1:k, t] \neq 0\}
+        = s_k + 2\iota_k + 2\chi_k
+        = k - (\zeta_k - \chi_k) .
+      \end{equation}
+  \end{enumerate}
+\end{theorem}
+
+\begin{proof}
+  Write $A = M P M^T$ (\Cref{lem:reduction-sym}).  Assemble a list of
+  \emph{items}: each singleton $t$ (weight $\gamma_t$) is one item with
+  bound $t$; each pair $(i,j)$ is two items with bound $i$, carrying the
+  columns $u, v$ of \cref{eq:pair-split} and weights $+1, -1$.  The number
+  of items with bound $\le k$ is $s_k + 2(\iota_k + \chi_k)$, which is
+  $\le k$ if and only if $\chi_k \le \zeta_k$, by the index count above.
+  As for the sorted factorization above, sorting the items by
+  nondecreasing bound and placing the $t$th item in slot $t$ is therefore
+  admissible, occupies exactly the slots $1, \ldots, r$ (the total number of items is $s + 2p = \rk(P) =
+  r$), and produces a lower triangular $S$ with $S E S^T = P$, where $E$
+  carries the item weights: the singleton terms $\gamma_t e_t e_t^T$ and
+  the split terms \cref{eq:pair-split} together reproduce every block of
+  $P$ exactly once.  Set $L = MS$ and $D = E$.  Since $M$ is invertible
+  lower triangular, column supports and their leading rows are preserved,
+  which gives (1)--(3); for \cref{eq:ldlt-envelope}, the columns meeting
+  rows $1, \ldots, k$ are the items with bound $\le k$.
+\end{proof}
+
+The count \cref{eq:ldlt-envelope} exceeds the naive bound
+$\rk(A[1:k,:]) = s_k + 2\iota_k + \chi_k$ by $\chi_k$, and this excess is
+unavoidable: crossing pairs genuinely cost two columns each at the cut.
+
+\begin{proposition}[envelope lower bound for $LDL^T$]\label{prop:ldlt-lower}
+  Let $A = A^T = LDL^T$ be any unpivoted factorization.  Then for every
+  $k$,
+  \[
+    \#\{t : L[1:k, t] \neq 0\} \ \ge\ s_k + 2\iota_k + 2\chi_k
+    = k - (\zeta_k - \chi_k),
+  \]
+  so the factorization of \Cref{thm:ldlt-rr} is simultaneously optimal for
+  every $k$.  In particular ($k = n$) every factorization has at least $r$
+  nonzero columns with nonzero diagonal weight, and \Cref{thm:ldlt-rr}
+  attains $r$.
+\end{proposition}
+
+\begin{proof}
+  Discarding columns with $D[t,t] = 0$ changes neither $A$ nor decreases
+  the count, so assume all diagonal weights of the retained columns are
+  nonzero.  Fix $k$, let $C = \{t : L[1:k,t] \neq 0\}$, $c = |C|$, and let
+  $X = L[1:k, C]$ and $X' = L[:, C]$.  Columns outside $C$ contribute
+  nothing to the first $k$ rows, so
+  \[
+    A[1:k, 1:k] = X D_C X^T,
+    \qquad
+    A[1:k, :] = X D_C X'^T .
+  \]
+  Equip $\mathbb{R}^c$ with the nondegenerate symmetric bilinear form
+  $\langle u, v \rangle = u^T D_C v$, and let
+  $Z \subseteq \mathbb{R}^c$ be the row space of $X$, of dimension
+  $\rho = \rk(X)$.  From the second identity,
+  $\rho \ge \rk(A[1:k,:]) = s_k + 2\iota_k + \chi_k$.  The Gram matrix of
+  the rows of $X$ is $X D_C X^T = A[1:k,1:k]$, so the form restricted to
+  $Z$ has rank $\rk(A[1:k,1:k]) = s_k + 2\iota_k$, and the radical
+  $Z \cap Z^\perp$ has dimension $\rho - (s_k + 2\iota_k)$.  Since the
+  form on $\mathbb{R}^c$ is nondegenerate, $\dim Z^\perp = c - \rho$, and
+  the radical is contained in $Z^\perp$, whence
+  \[
+    c - \rho \ \ge\ \rho - (s_k + 2\iota_k),
+    \qquad\text{i.e.}\qquad
+    c \ \ge\ 2\rho - (s_k + 2\iota_k)
+    \ \ge\ s_k + 2\iota_k + 2\chi_k .
+  \]
+\end{proof}
+
+\begin{remark}\label{rem:threads-vs-split}
+  The split \cref{eq:pair-split} also yields an alternative proof of
+  \Cref{thm:ldlt-matching} over $\mathbb{R}$.  The thread construction
+  remains of independent interest: it avoids the division by $2$ (the
+  step that fails in characteristic $2$), it keeps the columns attached
+  to disjoint threads, and its diagonal alternation makes the role of
+  the isolated zero indices explicit.  The split construction is instead
+  column-minimal, and its $D$, with entries in $\{0, \pm 1\}$ and exactly
+  $r$ nonzero entries, displays the rank and the inertia of $A$
+  simultaneously.
+\end{remark}
+
+\begin{example}\label{ex:sparsity-exchange}
+  For the exchange matrix $A_2$ of \cref{eq:swap-vs-exchange} ($r = 2$,
+  one pair $(2,3)$, isolated zero index $1$), the thread factorization of
+  \cref{eq:exchange-factorizations} uses three nonzero columns.  The split
+  \cref{eq:pair-split} uses two, in slots $1, 2$:
+  \[
+    L =
+    \begin{pmatrix}
+      0 & 0 & 0\\
+      1 & 1 & 0\\
+      \tfrac12 & -\tfrac12 & 0
+    \end{pmatrix},
+    \qquad
+    D = \operatorname{diag}(1, -1, 0),
+    \qquad
+    L D L^T = A_2,
+  \]
+  which is rank-revealing and attains \cref{eq:ldlt-envelope} at every
+  $k$.
+\end{example}
+
+% ===== Inlined from sections/assembly.tex =====
+\section{Proofs of the main theorems, and a worked example}\label{sec:assembly}
+
+\begin{proof}[Proof of \Cref{thm:lu}]
+  Necessity is \Cref{prop:necessity}.  For sufficiency, assume $A$ satisfies
+  \cref{eq:lu-crit} for all $k$.  By \Cref{lem:reduction-lu},
+  $A = M \Pi N$ with $M, N$ invertible triangular and $\Pi$ a matching matrix.
+  By \Cref{cor:transfer-to-normal}, $\Pi$ satisfies \cref{eq:lu-crit}, hence
+  by \Cref{lem:comb-lu} the prefix condition $\nu_k \le k$ for all $k$.  By
+  \Cref{thm:lu-matching} there are lower triangular $L_\Pi$ and upper
+  triangular $U_\Pi$ with $L_\Pi U_\Pi = \Pi$.  Then
+  \[
+    A = M \, (L_\Pi U_\Pi) \, N = (M L_\Pi)(U_\Pi N),
+  \]
+  and $M L_\Pi$ is lower triangular, $U_\Pi N$ upper triangular.
+\end{proof}
+
+\begin{proof}[Proof of \Cref{thm:ldlt}]
+  Necessity is \Cref{prop:necessity}.  For sufficiency, assume the symmetric
+  $A$ satisfies \cref{eq:ldlt-crit} for all $k$.  By
+  \Cref{lem:reduction-sym}, $A = M P M^T$ with $M$ invertible lower triangular
+  and $P$ a signed matching matrix.  By \Cref{cor:transfer-to-normal}, $P$
+  satisfies \cref{eq:ldlt-crit}, hence by \Cref{lem:comb-sym} the prefix
+  condition $\chi_k \le \zeta_k$ for all $k$.  By
+  \Cref{thm:ldlt-matching}, $P = S E S^T$ with $S$ lower triangular and $E$
+  diagonal.  Then
+  \[
+    A = M S \, E \, S^T M^T = (MS) \, E \, (MS)^T,
+  \]
+  and $MS$ is lower triangular.
+\end{proof}
+
+\begin{example}[the exchange matrix, both ways]\label{ex:exchange}
+  The matrix $A_2$ of \cref{eq:swap-vs-exchange} shows why zero diagonal
+  entries are a resource rather than a defect.  As a matching matrix,
+  $\M = \{(2,3), (3,2)\}$; row $1$ and column $1$ are zero.
+  The prefix counts are $\nu_1 = 0 \le 1$ and $\nu_2 = 2 \le 2$ (both pairs
+  have $\min = 2$), so \Cref{thm:lu-matching} applies: the greedy assignment
+  gives slot $2$ to $(2,3)$ and reroutes $(3,2)$ to slot $1$.  This is exactly
+  the LU factorization displayed in \cref{eq:exchange-factorizations}.
+
+  As a signed matching matrix, $A_2$ itself has isolated zero $1$ and the
+  normalized exchange block
+  $\bigl(
+    \begin{smallmatrix}0&1\\1&0
+  \end{smallmatrix}\bigr)$ on indices
+  $(2,3)$.  The single thread $1<2<3$ gives
+  \[
+    S=
+    \begin{pmatrix}
+      0&0&0\\
+      -1&-1&0\\
+      0&1&1
+    \end{pmatrix},
+    \qquad
+    E=\operatorname{diag}(1,-1,1),
+    \qquad
+    A_2=SES^T.
+  \]
+  This again routes the off-diagonal block through the earlier zero index.
+\end{example}
+% ===== End inlined from sections/assembly.tex =====
+
+% ===== Inlined from sections/conclusion.tex =====
+\section{Conclusion}\label{sec:conclusion}
+
+We gave a unified treatment of the existence of triangular factorizations
+without pivoting for possibly singular real matrices.  The unsymmetric
+criterion (\Cref{thm:lu}) recovers the theorem of Okunev and Johnson; the
+symmetric criterion (\Cref{thm:ldlt}) --- existence of $A = LDL^T$ with truly
+diagonal $D$ and possibly singular $L$ --- appears to be new, as does the
+corollary that for symmetric matrices unpivoted $LU$ and $LDL^T$ existence
+coincide.  The proof method is uniform: reduce to a matching normal form by
+triangular equivalence or congruence, transfer the nullity criterion to the
+normal form where it becomes a prefix condition on the matching, and factor the
+normal form explicitly --- by greedy slot assignment in the unsymmetric case,
+by telescoping threads rooted at isolated zero indices in the symmetric case.
+
+Several directions remain open.
+\begin{itemize}
+  \item \emph{Numerical stability.}  The construction selects pivots for
+    algebraic, not numerical, reasons; a backward-stable variant over
+    $\mathbb{R}$ (perhaps with size-aware choices among the admissible threads
+    and slots, which are far from unique) is an open problem, as
+    in~\cite{darve_lu_2026}.
+  \item \emph{Multiplicity.}  Dopico, Johnson, and
+    Molera~\cite{dopico_multiple_2006} parametrized all LU factorizations of a
+    singular matrix with $L$ unit lower triangular.  Parametrizing all
+    unpivoted $LDL^T$ factorizations --- equivalently, all thread systems and
+    diagonal choices --- would quantify the freedom our constructions exploit.
+  \item \emph{Structure of the factors.}  \Cref{sec:sparsity} settles the
+    column-envelope structure: both factorizations can be made
+    rank-revealing with a canonical, simultaneously optimal envelope.  What
+    remains open is the finer structure \emph{inside} the envelope ---
+    entrywise sparsity and fill bounds analogous to those
+    of~\cite{darve_lu_2026}, and their interaction with the freedom in the
+    slot assignment.
+  \item \emph{Complex and block variants.}  A complex version with transpose,
+    or a Hermitian version with conjugate transpose, should have closely
+    related normal forms.  Rectangular and block versions of the criteria are
+    also natural.
+\end{itemize}
+% ===== End inlined from sections/conclusion.tex =====
 
 \appendix
-\input{sections/appendix_code}
+
+% ===== Inlined from sections/appendix_standard.tex =====
+\section{Standard rank facts, necessity, and transfer}\label{app:standard-proofs}
+
+\begin{lemma}[Sylvester's rank inequality]\label{lem:sylvester}
+  Let $B \in \mathbb{R}^{m \by k}$ and $C \in \mathbb{R}^{k \by p}$.  Then
+  \[
+    \rk(B) + \rk(C) - k \ \le\ \rk(BC) \ \le\ \min\bigl(\rk(B), \rk(C)\bigr) .
+  \]
+\end{lemma}
+
+\begin{proof}
+  The upper bound is standard.  For the lower bound, restrict the linear map
+  $x \mapsto Bx$ to $\range(C)$: its image is $\range(BC)$ and its kernel is
+  contained in $\ker(B)$, so
+  $\rk(C) = \dim \range(C) \le \rk(BC) + \nl(B) = \rk(BC) + k - \rk(B)$.
+\end{proof}
+
+\begin{lemma}[invariance of rank and nullity]\label{lem:rank-invariance}
+  If $X$ is an $m \by p$ matrix and $G \in \mathbb{R}^{m \by m}$,
+  $H \in \mathbb{R}^{p \by p}$ are invertible, then
+  $\rk(GXH) = \rk(X)$ and $\nl(GXH) = \nl(X)$.
+\end{lemma}
+
+\begin{proof}
+  Left multiplication by $G$ is an isomorphism of the codomain, so it does not
+  change the dimension of the range.  Right multiplication by $H$ is an
+  isomorphism of the domain and sends $\ker(XH)$ bijectively onto $\ker(X)$ via
+  $v \mapsto Hv$; hence $\nl(XH)=\nl(X)$ and therefore
+  $\rk(XH)=p-\nl(XH)=\rk(X)$.  Combining the two observations gives the rank
+  identity for $GXH$, and the nullity identity follows from
+  $\nl(\cdot)=p-\rk(\cdot)$.
+\end{proof}
+
+\begin{proposition}[necessity]\label{prop:necessity}
+  If $A = LU$ with $L$ lower and $U$ upper triangular, then
+  \cref{eq:lu-crit} holds for every $k$.  Consequently, if $A = A^T$ and
+  $A = LDL^T$ with $L$ lower triangular and $D$ diagonal, then
+  \cref{eq:ldlt-crit} holds for every $k$.
+\end{proposition}
+
+\begin{proof}
+  Fix $k$ and partition
+  \[
+    L =
+    \begin{pmatrix}
+      L_{11} & 0\\
+      L_{21} & L_{22}
+    \end{pmatrix},
+    \qquad
+    U =
+    \begin{pmatrix}
+      U_{11} & U_{12}\\
+      0      & U_{22}
+    \end{pmatrix},
+  \]
+  with $L_{11}, U_{11}$ of size $k \by k$.  Reading off the leading block,
+  the first $k$ columns, and the first $k$ rows of $A = LU$, and using
+  \cref{eq:tri-slices},
+  \[
+    A[1:k,1:k] = L_{11} U_{11},
+    \qquad
+    A[:,1:k] =
+    \begin{pmatrix}
+      L_{11}\\
+      L_{21}
+    \end{pmatrix} U_{11},
+    \qquad
+    A[1:k,:] = L_{11}
+    \begin{pmatrix}
+      U_{11} & U_{12}
+    \end{pmatrix}.
+  \]
+  The second identity gives $\rk(A[:,1:k]) \le \rk(U_{11})$ and the third
+  gives $\rk(A[1:k,:]) \le \rk(L_{11})$.  Applying \Cref{lem:sylvester} to
+  $A[1:k,1:k] = L_{11} U_{11}$,
+  \[
+    \rk(A[1:k,1:k])
+    \ \ge\ \rk(L_{11}) + \rk(U_{11}) - k
+    \ \ge\ \rk(A[1:k,:]) + \rk(A[:,1:k]) - k .
+  \]
+  Subtracting each side from $k$ and using $\nl(X) = k - \rk(X)$ for the
+  three $k$-column blocks $A[1:k,1:k]$, $A[:,1:k]$, ${A[1:k,:]}^T$ yields
+  \[
+    \nl(A[1:k,1:k])
+    \ \le\ 2k - \rk(A[1:k,:]) - \rk(A[:,1:k])
+    \ =\ \nl({A[1:k,:]}^T) + \nl(A[:,1:k]),
+  \]
+  which is \cref{eq:lu-crit}.
+
+  For the symmetric statement, observe that $A = LDL^T = L \cdot (DL^T)$ is
+  an LU factorization ($DL^T$ is upper triangular), so \cref{eq:lu-crit}
+  holds; since $A = A^T$ gives ${A[1:k,:]}^T = A[:,1:k]$, the right-hand side
+  of \cref{eq:lu-crit} equals $2\,\nl(A[:,1:k])$, which is
+  \cref{eq:ldlt-crit}.
+\end{proof}
+
+\begin{lemma}[transfer]\label{lem:transfer}
+  Let $M \in \mathbb{R}^{n \by n}$ be invertible lower triangular,
+  $N \in \mathbb{R}^{n \by n}$ invertible upper triangular, and $B = M A N$.
+  Then for every $k = 1, \ldots, n$,
+  \begin{align}
+    \nl(B[1:k,1:k]) &= \nl(A[1:k,1:k]), \label{eq:transfer-lead}\\
+    \nl(B[:,1:k]) &= \nl(A[:,1:k]), \label{eq:transfer-cols}\\
+    \nl({B[1:k,:]}^T) &= \nl({A[1:k,:]}^T). \label{eq:transfer-rows}
+  \end{align}
+  Consequently $A$ satisfies \cref{eq:lu-crit} for every $k$ if and only if
+  $B$ does; and, taking $N = M^T$, a symmetric $A$ satisfies
+  \cref{eq:ldlt-crit} for every $k$ if and only if the congruent matrix
+  $B = M A M^T$ does.
+\end{lemma}
+
+\begin{proof}
+  Write $M_k = M[1:k,1:k]$ and $N_k = N[1:k,1:k]$; both are invertible
+  (\Cref{sec:notation}).  Using \cref{eq:tri-slices} three times:
+  \begin{itemize}
+    \item $B[1:k,1:k] = M[1:k,:] \, A \, N[:,1:k]
+      = M_k \, A[1:k,1:k] \, N_k$, since the zero blocks in
+      \cref{eq:tri-slices} suppress the rows of $A$ beyond $k$ on the left
+      and the columns beyond $k$ on the right;
+    \item $B[:,1:k] = M A \, N[:,1:k] = M \, A[:,1:k] \, N_k$;
+    \item $B[1:k,:] = M[1:k,:] \, A N = M_k \, A[1:k,:] \, N$, and hence
+      ${B[1:k,:]}^T = N^T \, {A[1:k,:]}^T \, M_k^T$.
+  \end{itemize}
+  In each identity the outer factors are invertible and the two sides have
+  the same number of columns, so \Cref{lem:rank-invariance} gives
+  \cref{eq:transfer-lead,eq:transfer-cols,eq:transfer-rows}.  The congruence
+  case follows because $M^T$ is invertible upper triangular, and for symmetric
+  $A$ the quantity $\nl({A[1:k,:]}^T)$ in \cref{eq:lu-crit} equals
+  $\nl(A[:,1:k])$.
+\end{proof}
+
+Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
+(applied with $M^{-1}$ and $N^{-1}$, which are again invertible triangular):
+
+\begin{corollary}\label{cor:transfer-to-normal}
+  Let $A = M \Pi N$ as in \Cref{lem:reduction-lu}.  Then $A$ satisfies
+  \cref{eq:lu-crit} for every $k$ if and only if $\Pi$ does.  Let
+  $A = M P M^T$ as in \Cref{lem:reduction-sym}.  Then $A$ satisfies
+  \cref{eq:ldlt-crit} for every $k$ if and only if $P$ does.
+\end{corollary}
+
+\begin{proof}
+  Apply \Cref{lem:transfer} to $\Pi = M^{-1} A N^{-1}$ in the LU case and to
+  $P = M^{-1} A M^{-T}$ in the symmetric case.  The inverses of invertible
+  lower and upper triangular matrices are triangular of the same kind, so the
+  hypotheses of the transfer lemma are satisfied.
+\end{proof}
+% ===== End inlined from sections/appendix_standard.tex =====
+
+% ===== Inlined from sections/appendix_normalforms.tex =====
+\section{Proofs for the matching normal forms}\label{app:normalform-proofs}
+
+\begin{proof}[Proof of \Cref{lem:reduction-lu}]
+  We induct on the leading order $k$.  For $k=1$, take $\Pi=(0)$ if
+  $a_{11}=0$, and take $\Pi=(1)$ with the scalar $a_{11}$ absorbed into one of
+  the two outer factors if $a_{11}\ne0$.  Assume
+  $A[1:k-1,1:k-1]=M\Pi N$, with $M$ invertible lower triangular, $N$ invertible
+  upper triangular, and $\Pi$ a matching matrix.  Border the next leading block as
+  \[
+    A[1:k,1:k]=
+    \begin{pmatrix}
+      A[1:k-1,1:k-1] & a\\
+      c^T & b
+    \end{pmatrix}.
+  \]
+  With $\widehat a=M^{-1}a$ and $\widehat c^T=c^TN^{-1}$, the middle bordered
+  matrix is
+  \[
+    X=
+    \begin{pmatrix}
+      \Pi & \widehat a\\
+      \widehat c^T & b
+    \end{pmatrix}.
+  \]
+  First remove from the border the components already explained by matched
+  rows and columns.  For every matched pair $(i,j)$ set
+  $x_j=\widehat a_i$ and $y_i=\widehat c_j$, with all other components zero.
+  Then
+  \[
+    e:=\widehat a-\Pi x,
+    \qquad
+    g^T:=\widehat c^T-y^T\Pi
+  \]
+  are supported on zero rows and zero columns of $\Pi$, respectively, and
+  $y^Te=g^Tx=0$.  Hence, with $f=b-y^T\Pi x$,
+  \[
+    X=
+    \begin{pmatrix}I&0\\y^T&1
+    \end{pmatrix}
+    \begin{pmatrix}\Pi&e\\g^T&f
+    \end{pmatrix}
+    \begin{pmatrix}I&x\\0&1
+    \end{pmatrix}.
+  \]
+  These two outer factors are unit lower and unit upper triangular.
+
+  It remains to turn the residual border into new matched pairs.  If $e\ne0$,
+  let $i^\star$ be the first nonzero index of $e$ and let
+  $\alpha=e_{i^\star}$.  Since $e$ is supported on zero rows, the unit lower
+  triangular matrix
+  \[
+    R=I+(\alpha^{-1}e-u_{i^\star})u_{i^\star}^T
+  \]
+  satisfies $R\Pi=\Pi$ and $Ru_{i^\star}=\alpha^{-1}e$, converting the residual
+  column to $\alpha u_{i^\star}$.  If $g\ne0$, an analogous unit upper
+  triangular matrix converts the residual row to $\gamma u_{j^\star}^T$, where
+  $j^\star$ is a zero column of $\Pi$ and $\gamma=g_{j^\star}\ne0$.
+
+  After these operations, the only possible nonzeros outside $\Pi$ are the
+  entries $(i^\star,k)$, $(k,j^\star)$, and the corner $(k,k)$.  If a residual
+  column is present, the row $i^\star$ has only the entry
+  $(i^\star,k)=\alpha$, so a final unit lower triangular operation subtracts
+  the corner through that row.  If no residual column is present but a residual
+  row is present, the analogous unit upper triangular operation removes the
+  corner through column $j^\star$.  If neither residual is present, the corner
+  itself is either a new diagonal matched pair $(k,k)$ or zero.
+
+  The support pattern that remains is a matching pattern: newly used rows and
+  columns were zero in the old matching, and the new index $k$ is used at most
+  once as a row and at most once as a column.  Replace every new nonzero in this
+  pattern by $1$ to form the new matching matrix $\Pi^{(k)}$, and absorb the
+  corresponding nonzero scalars into diagonal factors on the left and right.
+  Concretely, the scalar in column $k$ is absorbed into the new diagonal entry
+  of the upper triangular factor, the scalar in row $k$ into the new diagonal
+  entry of the lower triangular factor, and, in the diagonal-pair case, the
+  corner scalar into either side.  These diagonal scalings are invertible
+  whenever a new pair is present.  This completes the induction.  The
+  construction uses $O(k^2)$ operations at the $k$th step, hence $O(n^3)$
+  operations overall.
+\end{proof}
+
+\begin{proof}[Proof of \Cref{lem:reduction-sym}]
+  Again we induct on $k$.  For $k=1$, take $P=(0)$ if $a_{11}=0$; otherwise
+  scale by $|a_{11}|^{-1/2}$, i.e.\ take $M=(|a_{11}|^{1/2})$ and
+  $P=(\sgn a_{11})$.  Assume
+  $A[1:k-1,1:k-1]=MPM^T$, with $M$ lower triangular and $P$ a symmetric
+  matching matrix in the normalized real sense of \Cref{def:sym-matching}.  For
+  the next border write
+  \[
+    A[1:k,1:k]=
+    \begin{pmatrix}
+      A[1:k-1,1:k-1] & a\\
+      a^T & b
+    \end{pmatrix},
+    \qquad c=M^{-1}a .
+  \]
+  Thus the middle bordered matrix is
+  \[
+    X=
+    \begin{pmatrix}
+      P & c\\
+      c^T & b
+    \end{pmatrix}.
+  \]
+
+  Since every nonzero block of $P$ is nonsingular, choose $\xi$ supported on
+  the singleton and pair indices so that $P\xi$ agrees with $c$ on those
+  indices.  Explicitly, on a singleton $t$ take $\xi_t=\gamma_t c_t$ (so
+  $\gamma_t\xi_t=c_t$, using $\gamma_t^2=1$); on a
+  normalized pair $(i,j)$ take $\xi_j=c_i$ and $\xi_i=c_j$.  Then
+  $e:=c-P\xi$ is supported on isolated zero indices, so $\xi^Te=0$, and with
+  $f=b-\xi^TP\xi$ we have the congruence
+  \[
+    X=
+    \begin{pmatrix}I&0\\ \xi^T&1
+    \end{pmatrix}
+    \begin{pmatrix}P&e\\ e^T&f
+    \end{pmatrix}
+    \begin{pmatrix}I&\xi\\0&1
+    \end{pmatrix}.
+  \]
+
+  If $e=0$, the middle factor is $P\oplus(f)$.  If $f=0$, the new index is an
+  isolated zero.  If $f\ne0$, scale the new index by $|f|^{-1/2}$ --- a
+  diagonal, hence lower triangular, congruence --- so that the appended
+  singleton carries $\gamma_k=\sgn(f)=\pm1$.  If $e\ne0$, let $i^\star$ be the first
+  nonzero index of $e$ and let $\alpha=e_{i^\star}$.  The index $i^\star$ is an
+  isolated zero of $P$.  The lower triangular matrix
+  \[
+    R=I+(\alpha^{-1}e-u_{i^\star})u_{i^\star}^T
+  \]
+  satisfies $RPR^T=P$ and $Ru_{i^\star}=\alpha^{-1}e$, so the residual block is
+  congruent to one with pair block
+  $\bigl(
+    \begin{smallmatrix}0&\alpha\\\alpha&f
+  \end{smallmatrix}\bigr)$ on
+  indices $(i^\star,k)$.  Normalize this real block as follows.  Scale the new
+  index $k$ by $\alpha^{-1}$, making the off-diagonal entry equal to $1$ and
+  the lower-right entry $f/\alpha^2$.  Then replace row and column $k$ by row
+  and column $k$ plus
+  \[
+    \tau = - \frac{f}{2\alpha^2}
+  \]
+  times row and column $i^\star$.  This lower-triangular shear leaves the
+  $(i^\star,i^\star)$ entry equal to zero and the off-diagonal entry equal to
+  $1$, while changing the lower-right entry to $0$.  Hence the new block is
+  exactly $\bigl(
+    \begin{smallmatrix}0&1\\1&0
+  \end{smallmatrix}\bigr)$, and the
+  induction closes.
+\end{proof}
+
+\begin{proof}[Proof of \Cref{prop:canonical}]
+  For the unsymmetric normal form, \cref{eq:tri-slices} gives
+  \[
+    A[1:i,1:j]=M_i\,\Pi[1:i,1:j]\,N_j
+  \]
+  with $M_i$ and $N_j$ invertible.  Therefore
+  $r_{ij}(A)=r_{ij}(\Pi)$ by \Cref{lem:rank-invariance}.  The nonzero columns
+  of $\Pi[1:i,1:j]$ are the vectors $e_{i'}$ for the matched pairs
+  with $i'\le i$ and $j'\le j$; they occupy distinct rows and are linearly
+  independent.  This proves the displayed rank formula in part (1).  Taking the
+  mixed differences of that formula shows that the rank jumps are exactly the
+  matched pairs.
+
+  The symmetric statement follows from the same rank-invariance argument with
+  $N=M^T$.  A singleton $t$ contributes the rank function
+  $\mathbf{1}_{\{i\ge t,\ j\ge t\}}$, hence one jump at $(t,t)$.  A normalized
+  pair $(i_0,j_0)$ contributes rank one when exactly one of its off-diagonal
+  entries is present and rank two when the whole $2\by2$ block is present.  Its
+  rank contribution is therefore
+  \[
+    \mathbf{1}_{\{i\ge i_0,\ j\ge j_0\}}
+    +
+    \mathbf{1}_{\{i\ge j_0,\ j\ge i_0\}},
+  \]
+  whose mixed differences are the two off-diagonal jumps $(i_0,j_0)$ and
+  $(j_0,i_0)$.  Since distinct blocks use disjoint row and column sets, the
+  contributions add, proving part (2).
+\end{proof}
+% ===== End inlined from sections/appendix_normalforms.tex =====
+
+% ===== Inlined from sections/appendix_examples.tex =====
+\section{Additional example}\label{app:examples}
+
+\begin{example}[a genuine crossing]\label{ex:crossing}
+  Let $n = 4$ and
+  \[
+    \Pi =
+    \begin{pmatrix}
+      0 & 0 & 0 & 0\\
+      0 & 0 & 0 & 1\\
+      0 & 0 & 0 & 0\\
+      0 & 1 & 0 & 0
+    \end{pmatrix},
+    \qquad
+    \M = \{(2,4), (4,2)\},
+  \]
+  with rows and columns $1,3$ zero.  Both pairs have $\min=2$, so
+  $\nu_2=2\le2$.  The greedy assignment gives slot $2$ to $(2,4)$ and slot
+  $1$ to $(4,2)$:
+  \[
+    L =
+    \begin{pmatrix}
+      0 & 0 & 0 & 0\\
+      0 & 1 & 0 & 0\\
+      0 & 0 & 0 & 0\\
+      1 & 0 & 0 & 0
+    \end{pmatrix},
+    \qquad
+    U =
+    \begin{pmatrix}
+      0 & 1 & 0 & 0\\
+      0 & 0 & 0 & 1\\
+      0 & 0 & 0 & 0\\
+      0 & 0 & 0 & 0
+    \end{pmatrix},
+    \qquad
+    LU = \Pi .
+  \]
+  Symmetrically, the same crossing pattern is threaded through an earlier
+  isolated zero index, exactly as in \Cref{ex:exchange}.
+\end{example}
+% ===== End inlined from sections/appendix_examples.tex =====
 
 \clearpage
 \phantomsection
-\bibliographystyle{siamplain}
+\bibliographystyle{elsarticle-num}
 \bibliography{ref}
 
 \end{document}
