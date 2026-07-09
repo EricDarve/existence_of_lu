@@ -148,9 +148,11 @@
     an invertible triangular equivalence (a congruence in the symmetric case) to
     a matching normal form, observe that the criterion is invariant under such
     reductions and becomes a combinatorial prefix condition on the matching, and
-    then factor the normal form explicitly by a greedy slot assignment
-    (unsymmetric case) or by threading telescoping chains through isolated zero
-    indices (symmetric case).
+    then factor the normal form explicitly by a sorted slot assignment, a
+    prefix form of Hall's theorem: each matched entry --- and, in the
+    symmetric case, each half of an off-diagonal pair split into a
+    difference of two symmetric rank-one terms --- is placed at an earlier
+    diagonal slot, with isolated zero indices supplying the spare slots.
   \end{abstract}
 
   \begin{keyword}
@@ -214,17 +216,23 @@ $A_2$ factors:
   \end{pmatrix}}_{LU}
   =
   \underbrace{
-    \begin{pmatrix} 0 & 0 & 0\\ -1 & -1 & 0\\ 0 & 1 & 1
+    \begin{pmatrix} 0 & 0 & 0\\ 1 & 1 & 0\\ \tfrac12 & -\tfrac12 & 0
     \end{pmatrix}
-    \begin{pmatrix} 1 & & \\ & -1 & \\ & & 1
+    \begin{pmatrix} 1 & & \\ & -1 & \\ & & 0
     \end{pmatrix}
-    \begin{pmatrix} 0 & -1 & 0\\ 0 & -1 & 1\\ 0 & 0 & 1
+    \begin{pmatrix} 0 & 1 & \tfrac12\\ 0 & 1 & -\tfrac12\\ 0 & 0 & 0
   \end{pmatrix}}_{LDL^T} .
 \end{equation}
 Both factorizations require zero diagonal entries: the leading zero index of
 $A_2$ acts as a resource that later off-diagonal structure can be routed
 through.  Understanding exactly when such routing is possible is the subject of
-this paper.
+this paper.  Note also that $D$ displays the rank and the inertia of $A_2$:
+it has two nonzero entries ($\rk A_2 = 2$), one positive and one negative
+($A_2$ has eigenvalues $1, -1, 0$).  This is a property of a well-chosen
+factorization, not of all of them --- when $L$ is singular, Sylvester's law
+of inertia does not constrain $D$ (\Cref{ex:exchange}) --- and
+\Cref{thm:ldlt-rr} shows that a rank- and inertia-revealing choice always
+exists.
 
 We answer the question for both the unsymmetric and symmetric forms of the
 problem.  Write $\nl(X)=(\#\text{cols of }X)-\rk(X)$ for the right nullity.
@@ -266,16 +274,18 @@ Both sufficiency proofs follow the same three-step strategy.
     invariant under these triangular equivalences and congruences, so the
     criteria may be checked on the normal forms.  On normal forms they become
     prefix conditions on matchings (\Cref{lem:comb-lu,lem:comb-sym}).
-  \item \emph{Thread.}  A matching matrix satisfying the prefix condition is
+  \item \emph{Assign.}  A matching matrix satisfying the prefix condition is
     factored by assigning each matched entry a diagonal slot
-    $t\le\min(i,j)$.  In the symmetric case, off-diagonal pairs must instead
-    be threaded into disjoint chains rooted at isolated zero indices, and each
-    chain is realized by a telescoping sum of symmetric rank-one terms
+    $t\le\min(i,j)$.  In the symmetric case a matched entry cannot be
+    realized alone: each off-diagonal pair splits into a difference of two
+    symmetric rank-one terms and consumes \emph{two} slots, and the prefix
+    condition supplies exactly enough earlier slots, the spares being
+    created by isolated zero indices
     (\Cref{thm:lu-matching,thm:ldlt-matching}).
 \end{enumerate}
 Necessity is a short rank argument, and the standard normal-form reductions and
 invariance facts are relegated to the appendices so that the main text can
-focus on the new prefix-condition and threading mechanisms.
+focus on the new prefix-condition and slot-assignment mechanisms.
 
 \paragraph{Contributions}
 \begin{itemize}
@@ -287,8 +297,9 @@ focus on the new prefix-condition and threading mechanisms.
     together with the corollary that for symmetric matrices unpivoted $LU$ and
     $LDL^T$ existence are equivalent.
   \item An explicit combinatorial mechanism for the symmetric problem: the
-    prefix condition supplies enough earlier isolated zero indices to thread
-    all off-diagonal pairs and cancel the unwanted diagonal terms.
+    prefix condition supplies, for every off-diagonal pair, the two earlier
+    slots required by its rank-one splitting, with isolated zero indices
+    acting as the spare slots.
   \item Canonical sparsity and rank-revealing structure
     (\Cref{sec:sparsity}): both constructions can be steered to
     factorizations with exactly $\rk(A)$ populated columns, whose sparsity
@@ -406,7 +417,7 @@ step from $A = MPM^T$ to $A = LDL^T$ taken in
 \Cref{sec:combinatorics,sec:explicit}.  The $2 \by 2$ blocks of
 Bunch--Parlett reappear in our theory in a different role: they are the
 irreducible blocks of the signed matching normal form, i.e., the
-obstruction that must be threaded through earlier zero indices rather than a
+obstruction that must be routed through earlier zero indices rather than a
 device enabled by pivoting.  We are not aware of a previously published
 necessary and sufficient condition for the unpivoted diagonal-$D$ problem
 with possibly singular $L$.
@@ -431,7 +442,7 @@ studied the corresponding rank-control invariants of congruence $B$-orbits
 over $\mathbb{C}$.  Our
 \Cref{lem:reduction-sym,prop:canonical} thus recover known canonical forms;
 we include short elimination-style constructive proofs to keep the paper
-self-contained and to fix the normalization used in the symmetric threading
+self-contained and to fix the normalization used in the symmetric slot assignment
 argument.
 
 \paragraph{Positioning}
@@ -445,7 +456,7 @@ Szechtman~\cite{szechtman_2007}.  The contributions of the present paper
 are the unified normal-form route to \emph{existence} theorems, the
 symmetric $LDL^T$ criterion (\Cref{thm:ldlt}) together with the equivalence
 of $LU$ and $LDL^T$ existence for symmetric matrices
-(\Cref{cor:sym-lu-ldlt}), the prefix-condition combinatorics and threading
+(\Cref{cor:sym-lu-ldlt}), the prefix-condition combinatorics and slot-assignment
 constructions of \Cref{sec:combinatorics,sec:explicit}.
 % ===== End inlined from sections/related.tex =====
 
@@ -911,13 +922,12 @@ is row $t$ of $U$ (supported on columns $\ge t$); for $A = LDL^T$,
 The difference between the two problems is now plain: in
 \cref{eq:rank-one-lu} each term is an arbitrary rank-one matrix with the
 required support, whereas in \cref{eq:rank-one-ldlt} each term is
-\emph{symmetric} rank-one.  A single off-diagonal exchange block
-$\alpha(e_i e_j^T + e_j e_i^T)$ has rank $2$ and zero diagonal, and cannot
-equal a sum of terms each supported in rows and columns $\ge i$ unless
-partial sums are allowed to cancel (over any field: the $(i,i)$ entry
-  forces $d_t \ell_t[i]^2 = 0$ for every term while the $(i,j)$ entry needs
-some $d_t \ell_t[i] \neq 0$); this forces the telescoping chains of
-\Cref{thm:ldlt-matching}.
+\emph{symmetric} rank-one.  An off-diagonal exchange block
+$e_i e_j^T + e_j e_i^T$ has rank $2$, so no single symmetric rank-one term
+realizes it: it must be written as a cancelling combination of at least two
+such terms.  Each pair of the normal form therefore consumes \emph{two}
+slots in the symmetric problem, and the prefix condition supplies exactly
+enough of them.
 
 \subsection{LU of a matching matrix: greedy slot assignment}
 
@@ -984,7 +994,7 @@ some $d_t \ell_t[i] \neq 0$); this forces the telescoping chains of
   entries are a \emph{resource} for unpivoted factorization.
 \end{remark}
 
-\subsection{$LDL^T$ of a signed matching matrix: threads}
+\subsection{$LDL^T$ of a signed matching matrix: pair splitting}
 
 Throughout this subsection $P$ is a signed matching matrix satisfying
 $\chi_k \le \zeta_k$ for all $k$ (\Cref{lem:comb-sym}).  Thus every pair block
@@ -993,81 +1003,18 @@ $\bigl(
   \begin{smallmatrix}0&1\\1&0
 \end{smallmatrix}\bigr)$.
 
-\begin{lemma}[thread partition]\label{lem:threads}
-  The pairs of $P$ can be partitioned into \emph{threads}
-  \begin{equation}\label{eq:thread}
-    r < i_1 < j_1 < i_2 < j_2 < \cdots < i_m < j_m,
-  \end{equation}
-  where $r$ is an isolated zero index, $(i_q, j_q)$ are pairs of $P$, and
-  distinct threads use disjoint sets of indices.
-\end{lemma}
-
-\begin{proof}
-  Scan the indices from left to right, maintaining a set of \emph{free
-  threads}.  When an isolated zero index $r$ is encountered, create a new free
-  thread rooted at $r$.  When a pair $(i,j)$ starts at index $i$, attach it to
-  any free thread, which becomes busy until index $j$; when the scan reaches
-  $j$, the thread becomes free again.  It remains to show a free thread is
-  always available when a pair starts at $i$.  The threads created before index
-  $i$ number $\zeta_{i-1}=\zeta_i$, while the busy threads are those attached
-  to pairs $(i',j')$ with $i'<i<j'$.  Together with the new pair, these are
-  exactly the pairs counted by $\chi_i$, so at most $\chi_i-1$ threads are busy
-  when the new pair arrives.  Since $\chi_i\le\zeta_i$, at least one thread is
-  free.  The construction gives the interleaving in \cref{eq:thread} and uses
-  disjoint index sets.
-\end{proof}
-
-\begin{lemma}[one thread telescopes]\label{lem:telescope}
-  Fix a thread \cref{eq:thread}.  Define vectors backward by
-  \[
-    s_{m+1}:=0,
-    \qquad
-    s_q:=s_{q+1}-e_{i_q}
-    \quad (q=m,m-1,\ldots,1).
-  \]
-  Set
-  \[
-    \ell_r:=s_1,\quad d_r:=1;
-    \qquad
-    \ell_{i_q}:=s_q+e_{j_q},\quad d_{i_q}:=-1;
-    \qquad
-    \ell_{j_q}:=s_{q+1}+e_{j_q},\quad d_{j_q}:=1.
-  \]
-  Then each $\ell_t$ is supported on rows $\ge t$, and
-  \begin{equation}\label{eq:thread-sum}
-    d_r \ell_r\ell_r^T
-    +\sum_{q=1}^m
-    \bigl(d_{i_q}\ell_{i_q}\ell_{i_q}^T
-    + d_{j_q}\ell_{j_q}\ell_{j_q}^T\bigr)
-    =
-    \sum_{q=1}^{m}
-    \left(e_{i_q}e_{j_q}^T + e_{j_q}e_{i_q}^T\right).
-  \end{equation}
-\end{lemma}
-
-\begin{proof}
-  By downward induction, $s_q=-(e_{i_q}+e_{i_{q+1}}+\cdots+e_{i_m})$.  Thus
-  $\ell_r$ is supported after $r$, $\ell_{i_q}$ is supported at indices at
-  least $i_q$, and $\ell_{j_q}$ is supported at $j_q$ and at the later indices
-  $i_{q+1},\ldots,i_m$, all of which are at least $j_q$.
-
-  For each $q$,
-  \begin{align*}
-    - (s_q+e_{j_q})(s_q+e_{j_q})^T
-    + (s_{q+1}+e_{j_q})(s_{q+1}+e_{j_q})^T
-    &= (-s_qs_q^T+s_{q+1}s_{q+1}^T) \\
-    &\quad + (s_{q+1}-s_q)e_{j_q}^T
-    + e_{j_q}(s_{q+1}-s_q)^T .
-  \end{align*}
-  Since $s_{q+1}-s_q=e_{i_q}$, this equals
-  \[
-    (-s_qs_q^T+s_{q+1}s_{q+1}^T)
-    + e_{i_q}e_{j_q}^T + e_{j_q}e_{i_q}^T .
-  \]
-  Summing over $q$ telescopes the first brackets to $-s_1s_1^T$, which is
-  cancelled by the root term $d_r\ell_r\ell_r^T=s_1s_1^T$.  This proves
-  \cref{eq:thread-sum}.
-\end{proof}
+The symmetric slot assignment rests on a single identity: a pair block is a
+difference of two symmetric rank-one terms sharing the same leading row,
+\begin{equation}\label{eq:pair-split}
+  e_i e_j^T + e_j e_i^T
+  =
+  u u^T - v v^T,
+  \qquad
+  u = e_i + \tfrac12 e_j,
+  \quad
+  v = e_i - \tfrac12 e_j,
+\end{equation}
+both terms supported on $\{i, j\}$.
 
 \begin{theorem}\label{thm:ldlt-matching}
   Let $P$ be a signed matching matrix with $\chi_k \le \zeta_k$ for all
@@ -1078,17 +1025,68 @@ $\bigl(
 \end{theorem}
 
 \begin{proof}
-  Partition the pairs into threads (\Cref{lem:threads}) and apply
-  \Cref{lem:telescope} to each thread, obtaining columns $\ell_t$ and diagonal entries
-  $d_t$ for every index $t$ in a thread.  For each singleton $t$ set
-  $\ell_t:=e_t$ and $d_t:=\gamma_t$; for isolated zero indices not rooting a
-  thread set $\ell_t:=0$, $d_t:=0$.  Let
-  $S=(\ell_1,\ldots,\ell_n)$ and $E=\operatorname{diag}(d_1,\ldots,d_n)$.
-  Every $\ell_t$ is supported on rows $\ge t$, so $S$ is lower triangular.
-  Distinct threads and singletons use disjoint index sets, so summing
-  \cref{eq:thread-sum} over threads and adding the singleton terms reproduces
-  every block of $P$ and nothing else.
+  Form a list of \emph{items}: each singleton $t$ is one item with
+  \emph{bound} $t$, carrying the column $e_t$ and the weight
+  $\gamma_t$; each pair $(i,j)$ is two items with bound $i$, carrying the
+  columns $u, v$ of \cref{eq:pair-split} and the weights $+1$, $-1$.
+  Suppose the items are placed in pairwise distinct slots, each item in a
+  slot $\le$ its bound; let $\ell_t$ and $d_t$ be the column and weight of
+  the item in slot $t$ (with $\ell_t = 0$, $d_t = 0$ for unused slots), and
+  set $S = (\ell_1, \ldots, \ell_n)$, $E = \operatorname{diag}(d_1, \ldots,
+  d_n)$.  Every item's column is supported on rows $\ge$ its bound $\ge$
+  its slot, so $S$ is lower triangular, and
+  \[
+    S E S^T
+    = \sum_{\text{singletons } t} \gamma_t \, e_t e_t^T
+    + \sum_{\text{pairs } (i,j)} \bigl( u u^T - v v^T \bigr)
+    = P ,
+  \]
+  since each block of $P$ is reproduced exactly once by
+  \cref{eq:pair-split}.
+
+  Such a placement exists.  With $s_k$ the number of singletons $\le k$ and
+  $\iota_k$ the number of pairs $(i,j)$ with $j \le k$, classifying the
+  indices $\le k$ into isolated zeros, singletons, pair indices with
+  $j \le k$, and pair indices with $i \le k < j$ gives
+  $k = \zeta_k + s_k + 2\iota_k + \chi_k$, so
+  \[
+    \#\{\text{items with bound} \le k\}
+    = s_k + 2(\iota_k + \chi_k)
+    = k - (\zeta_k - \chi_k)
+    \ \le\ k
+    \iff
+    \chi_k \le \zeta_k .
+  \]
+  Order the items by nondecreasing bound and place the $t$th item in slot
+  $t$: if some item's bound were smaller than its slot $t$, the items with
+  bound $\le t - 1$ would number at least $t$, contradicting the count just
+  displayed at $k = t - 1$.
 \end{proof}
+
+\begin{remark}[threads: a division-free alternative]\label{rem:threads}
+  The split \cref{eq:pair-split} divides by $2$.  An alternative
+  construction avoids all division and realizes each pair by a single
+  column, at the price of one extra column per group: partition the pairs
+  into \emph{threads}
+  $r < i_1 < j_1 < i_2 < j_2 < \cdots < i_m < j_m$, with $r$ an isolated
+  zero index and $(i_q, j_q)$ pairs of $P$ --- a left-to-right scan that
+  attaches each pair to a free thread and roots new threads at isolated
+  zeros succeeds under $\chi_k \le \zeta_k$ --- and, with the partial sums
+  $s_q = -(e_{i_q} + e_{i_{q+1}} + \cdots + e_{i_m})$, take the columns and
+  alternating weights
+  \[
+    \ell_r = s_1, \; d_r = 1;
+    \qquad
+    \ell_{i_q} = s_q + e_{j_q}, \; d_{i_q} = -1;
+    \qquad
+    \ell_{j_q} = s_{q+1} + e_{j_q}, \; d_{j_q} = 1 .
+  \]
+  The sum $\sum_t d_t \ell_t \ell_t^T$ telescopes to the thread's pair
+  blocks.  This variant survives in characteristic $2$ (where
+  \cref{eq:pair-split} is unavailable) and keeps each column inside its
+  thread, but it spends one column on every root, so it is not
+  column-minimal; see \Cref{sec:sparsity}.
+\end{remark}
 % ===== End inlined from sections/explicit.tex =====
 
 \section{Sparsity and rank-revealing structure}\label{sec:sparsity}
@@ -1137,13 +1135,12 @@ factorization.
     \item \emph{Simultaneous envelope optimality:} for \emph{every}
       unpivoted factorization $A = \widetilde L \widetilde U$ and every
       $k$,
-      \[
-        \#\{t : \widetilde L[1:k, t] \neq 0\} \ \ge\ \rk(A[1:k,:])
-        = k - r^0_k,
-        \qquad
-        \#\{t : \widetilde U[t, 1:k] \neq 0\} \ \ge\ \rk(A[:,1:k])
+      \begin{align*}
+        \#\{t : \widetilde L[1:k, t] \neq 0\} &\ \ge\ \rk(A[1:k,:])
+        = k - r^0_k,\\
+        \#\{t : \widetilde U[t, 1:k] \neq 0\} &\ \ge\ \rk(A[:,1:k])
         = k - c^0_k,
-      \]
+      \end{align*}
       and the sorted factorization attains both bounds for every $k$
       simultaneously.
   \end{enumerate}
@@ -1184,28 +1181,10 @@ factorization.
 
 \subsection{The symmetric factors: a rank-revealing $LDL^T$}
 
-The thread construction of \Cref{thm:ldlt-matching} produces a factor $L$
-with $r + (\#\text{threads})$ nonzero columns: each nonempty thread spends
-one column on its root.  Over the reals this overhead can be removed
-entirely, because a normalized pair block splits into \emph{two} symmetric
-rank-one terms sharing the same leading row:
-\begin{equation}\label{eq:pair-split}
-  e_i e_j^T + e_j e_i^T
-  =
-  u u^T - v v^T,
-  \qquad
-  u = e_i + \tfrac12 e_j,
-  \quad
-  v = e_i - \tfrac12 e_j .
-\end{equation}
-Both $u$ and $v$ are supported on $\{i, j\}$ and have leading row $i$.
-This split trades the telescoping chains for a per-pair construction at
-the cost of the division by $2$ (and, unlike the threads, it produces the
-minimum possible number of nonzero columns; see below).
-
-For a signed matching matrix $P$ and a cut $k$, let $s_k$ be the number of
-singletons $\le k$ and $\iota_k$ the number of pairs $(i,j)$ with
-$j \le k$, so that, counting the index classes of \Cref{def:sym-matching},
+The construction of \Cref{thm:ldlt-matching} becomes rank-revealing when
+its items are placed by the sorted assignment used in its proof.  Recall
+from that proof the counts $s_k$ (singletons $\le k$) and $\iota_k$ (pairs
+$(i,j)$ with $j \le k$), and the index identity
 $k = \zeta_k + s_k + 2\iota_k + \chi_k$.
 
 \begin{theorem}[rank-revealing $LDL^T$]\label{thm:ldlt-rr}
@@ -1214,7 +1193,10 @@ $k = \zeta_k + s_k + 2\iota_k + \chi_k$.
   \begin{enumerate}
     \item only the first $r$ columns of $L$ are nonzero, and $D$ has
       exactly $r$ nonzero entries, namely $D[t,t] \in \{\pm 1\}$ for
-      $t \le r$;
+      $t \le r$, of which exactly $n_+(A)$ equal $+1$ and $n_-(A)$ equal
+      $-1$, where $n_\pm(A)$ count the positive and negative eigenvalues
+      of $A$: the diagonal factor reveals both the rank and the inertia
+      of $A$;
     \item each singleton $t$ of the signed matching form of $A$
       contributes one column with support starting at row $t$, and each
       pair $(i,j)$ contributes two columns with support starting at row
@@ -1229,22 +1211,28 @@ $k = \zeta_k + s_k + 2\iota_k + \chi_k$.
 \end{theorem}
 
 \begin{proof}
-  Write $A = M P M^T$ (\Cref{lem:reduction-sym}).  Assemble a list of
-  \emph{items}: each singleton $t$ (weight $\gamma_t$) is one item with
-  bound $t$; each pair $(i,j)$ is two items with bound $i$, carrying the
-  columns $u, v$ of \cref{eq:pair-split} and weights $+1, -1$.  The number
-  of items with bound $\le k$ is $s_k + 2(\iota_k + \chi_k)$, which is
-  $\le k$ if and only if $\chi_k \le \zeta_k$, by the index count above.
-  As for the sorted factorization above, sorting the items by
-  nondecreasing bound and placing the $t$th item in slot $t$ is therefore
-  admissible, occupies exactly the slots $1, \ldots, r$ (the total number of items is $s + 2p = \rk(P) =
-  r$), and produces a lower triangular $S$ with $S E S^T = P$, where $E$
-  carries the item weights: the singleton terms $\gamma_t e_t e_t^T$ and
-  the split terms \cref{eq:pair-split} together reproduce every block of
-  $P$ exactly once.  Set $L = MS$ and $D = E$.  Since $M$ is invertible
-  lower triangular, column supports and their leading rows are preserved,
-  which gives (1)--(3); for \cref{eq:ldlt-envelope}, the columns meeting
-  rows $1, \ldots, k$ are the items with bound $\le k$.
+  By \Cref{lem:reduction-sym}, $A = M P M^T$; let $P = S E S^T$ be the
+  factorization constructed in the proof of \Cref{thm:ldlt-matching}, with
+  the items sorted by nondecreasing bound and the $t$th item placed in slot
+  $t$, and set $L = MS$, $D = E$.  The items number $s + 2p$ in total ($s$
+  singletons, $p$ pairs), and $s + 2p = \rk(P) = \rk(A) = r$, since each
+  singleton block has rank $1$ and each pair block rank $2$.  Hence exactly
+  the slots $1, \ldots, r$ are used, and $D$ carries the item weights,
+  which lie in $\{\pm 1\}$: $\gamma_t = \pm 1$ for singletons, $+1$ and
+  $-1$ for the two halves of each pair.  Since $M$ is invertible lower
+  triangular, multiplication by $M$ preserves column supports and their
+  leading rows, giving (1) and (2), except for the inertia claim, which
+  follows from Sylvester's law: $A = MPM^T$ with $M$ invertible, so $A$
+  and $P$ have the same inertia; up to a symmetric permutation, $P$ is the
+  direct sum of its blocks, whose inertias are $(\sgn \gamma_t)$ for
+  singletons and one positive, one negative eigenvalue ($\pm 1$) for each
+  pair block; and the weights placed in $D$ --- $\gamma_t$ per singleton,
+  $+1$ and $-1$ per pair --- match these counts exactly.  For
+  \cref{eq:ldlt-envelope}: the
+  columns of $L$ meeting rows $1, \ldots, k$ are exactly the items with
+  bound $\le k$, which number $s_k + 2(\iota_k + \chi_k) =
+  k - (\zeta_k - \chi_k)$, as counted in the proof of
+  \Cref{thm:ldlt-matching}.
 \end{proof}
 
 The count \cref{eq:ldlt-envelope} exceeds the naive bound
@@ -1293,38 +1281,19 @@ unavoidable: crossing pairs genuinely cost two columns each at the cut.
   \]
 \end{proof}
 
-\begin{remark}\label{rem:threads-vs-split}
-  The split \cref{eq:pair-split} also yields an alternative proof of
-  \Cref{thm:ldlt-matching} over $\mathbb{R}$.  The thread construction
-  remains of independent interest: it avoids the division by $2$ (the
-  step that fails in characteristic $2$), it keeps the columns attached
-  to disjoint threads, and its diagonal alternation makes the role of
-  the isolated zero indices explicit.  The split construction is instead
-  column-minimal, and its $D$, with entries in $\{0, \pm 1\}$ and exactly
-  $r$ nonzero entries, displays the rank and the inertia of $A$
-  simultaneously.
+\begin{remark}\label{rem:inertia-revealing}
+  The thread variant of \Cref{rem:threads} is not column-minimal --- it
+  spends one column on the root of each thread, for
+  $r + (\#\text{threads})$ nonzero columns in total --- and its diagonal
+  need not reveal the inertia: when $L$ is singular, Sylvester's law of
+  inertia does not constrain $D$.  \Cref{ex:exchange} illustrates both
+  phenomena: the split factorization, displayed in
+  \cref{eq:exchange-factorizations}, uses two columns and the diagonal
+  $\operatorname{diag}(1,-1,0)$, attaining \cref{eq:ldlt-envelope} at
+  every $k$, while the thread variant uses three columns and the diagonal
+  $\operatorname{diag}(1,-1,1)$, whose inertia differs from that of
+  $A_2$.
 \end{remark}
-
-\begin{example}\label{ex:sparsity-exchange}
-  For the exchange matrix $A_2$ of \cref{eq:swap-vs-exchange} ($r = 2$,
-  one pair $(2,3)$, isolated zero index $1$), the thread factorization of
-  \cref{eq:exchange-factorizations} uses three nonzero columns.  The split
-  \cref{eq:pair-split} uses two, in slots $1, 2$:
-  \[
-    L =
-    \begin{pmatrix}
-      0 & 0 & 0\\
-      1 & 1 & 0\\
-      \tfrac12 & -\tfrac12 & 0
-    \end{pmatrix},
-    \qquad
-    D = \operatorname{diag}(1, -1, 0),
-    \qquad
-    L D L^T = A_2,
-  \]
-  which is rank-revealing and attains \cref{eq:ldlt-envelope} at every
-  $k$.
-\end{example}
 
 % ===== Inlined from sections/assembly.tex =====
 \section{Proofs of the main theorems, and a worked example}\label{sec:assembly}
@@ -1372,7 +1341,12 @@ unavoidable: crossing pairs genuinely cost two columns each at the cut.
   $\bigl(
     \begin{smallmatrix}0&1\\1&0
   \end{smallmatrix}\bigr)$ on indices
-  $(2,3)$.  The single thread $1<2<3$ gives
+  $(2,3)$.  The pair splits by \cref{eq:pair-split} into two items with
+  bound $2$, placed in slots $1$ and $2$; this produces exactly the
+  $LDL^T$ factorization displayed in \cref{eq:exchange-factorizations},
+  routing the off-diagonal block through the earlier zero index: the
+  second slot exists because index $1$ is isolated.  The thread variant of
+  \Cref{rem:threads}, with the single thread $1<2<3$, gives instead
   \[
     S=
     \begin{pmatrix}
@@ -1383,9 +1357,12 @@ unavoidable: crossing pairs genuinely cost two columns each at the cut.
     \qquad
     E=\operatorname{diag}(1,-1,1),
     \qquad
-    A_2=SES^T.
+    A_2=SES^T,
   \]
-  This again routes the off-diagonal block through the earlier zero index.
+  with three nonzero columns, and with a diagonal whose inertia
+  $(n_+, n_-) = (2,1)$ differs from the inertia $(1,1)$ of $A_2$: when the
+  triangular factor is singular, Sylvester's law of inertia does not
+  constrain the diagonal factor.
 \end{example}
 % ===== End inlined from sections/assembly.tex =====
 
@@ -1401,21 +1378,24 @@ corollary that for symmetric matrices unpivoted $LU$ and $LDL^T$ existence
 coincide.  The proof method is uniform: reduce to a matching normal form by
 triangular equivalence or congruence, transfer the nullity criterion to the
 normal form where it becomes a prefix condition on the matching, and factor the
-normal form explicitly --- by greedy slot assignment in the unsymmetric case,
-by telescoping threads rooted at isolated zero indices in the symmetric case.
+normal form explicitly by a sorted slot assignment --- with each symmetric
+off-diagonal pair split into a difference of two rank-one terms
+(\cref{eq:pair-split}), and with a division-free telescoping-thread
+alternative recorded in \Cref{rem:threads}.
 
 Several directions remain open.
 \begin{itemize}
   \item \emph{Numerical stability.}  The construction selects pivots for
     algebraic, not numerical, reasons; a backward-stable variant over
-    $\mathbb{R}$ (perhaps with size-aware choices among the admissible threads
-    and slots, which are far from unique) is an open problem, as
+    $\mathbb{R}$ (perhaps with size-aware choices among the admissible slot
+    assignments, which are far from unique) is an open problem, as
     in~\cite{darve_lu_2026}.
   \item \emph{Multiplicity.}  Dopico, Johnson, and
     Molera~\cite{dopico_multiple_2006} parametrized all LU factorizations of a
     singular matrix with $L$ unit lower triangular.  Parametrizing all
-    unpivoted $LDL^T$ factorizations --- equivalently, all thread systems and
-    diagonal choices --- would quantify the freedom our constructions exploit.
+    unpivoted $LDL^T$ factorizations --- equivalently, all slot assignments,
+    splittings, and diagonal choices --- would quantify the freedom our
+    constructions exploit.
   \item \emph{Structure of the factors.}  \Cref{sec:sparsity} settles the
     column-envelope structure: both factorizations can be made
     rank-revealing with a canonical, simultaneously optimal envelope.  What
@@ -1802,8 +1782,9 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
     \qquad
     LU = \Pi .
   \]
-  Symmetrically, the same crossing pattern is threaded through an earlier
-  isolated zero index, exactly as in \Cref{ex:exchange}.
+  Symmetrically, the same crossing pattern is routed through an earlier
+  isolated zero index --- the pair needs two slots $\le 2$, and slots
+  $1, 2$ are available --- exactly as in \Cref{ex:exchange}.
 \end{example}
 % ===== End inlined from sections/appendix_examples.tex =====
 
