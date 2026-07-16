@@ -134,25 +134,7 @@
 
   \begin{abstract}
     We give a unified treatment of two existence questions for triangular
-    factorizations without pivoting over $\mathbb{R}$: when does a square matrix
-    $A$ admit a factorization $A = LU$ with $L$ lower triangular and $U$ upper
-    triangular, and, when $A$ is symmetric, a factorization $A = LDL^T$ with $L$
-    lower triangular and $D$ diagonal?  No permutations are allowed, $A$ may be
-    singular, and zeros are allowed on the diagonals of all factors; this
-    distinguishes the problem from the classical theory, which assumes that all
-    leading principal minors are nonzero.  Both questions are answered by
-    nullity inequalities comparing each leading principal submatrix with the
-    corresponding leading block of columns and rows.  The unsymmetric criterion
-    recovers the theorem of Okunev and Johnson; the symmetric criterion appears
-    to be new.  Both sufficiency proofs follow a single strategy: reduce $A$ by
-    an invertible triangular equivalence (a congruence in the symmetric case) to
-    a matching normal form, observe that the criterion is invariant under such
-    reductions and becomes a combinatorial prefix condition on the matching, and
-    then factor the normal form explicitly by a sorted slot assignment, a
-    prefix form of Hall's theorem: each matched entry --- and, in the
-    symmetric case, each half of an off-diagonal pair split into a
-    difference of two symmetric rank-one terms --- is placed at an earlier
-    diagonal slot, with isolated zero indices supplying the spare slots.
+    factorizations without pivoting over $\mathbb{R}/\mathbb{C}$: when does a square matrix $A$ admit a factorization $A = LU$ with $L$ lower triangular and $U$ upper triangular, and, when $A$ is symmetric, a factorization $A = LDL^T$ with $L$ lower triangular and $D$ diagonal?  No permutations are allowed, $A$ may be singular, and zeros are allowed on the diagonals of all factors. This distinguishes the problem from the classical theory, which often assumes that all leading principal minors are nonzero.  Both questions are answered by nullity inequalities comparing each leading principal submatrix with the corresponding leading block of columns and rows.  The unsymmetric criterion recovers the theorem of Okunev and Johnson, while the symmetric criterion is new.  Both sufficiency proofs follow the same strategy: reduce $A$ by an invertible triangular equivalence—or, in the symmetric case, a congruence—to a matching normal form, transfer the criterion to this normal form, where it becomes a family of Hall-type counting inequalities on initial index segments, and then construct the factors explicitly.
   \end{abstract}
 
   \begin{keyword}
@@ -169,26 +151,9 @@
 % ===== Inlined from sections/intro.tex =====
 \section{Introduction}\label{sec:intro}
 
-Let $A \in \mathbb{R}^{n \by n}$.  It is classical that when $A$ is
-nonsingular, a factorization $A = LU$ with $L$ lower triangular and $U$ upper
-triangular exists if and only if every leading principal submatrix
-$A[1:k,1:k]$ is nonsingular~\cite{higham_gaussian_2011,golub_matrix_2013}.
-The standard remedy when this condition fails is pivoting: for any $A$ there
-are permutations $P$ (and $Q$) such that $PA = LU$ or $PAQ = LU$.  Pivoting,
-however, changes the problem.  When the row and column indices carry meaning
---- temporal order in autoregressive models, causal order in structural
-equation models, or a fixed elimination order imposed by an application --- the
-factorization must respect the original indexing, and the correct question
-becomes: \emph{for which matrices $A$ does $A = LU$ hold with no permutations
-at all?}
+Let $A \in \mathbb{R}^{n \by n}$ (the results can be extended to $\mathbb{C}^{n \by n}$ but we will use $\mathbb{R}^{n \by n}$ for notational convenience).  It is classical that when $A$ is nonsingular, a factorization $A = LU$ with $L$ lower triangular and $U$ upper triangular exists if and only if every leading principal submatrix $A[1:k,1:k]$ is nonsingular~\cite{higham_gaussian_2011,golub_matrix_2013}. The standard remedy when this condition fails is pivoting: for any $A$ there are permutations $P$ (and $Q$) such that $PA = LU$ or $PAQ = LU$.  Pivoting, however, changes the problem.  When the row and column indices carry meaning (temporal order in autoregressive models, causal order in structural equation models, or a fixed elimination order imposed by an application) the factorization must respect the original indexing, and the correct question becomes: for which matrices $A$ does $A = LU$ hold with no permutations at all?
 
-Two features make the unpivoted question fundamentally different from the
-classical one.  First, $A$ may be singular, or may have singular leading
-principal blocks, and yet admit a perfectly good factorization.  Second, the
-factors must then be allowed to carry \emph{zeros on their diagonals}: we
-require only that $L$ be lower triangular and $U$ upper triangular, not that
-they be invertible.  The classical minor criterion says nothing in this regime.
-For example,
+Two features make the unpivoted question fundamentally different from the classical one.  First, $A$ may be singular, or may have singular leading principal blocks, and yet admit a valid factorization.  Second, the factors must then be allowed to carry zeros on their diagonals. We require only that $L$ be lower triangular and $U$ upper triangular, not that they be invertible.  The classical minor criterion says nothing in this regime. For example,
 \begin{equation}\label{eq:swap-vs-exchange}
   A_1 =
   \begin{pmatrix}
@@ -203,7 +168,7 @@ For example,
     0 & 1 & 0
   \end{pmatrix}
 \end{equation}
-are both symmetric with singular leading blocks.  The swap matrix $A_1$ has no
+are both symmetric with singular leading blocks.  Matrix $A_1$ has no
 factorization $A_1 = LU$ (from $a_{11}=l_{11}u_{11}=0$, either the first row or
 the first column of $LU$ must vanish).  Yet the larger, more degenerate matrix
 $A_2$ factors:
@@ -223,16 +188,7 @@ $A_2$ factors:
     \begin{pmatrix} 0 & 1 & \tfrac12\\ 0 & 1 & -\tfrac12\\ 0 & 0 & 0
   \end{pmatrix}}_{LDL^T} .
 \end{equation}
-Both factorizations require zero diagonal entries: the leading zero index of
-$A_2$ acts as a resource that later off-diagonal structure can be routed
-through.  Understanding exactly when such routing is possible is the subject of
-this paper.  Note also that $D$ displays the rank and the inertia of $A_2$:
-it has two nonzero entries ($\rk A_2 = 2$), one positive and one negative
-($A_2$ has eigenvalues $1, -1, 0$).  This is a property of a well-chosen
-factorization, not of all of them --- when $L$ is singular, Sylvester's law
-of inertia does not constrain $D$ (\Cref{ex:exchange}) --- and
-\Cref{thm:ldlt-rr} shows that a rank- and inertia-revealing choice always
-exists.
+Matrix $D$ displays the rank and the inertia of $A_2$: it has two nonzero entries ($\rk A_2 = 2$), one positive and one negative ($A_2$ has eigenvalues $1, -1, 0$).  This is a property of a well-chosen factorization. When $L$ is singular, Sylvester's law of inertia does not constrain $D$ (\Cref{ex:exchange}). However, \Cref{thm:ldlt-rr} shows that a rank- and inertia-revealing choice always exists.
 
 We answer the question for both the unsymmetric and symmetric forms of the
 problem.  Write $\nl(X)=(\#\text{cols of }X)-\rk(X)$ for the right nullity.
