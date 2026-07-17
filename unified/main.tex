@@ -191,7 +191,11 @@ $A_2$ factors:
 Matrix $D$ reveals the rank and the inertia of $A_2$. It has two nonzero entries ($\rk A_2 = 2$), one positive and one negative ($A_2$ has eigenvalues $1, -1, 0$).  This is a property of a well-chosen factorization. When $L$ is singular, Sylvester's law of inertia does not imply that $D$ and $A$ have the same inertia (\Cref{ex:exchange}). However, \Cref{thm:ldlt-rr} shows that a rank- and inertia-revealing choice always exists.
 
 We answer the question for both the unsymmetric and symmetric forms of the
-problem.  Write $\nl(X)=(\#\text{cols of }X)-\rk(X)$ for the right nullity.
+problem.  Write
+$$
+\nl(X)=(\#\text{cols of }X)-\rk(X)
+$$
+for the right nullity.
 Our two main results are the following (\Cref{thm:lu,thm:ldlt}):
 \begin{itemize}
   \item $A \in \mathbb{R}^{n \by n}$ admits a factorization $A = LU$ with $L$
@@ -207,76 +211,32 @@ Our two main results are the following (\Cref{thm:lu,thm:ldlt}):
       \nl(A[1:k,1:k]) \le 2\,\nl(A[:,1:k]) .
     \]
 \end{itemize}
-The first criterion is equivalent to the rank inequality of Okunev and
-Johnson~\cite{okunev_johnson_2005,johnson_okunev_2025}.  The second criterion,
-and the fact that for symmetric matrices the two criteria coincide --- so that
-a symmetric matrix admits an unpivoted $LU$ factorization if and only if it
-admits an unpivoted $LDL^T$ factorization --- appear to be new.
+The first criterion is equivalent to the rank inequality of Okunev and Johnson~\cite{okunev_johnson_2005,johnson_okunev_2025}.  The second criterion, and the fact that for symmetric matrices the two criteria coincide, that is a symmetric matrix admits an unpivoted $LU$ factorization if and only if it admits an unpivoted $LDL^T$ factorization, is new.
 
-\paragraph{The unified method}
+\paragraph{Proof strategy}
 Both sufficiency proofs follow the same three-step strategy.
 \begin{enumerate}
-  \item \emph{Reduce.}  Every $A$ can be written $A=M\Pi N$ with $M$
-    invertible lower triangular, $N$ invertible upper triangular, and $\Pi$ a
-    matching matrix.  Every symmetric $A$ can be written $A=MPM^T$ with $M$
-    invertible lower triangular and $P$ a signed matching matrix whose pair
-    blocks have the normalized real form
+  \item \emph{Reduce.}  Every $A$ can be written $A=M\Pi N$ with $M$ invertible lower triangular, $N$ invertible upper triangular, and $\Pi$ a matching matrix.  Every symmetric $A$ can be written $A=MPM^T$ with $M$ invertible lower triangular and $P$ a signed matching matrix whose pair blocks have the normalized real form
     $\bigl(
       \begin{smallmatrix}0&1\\1&0
-    \end{smallmatrix}\bigr)$
-    and whose diagonal entries lie in $\{0, \pm 1\}$
-    (\Cref{lem:reduction-lu,lem:reduction-sym}).
-  \item \emph{Transfer.}  The nullities appearing in the criteria are
-    invariant under these triangular equivalences and congruences, so the
-    criteria may be checked on the normal forms.  On normal forms they become
-    prefix conditions on matchings (\Cref{lem:comb-lu,lem:comb-sym}).
-  \item \emph{Assign.}  A matching matrix satisfying the prefix condition is
-    factored by assigning each matched entry a diagonal slot
-    $t\le\min(i,j)$.  In the symmetric case a matched entry cannot be
-    realized alone: each off-diagonal pair splits into a difference of two
-    symmetric rank-one terms and consumes \emph{two} slots, and the prefix
-    condition supplies exactly enough earlier slots, the spares being
-    created by isolated zero indices
-    (\Cref{thm:lu-matching,thm:ldlt-matching}).
+      \end{smallmatrix}
+    \bigr)$
+    and whose diagonal entries lie in $\{0, \pm 1\}$ (\Cref{lem:reduction-lu,lem:reduction-sym}).
+  \item \emph{Transfer.}  The nullities appearing in the criteria are invariant under these triangular equivalences and congruences, so the criteria may be checked on the normal forms.  On normal forms they become prefix conditions on matchings (\Cref{lem:comb-lu,lem:comb-sym}).
+  \item \emph{Assign.}  For the unsymmetric matching form, each matched entry $(i,j)$ is assigned to a distinct factorization slot $t\le\min(i,j)$. For the symmetric signed-matching form, each diagonal singleton uses one slot, whereas each off-diagonal pair $(i,j)$, $i<j$, splits into a difference of two symmetric rank-one terms and therefore requires two distinct slots no larger than $i$. The prefix condition guarantees that sufficiently many eligible slots are available (\Cref{thm:lu-matching,thm:ldlt-matching}).
 \end{enumerate}
-Necessity is a short rank argument, and the standard normal-form reductions and
-invariance facts are relegated to the appendices so that the main text can
-focus on the new prefix-condition and slot-assignment mechanisms.
+Necessity is a short rank argument. The normal-form reductions and invariance facts are fairly standard and can be found in the appendices. The main text focuses on the new prefix-condition and slot-assignment mechanisms.
 
 \paragraph{Contributions}
 \begin{itemize}
-  \item A unified normal-form proof of unpivoted $LU$ existence and unpivoted
-    $LDL^T$ existence for real matrices with possibly singular triangular
-    factors.
-  \item A necessary and sufficient condition for the existence of an unpivoted
-    $LDL^T$ factorization with a truly diagonal $D$ and possibly singular $L$,
-    together with the corollary that for symmetric matrices unpivoted $LU$ and
-    $LDL^T$ existence are equivalent.
-  \item An explicit combinatorial mechanism for the symmetric problem: the
-    prefix condition supplies, for every off-diagonal pair, the two earlier
-    slots required by its rank-one splitting, with isolated zero indices
-    acting as the spare slots.
-  \item Canonical sparsity and rank-revealing structure
-    (\Cref{sec:sparsity}): both constructions can be steered to
-    factorizations with exactly $\rk(A)$ populated columns, whose sparsity
-    envelope is determined by the rank-jump matching of $A$ and is
-    simultaneously optimal, over all unpivoted factorizations, for every
-    leading block at once
-    (\Cref{thm:lu-sparsity,thm:ldlt-rr,prop:ldlt-lower}).
+  \item A novel normal-form proof of unpivoted $LU$ existence and unpivoted $LDL^T$ existence for real matrices with possibly singular triangular factors.
+  \item A necessary and sufficient condition for the existence of an unpivoted $LDL^T$ factorization with a diagonal $D$ and possibly singular $L$, together with the corollary that for symmetric matrices unpivoted $LU$ and $LDL^T$ existence are equivalent.
+  \item An explicit combinatorial mechanism for the symmetric problem: the prefix condition supplies, for every off-diagonal pair, the two earlier slots required by its rank-one splitting, with isolated zero indices acting as the spare slots.
+  \item Canonical support envelopes and rank-revealing structure (\Cref{sec:sparsity}): for matrices satisfying the corresponding existence criteria, the sorted $LU$ factorization has exactly $r=\rk(A)$ nonzero columns for $L$ and nonzero rows for $U$, while the sorted $LDL^T$ factorization has exactly $r$ nonzero columns for $L$ and nonzero entries for $D$. Their leading support indices are determined by the rank-jump matching of $A$, up to the stated tie-breaking, and their prefix support counts simultaneously attain, for every $k$, the lower bounds valid for all unpivoted factorizations (\Cref{thm:lu-sparsity,thm:ldlt-rr,prop:ldlt-lower}).
 \end{itemize}
 
-\paragraph{Organization}
-\Cref{sec:related} positions the paper.  \Cref{sec:notation} fixes notation,
-and \Cref{sec:results} states the main theorems.  \Cref{sec:normalforms}
-states the matching normal forms.  \Cref{sec:combinatorics} converts the
-criteria into prefix conditions, \Cref{sec:explicit} factors the normal forms,
-\Cref{sec:sparsity} develops the sparsity and rank-revealing structure of the
-factors, and \Cref{sec:assembly} assembles the proofs.  The appendices contain the
-standard rank facts, necessity and transfer arguments, normal-form proofs, and
-an additional example.
-% ===== End inlined from sections/intro.tex =====
+\paragraph{Organization} \Cref{sec:related} positions the paper.  \Cref{sec:notation} fixes notation, and \Cref{sec:results} states the main theorems.  \Cref{sec:normalforms} states the matching normal forms.  \Cref{sec:combinatorics} converts the criteria into prefix conditions. \Cref{sec:explicit} factors the normal forms. \Cref{sec:sparsity} develops the sparsity and rank-revealing structure of the factors, and \Cref{sec:assembly} includes the remaining proofs.  The appendices contain standard rank facts, necessity and transfer arguments, normal-form proofs, and an additional example.
 
-% ===== Inlined from sections/related.tex =====
 \section{Related work}\label{sec:related}
 
 \paragraph{Unpivoted LU for nonsingular matrices}
