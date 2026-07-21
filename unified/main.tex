@@ -2,6 +2,7 @@
 
 \usepackage[english]{babel}
 \usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{fancyhdr,amsfonts,amssymb}
 \usepackage{array}
 \usepackage{xcolor}
@@ -383,11 +384,11 @@ A key step in the sufficiency proof is a reduction of $A$ to a sparse normal for
 \begin{definition}[matching matrix]\label{def:matching}
   A \emph{matching matrix} $\Pi \in \mathbb{R}^{n \by n}$ is a partial permutation matrix: a $0$--$1$ matrix with at most one $1$ in each row and in each column.  Equivalently, $\Pi = D\Pi_0$ for a permutation matrix $\Pi_0$ and a $0$--$1$ diagonal matrix $D$, i.e., a permutation matrix with some rows zeroed out (or $\Pi = \Pi_0 D'$, with some columns zeroed out). We write
   \[
-    \M = \M(\Pi) := \{(i,j) : \Pi[i,j] = 1\},
+    \M = \M(\Pi) \coloneqq \{(i,j) : \Pi[i,j] = 1\},
     \qquad\text{so that}\qquad
     \Pi = \sum_{(i,j) \in \M} e_i e_j^T,
   \]
-  and call the elements of $\M$ \emph{matched pairs}; the defining property says precisely that no two matched pairs share a row index $i$, and no two share a column index $j$.
+  and call the elements of $\M$ \emph{matched pairs}. The defining property is precisely that no two matched pairs share a row index $i$, and no two share a column index $j$.
 \end{definition}
 
 Note that diagonal pairs $(t,t)$ --- the nonzero diagonal entries of $\Pi$ --- are allowed; they will correspond to the classical nonzero pivots.
@@ -460,9 +461,9 @@ and ranks alone cannot see signs.  The signs are nevertheless also invariants
 of $A$ --- determined by the \emph{inertias} of its leading principal blocks,
 as part (2) below makes precise.  For $1 \le i, j \le n$ let
 \[
-  r_{ij}(A) := \rk\bigl(A[1:i,1:j]\bigr),
+  r_{ij}(A) \coloneqq \rk\bigl(A[1:i,1:j]\bigr),
   \qquad
-  \Delta_{ij}(A) := r_{ij} - r_{i-1,j} - r_{i,j-1} + r_{i-1,j-1},
+  \Delta_{ij}(A) \coloneqq r_{ij} - r_{i-1,j} - r_{i,j-1} + r_{i-1,j-1},
 \]
 with the convention $r_{0j} = r_{i0} = 0$.  We call $(i,j)$ a
 \emph{rank jump} of $A$ if $\Delta_{ij}(A) = 1$.
@@ -516,15 +517,15 @@ prefixes of the index set.
 Let $\Pi$ be a matching matrix with matching $\M$.  Relative to the cut
 after index $k$, classify the matched pairs and define
 \begin{align*}
-  \iota_k &:= \#\{(i,j) \in \M : i \le k \text{ and } j \le k\}
+  \iota_k &\coloneqq \#\{(i,j) \in \M : i \le k \text{ and } j \le k\}
   && \text{(pairs inside the leading block)},\\
-  \chi^R_k &:= \#\{(i,j) \in \M : i \le k < j\}
+  \chi^R_k &\coloneqq \#\{(i,j) \in \M : i \le k < j\}
   && \text{(pairs crossing the cut row-first)},\\
-  \chi^C_k &:= \#\{(i,j) \in \M : j \le k < i\}
+  \chi^C_k &\coloneqq \#\{(i,j) \in \M : j \le k < i\}
   && \text{(pairs crossing the cut column-first)},\\
-  r^0_k &:= \#\{\text{zero rows} \le k\},
+  r^0_k &\coloneqq \#\{\text{zero rows} \le k\},
   \qquad
-  c^0_k := \#\{\text{zero columns} \le k\}. \hspace{-12em}
+  c^0_k \coloneqq \#\{\text{zero columns} \le k\}. \hspace{-12em}
 \end{align*}
 
 \begin{lemma}[nullities of a matching matrix]\label{lem:null-matching}
@@ -566,7 +567,7 @@ after index $k$, classify the matched pairs and define
     \qquad
     \text{(b) } \chi^C_k \le r^0_k,
     \qquad
-    \text{(c) } \nu_k := \#\{(i,j) \in \M : \min(i,j) \le k\} \ \le\ k .
+    \text{(c) } \nu_k \coloneqq \#\{(i,j) \in \M : \min(i,j) \le k\} \ \le\ k .
   \]
 \end{lemma}
 
@@ -587,9 +588,9 @@ after index $k$, classify the matched pairs and define
 
 Let $P$ be a signed matching matrix.  Define
 \[
-  \zeta_k := \#\{\text{isolated zero indices} \le k\},
+  \zeta_k \coloneqq \#\{\text{isolated zero indices} \le k\},
   \qquad
-  \chi_k := \#\{\text{pairs } (i,j) \text{ of } P : i \le k < j\} .
+  \chi_k \coloneqq \#\{\text{pairs } (i,j) \text{ of } P : i \le k < j\} .
 \]
 
 \begin{lemma}[nullities of a signed matching matrix]\label{lem:null-sym-matching}
@@ -687,9 +688,9 @@ enough of them.
   computable by a greedy pass, and setting, for each $(i,j) \in \M$ with
   $t = \sigma(i,j)$,
   \[
-    \ell_t := e_i,
+    \ell_t \coloneqq e_i,
     \qquad
-    u_t := e_j,
+    u_t \coloneqq e_j,
   \]
   and $\ell_t = u_t = 0$ for slots $t \notin \range(\sigma)$, the matrices
   $L = (\ell_1, \ldots, \ell_n)$ and $U$ with rows $u_1^T, \ldots, u_n^T$
@@ -708,13 +709,13 @@ enough of them.
   $i = t$, and $U[t,t] \neq 0$ only if $j = t$.
 
   \emph{The assignment exists.}
-  Process the pairs in order of nondecreasing $m(i,j) := \min(i,j)$, ties
+  Process the pairs in order of nondecreasing $m(i,j) \coloneqq \min(i,j)$, ties
   broken arbitrarily, maintaining the set of free slots (initially
   $\{1, \ldots, n\}$); assign to each pair the largest free slot
   $t \le m(i,j)$ (the argument below is valid for \emph{any} choice of
   free slot $\le m(i,j)$; we fix the largest for definiteness).  Suppose
   the greedy fails at a pair with bound
-  $m := m(i,j)$: all slots $1, \ldots, m$ are occupied.  Every occupied
+  $m \coloneqq m(i,j)$: all slots $1, \ldots, m$ are occupied.  Every occupied
   slot $s \le m$ was assigned to a previously processed pair, whose bound
   was $\le m$ (bounds are nondecreasing along the pass).  Together with the
   current pair, this exhibits $m + 1$ pairs with $\min \le m$, i.e.\
@@ -852,7 +853,7 @@ the rank functions $k \mapsto \rk(A[1:k,:])$ and $k \mapsto \rk(A[:,1:k])$).
 
 Let $A$ satisfy \cref{eq:lu-crit}, let
 $\M = \{(i_1,j_1), \ldots, (i_r,j_r)\}$ be its rank-jump matching, and note
-$r = \rk(A)$.  Order the pairs so that the bounds $m_t := \min(i_t, j_t)$
+$r = \rk(A)$.  Order the pairs so that the bounds $m_t \coloneqq \min(i_t, j_t)$
 are nondecreasing, with any fixed tie-breaking rule (at most two jumps share
 a bound: one of the form $(m, j)$ and one of the form $(i, m)$).  The prefix
 condition of \Cref{lem:comb-lu}(c) states $\nu_k \le k$ for all $k$, which
@@ -1384,9 +1385,9 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
   $x_j=\widehat a_i$ and $y_i=\widehat c_j$, with all other components zero.
   Then
   \[
-    e:=\widehat a-\Pi x,
+    e\coloneqq\widehat a-\Pi x,
     \qquad
-    g^T:=\widehat c^T-y^T\Pi
+    g^T\coloneqq\widehat c^T-y^T\Pi
   \]
   are supported on zero rows and zero columns of $\Pi$, respectively, and
   $y^Te=g^Tx=0$.  Hence, with $f=b-y^T\Pi x$,
@@ -1468,7 +1469,7 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
   indices.  Explicitly, on a singleton $t$ take $\xi_t=\gamma_t c_t$ (so
   $\gamma_t\xi_t=c_t$, using $\gamma_t^2=1$); on a
   normalized pair $(i,j)$ take $\xi_j=c_i$ and $\xi_i=c_j$.  Then
-  $e:=c-P\xi$ is supported on isolated zero indices, so $\xi^Te=0$, and with
+  $e\coloneqq c-P\xi$ is supported on isolated zero indices, so $\xi^Te=0$, and with
   $f=b-\xi^TP\xi$ we have the congruence
   \[
     X=
