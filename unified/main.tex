@@ -394,63 +394,38 @@ A key step in the sufficiency proof is a reduction of $A$ to a sparse normal for
 Note that diagonal pairs $(t,t)$, i.e., the nonzero diagonal entries of $\Pi$, are allowed. They correspond to the classical nonzero pivots.
 
 \begin{definition}[signed matching matrix]\label{def:sym-matching}
-  A \emph{signed matching matrix} is a symmetric matrix
-  $P \in \mathbb{R}^{n \by n}$ with at most one nonzero entry in each row
-  (equivalently, in each column), all of whose off-diagonal nonzero entries
-  equal $1$ and all of whose diagonal nonzero entries equal $\pm 1$.
+  A \emph{signed matching matrix} is a symmetric matrix $P \in \mathbb{R}^{n \by n}$ with at most one nonzero entry in each row (equivalently, in each column), all of whose off-diagonal nonzero entries equal $1$ and all of whose diagonal nonzero entries equal $\pm 1$.
 \end{definition}
 
-Despite the parallel name, a signed matching matrix is \emph{not} a special
-case of \Cref{def:matching}: its diagonal entries may equal $-1$.  This
-discrepancy is forced by the congruence action.  A congruence rescales a
-diagonal entry $\gamma_t$ by a nonzero \emph{square}
-($\gamma_t \mapsto s^2 \gamma_t$ when index $t$ is scaled by $s$), so
-$\sgn \gamma_t$ is a congruence invariant --- it carries the inertia of
-$A$, as the example $A = (-1)$ already shows --- and negative diagonal
-entries are therefore unavoidable in any normal form for congruence.  The
-diagonal signs are also the \emph{only} discrepancy: a signed matching
-matrix with no $-1$ entries is precisely a matching matrix that is
-symmetric, and $|\gamma_t|$ can be, and in \Cref{def:sym-matching} has
-been, normalized to $1$ (the one step in the paper that uses real square
-roots; everything else is rational in the entries of $A$).
+Despite the parallel name, a signed matching matrix is \emph{not} a special case of \Cref{def:matching}: its diagonal entries may equal $-1$.  This discrepancy is forced by the congruence action.  A congruence rescales a diagonal entry $\gamma_t$ by a nonzero \emph{square} ($\gamma_t \mapsto s^2 \gamma_t$ when index $t$ is scaled by $s$), so $\sgn \gamma_t$ is a congruence invariant: it carries the inertia of $A$, as the example $A = (-1)$ already shows. Negative diagonal entries are therefore unavoidable in any normal form for congruence.
 
-Symmetry sorts the indices into three classes, for which we fix
-terminology: an index $t$ with $P[t,t] = \gamma_t \in \{\pm 1\}$ is a
-\emph{singleton}; indices $i < j$ with $P[i,j] = P[j,i] = 1$ form a
-\emph{pair}, and the sparsity forces $P[i,i] = P[j,j] = 0$, so a pair
-carries the exchange block
-$P[\{i,j\},\{i,j\}] = \bigl(
-  \begin{smallmatrix} 0 & 1\\ 1 & 0
-\end{smallmatrix}\bigr)$; every remaining index is an \emph{isolated zero}
-index, whose row and column vanish.
+Symmetry sorts the indices into three classes, for which we fix terminology: an index $t$ with $P[t,t] = \gamma_t \in \{\pm 1\}$ is a \emph{singleton}; indices $i < j$ with $P[i,j] = P[j,i] = 1$ form a \emph{pair}, and the sparsity forces $P[i,i] = P[j,j] = 0$:
+$$
+P[\{i,j\},\{i,j\}] =
+\begin{pmatrix} 0 & 1\\ 1 & 0
+\end{pmatrix}
+$$
+Every remaining index is an \emph{isolated zero} index, whose row and column vanish.
 
 \begin{lemma}[triangular equivalence to a matching matrix]\label{lem:reduction-lu}
-  For every $A \in \mathbb{R}^{n \by n}$ there exist an invertible lower
-  triangular $M$, an invertible upper triangular $N$, and a matching matrix
-  $\Pi$ such that
+  For every $A \in \mathbb{R}^{n \by n}$ there exist an invertible lower triangular $M$, an invertible upper triangular $N$, and a matching matrix $\Pi$ such that
   \[
     A = M \, \Pi \, N .
   \]
   The decomposition can be computed in $O(n^3)$ arithmetic operations.
 \end{lemma}
 
-When $A$ is nonsingular, the factorization in \Cref{lem:reduction-lu} is the
-usual Bruhat decomposition.  In the singular case, the permutation matrix is
-replaced by a partial permutation matrix, giving the generalized Bruhat, or
-rank profile, decomposition.
+When $A$ is nonsingular, the factorization in \Cref{lem:reduction-lu} is the usual Bruhat decomposition.  In the singular case, the permutation matrix is replaced by a partial permutation matrix, giving the generalized Bruhat, or rank profile, decomposition.
 
 \begin{lemma}[triangular congruence to a signed matching matrix]\label{lem:reduction-sym}
-  For every symmetric $A \in \mathbb{R}^{n \by n}$ there exist an invertible
-  lower triangular $M$ and a signed matching matrix $P$ such that
+  For every\\symmetric $A \in \mathbb{R}^{n \by n}$ there exist an invertible lower triangular $M$ and a signed matching matrix $P$ such that
   \[
     A = M \, P \, M^T .
   \]
   The decomposition can be computed in $O(n^3)$ arithmetic operations.
 \end{lemma}
 
-The proofs are standard elimination arguments closely related to the Bruhat
-and generalized Bruhat decompositions; for completeness, and to fix the exact
-normalization used here, they are given in \Cref{app:normalform-proofs}.
+The proofs are standard elimination arguments closely related to the Bruhat and generalized Bruhat decompositions. See \Cref{app:normalform-proofs}.
 
 \subsection{Canonicity}
 
