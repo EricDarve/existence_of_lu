@@ -105,6 +105,12 @@
 \crefname{example}{example}{examples}
 \Crefname{lstlisting}{Listing}{Listings}
 \crefname{lstlisting}{listing}{listings}
+% elsarticle includes "Appendix" in \thesection after \appendix, so appendix
+% references must not add a second cleveref name prefix.
+\crefname{appendix}{}{}
+\Crefname{appendix}{}{}
+\crefformat{appendix}{#2#1#3}
+\Crefformat{appendix}{#2#1#3}
 % Refer to equations by their (parenthesized) number only, with no "eq."/"Eq." prefix.
 \crefname{equation}{}{}
 \Crefname{equation}{}{}
@@ -253,8 +259,7 @@ Their sufficiency proof is an induction on "factor complements" (generalized Sch
 Dopico, Johnson, and Molera~\cite{dopico_multiple_2006} study the related question in which $L$ is required to be unit lower triangular (hence invertible): existence is characterized through a canonical form of $A$ under left multiplication by unit lower triangular matrices (the rank-revealing minimal canonical form), and, importantly, all LU factorizations of a singular matrix are parametrized, quantifying their non-uniqueness.  Our normal form differs in that the reduction acts on both sides (or by congruence), and the middle factor carries the combinatorial obstruction. Nagarajan, Devasahayam, and Soundararajan~\cite{nagarajan_products_1999} showed that \emph{every} square matrix over a field is a product of three triangular matrices $LUM$; the two-factor existence question is exactly the question of when the third factor can be dispensed with. Jeffrey~\cite{jeffrey_lu_2010} standardizes full-rank LU factorings of rectangular and rank-deficient matrices in the form $P_r L D^{-1} U P_c$, using row and column permutations.  For the structured class of M-matrices, McDonald and Schneider~\cite{mcdonald_schneider_1998} gave graph-theoretic necessary and sufficient conditions for a singular M-matrix to admit an unpivoted (block) LU factorization into possibly singular M-matrix factors.  Rank-revealing LU with pivoting chosen for numerical size, rather than algebraic existence, is developed by Miranian and Gu~\cite{miranian_gu_2003}, and the conditioning of the triangular factors of pivoted factorizations is analyzed by Stewart~\cite{stewart_triangular_1997}.  General surveys of matrix factorizations include~\cite{lu_numerical_2021}.
 
 \paragraph{Symmetric factorizations}
-For symmetric positive semidefinite matrices over $\mathbb{R}$, an unpivoted Cholesky-type factorization always exists even in the singular case: $A = LL^T$ with $L$ lower triangular, possibly with zero diagonal entries; see Higham~\cite{higham_cholesky_1990} for a detailed treatment.  Our symmetric criterion is consistent with this: positive semidefiniteness forces $\nl(A[1:k,1:k]) = \nl(A[:,1:k])$ for all $k$, so the criterion of \Cref{thm:ldlt} holds automatically (\Cref{cor:psd}).  For symmetric \emph{indefinite} matrices the classical approach relaxes the diagonal $D$: with symmetric pivoting, $PAP^T = LDL^T$ always exists when $D$ is allowed to be block diagonal with $1 \by 1$ and $2 \by 2$ blocks, as introduced by Bunch and Parlett~\cite{bunch_parlett_1971} and made efficient by Bunch and Kaufman~\cite{bunch_kaufman_1977}; a rank-profile-revealing variant over arbitrary fields, still with symmetric pivoting and with $2 \by 2$ antidiagonal blocks in $D$, is given by Dumas and Pernet~\cite{dumas_pernet_2018}.  Closest in spirit to our symmetric reduction is the paper of Van Dooren and Strang~\cite{vandooren_strang_2014}, which factors a real symmetric matrix as $A = L P L^T$ \emph{without pivoting}, where $P$ is a signed-matching middle factor built from diagonal entries $0, \pm 1$ and symmetric exchange blocks.
-FIXME Our \Cref{lem:reduction-sym} can be read as a real normalized version of their reduction.  Neither \cite{vandooren_strang_2014} nor \cite{dumas_pernet_2018} addresses when the middle factor can be made \emph{truly diagonal}, which is exactly the step from $A = MPM^T$ to $A = LDL^T$ taken in \Cref{sec:combinatorics,sec:explicit}.  The $2 \by 2$ blocks of Bunch--Parlett reappear in our theory in a different role: they are the irreducible blocks of the signed matching normal form, i.e., the obstruction that must be routed through earlier zero indices rather than a device enabled by pivoting.  We are not aware of a previously published necessary and sufficient condition for the unpivoted diagonal-$D$ problem with possibly singular $L$.
+For symmetric positive semidefinite matrices over $\mathbb{R}$, an unpivoted Cholesky-type factorization always exists even in the singular case: $A = LL^T$ with $L$ lower triangular, possibly with zero diagonal entries; see Higham~\cite{higham_cholesky_1990} for a detailed treatment.  Our symmetric criterion is consistent with this: positive semidefiniteness forces $\nl(A[1:k,1:k]) = \nl(A[:,1:k])$ for all $k$, so the criterion of \Cref{thm:ldlt} holds automatically (\Cref{cor:psd}).  For symmetric \emph{indefinite} matrices the classical approach relaxes the diagonal $D$: with symmetric pivoting, $PAP^T = LDL^T$ always exists when $D$ is allowed to be block diagonal with $1 \by 1$ and $2 \by 2$ blocks, as introduced by Bunch and Parlett~\cite{bunch_parlett_1971} and made efficient by Bunch and Kaufman~\cite{bunch_kaufman_1977}; a rank-profile-revealing variant over arbitrary fields, still with symmetric pivoting and with $2 \by 2$ antidiagonal blocks in $D$, is given by Dumas and Pernet~\cite{dumas_pernet_2018}.  Closest in spirit to our symmetric reduction is the paper of Van Dooren and Strang~\cite{vandooren_strang_2014}, which factors a real symmetric matrix as $A = L P L^T$ \emph{without pivoting}, where $P$ is a signed-matching middle factor built from diagonal entries $0, \pm 1$ and symmetric exchange blocks (see \Cref{lem:reduction-sym}).  Neither \cite{vandooren_strang_2014} nor \cite{dumas_pernet_2018} addresses when the middle factor can be made \emph{truly diagonal}, which is exactly the step from $A = MPM^T$ to $A = LDL^T$ taken in \Cref{sec:combinatorics,sec:explicit}.  The $2 \by 2$ blocks of Bunch--Parlett reappear in our theory in a different role: they are the irreducible blocks of the signed matching normal form, i.e., the obstruction that must be routed through earlier zero indices rather than a device enabled by pivoting.  We are not aware of a previously published necessary and sufficient condition for the unpivoted diagonal-$D$ problem with possibly singular $L$.
 
 \paragraph{Triangular canonical forms and the Bruhat decomposition}
 Our reduction lemma states that every $A$ equals $M \Pi N$ with $M$, $N$ invertible triangular and $\Pi$ a matching matrix, and that the matching is an invariant of $A$.  For invertible $A$ this is a form of the Bruhat decomposition $A = LPU$, whose permutation $P$ is uniquely determined by $A$; see Elsner~\cite{elsner_bruhat_1979} and Strang~\cite{strang_pnas_2010,strang_lpu_2012} for elimination-based accounts, and~\cite{dopico_multiple_2006} for the related one-sided canonical form.  For singular matrices the permutation becomes a partial permutation: this is the generalized Bruhat (or LEU) decomposition~\cite{malaschonok_2010}, and the invariant matching is the \emph{rank profile matrix} of Dumas, Pernet, and Sultan~\cite{dumas_pernet_sultan_2017}, with which part~(1) of our \Cref{prop:canonical} coincides.  On the symmetric side, Szechtman~\cite{szechtman_2007} classified symmetric matrices under congruence by triangular groups, and Bagno and Cherniavsky~\cite{bagno_cherniavsky_2012} studied the corresponding rank-control invariants of congruence $B$-orbits over $\mathbb{C}$.  Our \Cref{lem:reduction-sym,prop:canonical} thus recover known canonical forms; we include short elimination-style constructive proofs to keep the paper self-contained and to fix the normalization used in the symmetric slot assignment argument.
@@ -286,7 +291,7 @@ A matrix $L$ is \emph{lower triangular} if $L[i,j] = 0$ for $i < j$, and $U$ is 
 \end{equation}
 where $M_k = M[1:k,1:k]$ and $N_k = N[1:k,1:k]$; if $M$ (resp.\ $N$) is invertible then so is $M_k$ (resp.\ $N_k$), since the leading block of a triangular matrix carries its first $k$ diagonal entries.
 
-Some elementary rank facts, together with the short necessity and transfer arguments, can be found in \Cref{app:standard-proofs}. FIXME: Section Appendix.
+Some elementary rank facts, together with the short necessity and transfer arguments, can be found in \Cref{app:standard-proofs}.
 
 \section{Main results}\label{sec:results}
 
@@ -376,24 +381,16 @@ The next corollaries show that the criteria specialize to the familiar statement
 A key step in the sufficiency proof is a reduction of $A$ to a sparse normal form by invertible triangular transformations.  In the unsymmetric case the normal form is a matching between row and column indices.  In the symmetric real case, we use a triangular congruence to normalize every two-index block to one fixed representative.
 
 \begin{definition}[matching matrix]\label{def:matching}
-  A \emph{matching matrix} $\Pi \in \mathbb{R}^{n \by n}$ is a partial
-  permutation matrix: a $0$--$1$ matrix with at most one $1$ in each row and
-  in each column.  Equivalently, $\Pi = D\Pi_0$ for a permutation matrix
-  $\Pi_0$ and a $0$--$1$ diagonal matrix $D$ --- a permutation matrix with
-  some rows zeroed out (or $\Pi = \Pi_0 D'$, with some columns zeroed out).
-  We write
+  A \emph{matching matrix} $\Pi \in \mathbb{R}^{n \by n}$ is a partial permutation matrix: a $0$--$1$ matrix with at most one $1$ in each row and in each column.  Equivalently, $\Pi = D\Pi_0$ for a permutation matrix $\Pi_0$ and a $0$--$1$ diagonal matrix $D$, i.e., a permutation matrix with some rows zeroed out (or $\Pi = \Pi_0 D'$, with some columns zeroed out). We write
   \[
     \M = \M(\Pi) := \{(i,j) : \Pi[i,j] = 1\},
     \qquad\text{so that}\qquad
     \Pi = \sum_{(i,j) \in \M} e_i e_j^T,
   \]
-  and call the elements of $\M$ \emph{matched pairs}; the defining property
-  says precisely that no two matched pairs share a row index $i$, and no two
-  share a column index $j$.
+  and call the elements of $\M$ \emph{matched pairs}; the defining property says precisely that no two matched pairs share a row index $i$, and no two share a column index $j$.
 \end{definition}
 
-Note that diagonal pairs $(t,t)$ --- the nonzero diagonal entries of $\Pi$
---- are allowed; they will correspond to the classical nonzero pivots.
+Note that diagonal pairs $(t,t)$ --- the nonzero diagonal entries of $\Pi$ --- are allowed; they will correspond to the classical nonzero pivots.
 
 \begin{definition}[signed matching matrix]\label{def:sym-matching}
   A \emph{signed matching matrix} is a symmetric matrix
@@ -1209,7 +1206,7 @@ Several directions remain open.
 \appendix
 
 % ===== Inlined from sections/appendix_standard.tex =====
-\section{Standard rank facts, necessity, and transfer}\label{app:standard-proofs}
+\section{Standard rank facts, necessity, and transfer}\label[appendix]{app:standard-proofs}
 
 \begin{lemma}[Sylvester's rank inequality]\label{lem:sylvester}
   Let $B \in \mathbb{R}^{m \by k}$ and $C \in \mathbb{R}^{k \by p}$.  Then
@@ -1358,7 +1355,7 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
 % ===== End inlined from sections/appendix_standard.tex =====
 
 % ===== Inlined from sections/appendix_normalforms.tex =====
-\section{Proofs for the matching normal forms}\label{app:normalform-proofs}
+\section{Proofs for the matching normal forms}\label[appendix]{app:normalform-proofs}
 
 \begin{proof}[Proof of \Cref{lem:reduction-lu}]
   We induct on the leading order $k$.  For $k=1$, take $\Pi=(0)$ if
@@ -1567,7 +1564,7 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
 % ===== End inlined from sections/appendix_normalforms.tex =====
 
 % ===== Inlined from sections/appendix_examples.tex =====
-\section{Additional example}\label{app:examples}
+\section{Additional example}\label[appendix]{app:examples}
 
 \begin{example}[a genuine crossing]\label{ex:crossing}
   Let $n = 4$ and
