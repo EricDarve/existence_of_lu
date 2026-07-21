@@ -429,19 +429,15 @@ The proofs are standard elimination arguments closely related to the Bruhat and 
 
 \subsection{Canonicity}
 
-The matching produced by the reductions is not an artifact of the construction:
-its pattern is determined by the rank profile of $A$.  One caveat is needed in
-the symmetric case: the diagonal entries of $P$ carry signs $\gamma_t = \pm 1$,
-and ranks alone cannot see signs.  The signs are nevertheless also invariants
-of $A$ --- determined by the \emph{inertias} of its leading principal blocks,
-as part (2) below makes precise.  For $1 \le i, j \le n$ let
+The matching produced by the reductions is not an artifact of the construction: its pattern is determined by the rank profile of $A$.  In the symmetric case, the diagonal entries of $P$ carry signs $\gamma_t = \pm 1$. These are also invariants of $A$ and determined by the inertias of its leading principal blocks (see \cref{part2} below).
+
+For $1 \le i, j \le n$ let
 \[
   r_{ij}(A) \coloneq \rk\bigl(A[1:i,1:j]\bigr),
   \qquad
   \Delta_{ij}(A) \coloneq r_{ij} - r_{i-1,j} - r_{i,j-1} + r_{i-1,j-1},
 \]
-with the convention $r_{0j} = r_{i0} = 0$.  We call $(i,j)$ a
-\emph{rank jump} of $A$ if $\Delta_{ij}(A) = 1$.
+with the convention $r_{0j} = r_{i0} = 0$.  We call $(i,j)$ a \emph{rank jump} of $A$ if $\Delta_{ij}(A) = 1$.
 
 \begin{proposition}[canonicity]\label{prop:canonical}
   \begin{enumerate}
@@ -451,7 +447,7 @@ with the convention $r_{0j} = r_{i0} = 0$.  We call $(i,j)$ a
         \quad \text{for all } i, j,
       \]
       and consequently $\M(\Pi)$ is exactly the set of rank jumps of $A$.
-    \item If $A = A^T = M P M^T$ as in \Cref{lem:reduction-sym}, then the
+    \item \label{part2} If $A = A^T = M P M^T$ as in \Cref{lem:reduction-sym}, then the
       singletons of $P$ are the diagonal rank jumps
       $\{t \colon \Delta_{tt}(A) = 1\}$ and the pairs of $P$ are the unordered
       off-diagonal rank jumps
