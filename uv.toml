@@ -1,0 +1,3 @@
+# Keep uv's disposable cache inside the workspace.  The Codex sandbox permits
+# writes here but makes the user-wide cache under ~/.cache read-only.
+cache-dir = "/Users/darve/git_repositories/existence_of_lu/.uv-cache"

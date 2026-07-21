@@ -1,6 +1,7 @@
 *ignore
 build
 __pycache__
+.uv-cache/
 elsarticle
 .omx
 
