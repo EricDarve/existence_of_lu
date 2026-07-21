@@ -384,7 +384,7 @@ A key step in the sufficiency proof is a reduction of $A$ to a sparse normal for
 \begin{definition}[matching matrix]\label{def:matching}
   A \emph{matching matrix} $\Pi \in \mathbb{R}^{n \by n}$ is a partial permutation matrix: a $0$--$1$ matrix with at most one $1$ in each row and in each column.  Equivalently, $\Pi = D\Pi_0$ for a permutation matrix $\Pi_0$ and a $0$--$1$ diagonal matrix $D$, i.e., a permutation matrix with some rows zeroed out (or $\Pi = \Pi_0 D'$, with some columns zeroed out). We write
   \[
-    \M = \M(\Pi) \coloneq \{(i,j) : \Pi[i,j] = 1\},
+    \M = \M(\Pi) \coloneq \{(i,j) \colon \Pi[i,j] = 1\},
     \qquad\text{so that}\qquad
     \Pi = \sum_{(i,j) \in \M} e_i e_j^T,
   \]
@@ -472,15 +472,15 @@ with the convention $r_{0j} = r_{i0} = 0$.  We call $(i,j)$ a
   \begin{enumerate}
     \item If $A = M \Pi N$ as in \Cref{lem:reduction-lu}, then
       \[
-        r_{ij}(A) = \#\{(i',j') \in \M(\Pi) : i' \le i,\ j' \le j\}
+        r_{ij}(A) = \#\{(i',j') \in \M(\Pi) \colon i' \le i,\ j' \le j\}
         \quad \text{for all } i, j,
       \]
       and consequently $\M(\Pi)$ is exactly the set of rank jumps of $A$.
     \item If $A = A^T = M P M^T$ as in \Cref{lem:reduction-sym}, then the
       singletons of $P$ are the diagonal rank jumps
-      $\{t : \Delta_{tt}(A) = 1\}$ and the pairs of $P$ are the unordered
+      $\{t \colon \Delta_{tt}(A) = 1\}$ and the pairs of $P$ are the unordered
       off-diagonal rank jumps
-      $\{\{i,j\} : i \neq j,\ \Delta_{ij}(A) = 1\}$.  Moreover, write
+      $\{\{i,j\} \colon i \neq j,\ \Delta_{ij}(A) = 1\}$.  Moreover, write
       $n_+(B)$ and $n_-(B)$ for the numbers of positive and negative
       eigenvalues of a symmetric matrix $B$, and, as the block grows from
       order $t-1$ to order $t$, set
@@ -517,11 +517,11 @@ prefixes of the index set.
 Let $\Pi$ be a matching matrix with matching $\M$.  Relative to the cut
 after index $k$, classify the matched pairs and define
 \begin{align*}
-  \iota_k &\coloneq \#\{(i,j) \in \M : i \le k \text{ and } j \le k\}
+  \iota_k &\coloneq \#\{(i,j) \in \M \colon i \le k \text{ and } j \le k\}
   && \text{(pairs inside the leading block)},\\
-  \chi^R_k &\coloneq \#\{(i,j) \in \M : i \le k < j\}
+  \chi^R_k &\coloneq \#\{(i,j) \in \M \colon i \le k < j\}
   && \text{(pairs crossing the cut row-first)},\\
-  \chi^C_k &\coloneq \#\{(i,j) \in \M : j \le k < i\}
+  \chi^C_k &\coloneq \#\{(i,j) \in \M \colon j \le k < i\}
   && \text{(pairs crossing the cut column-first)},\\
   r^0_k &\coloneq \#\{\text{zero rows} \le k\},
   \qquad
@@ -567,7 +567,7 @@ after index $k$, classify the matched pairs and define
     \qquad
     \text{(b) } \chi^C_k \le r^0_k,
     \qquad
-    \text{(c) } \nu_k \coloneq \#\{(i,j) \in \M : \min(i,j) \le k\} \ \le\ k .
+    \text{(c) } \nu_k \coloneq \#\{(i,j) \in \M \colon \min(i,j) \le k\} \ \le\ k .
   \]
 \end{lemma}
 
@@ -590,7 +590,7 @@ Let $P$ be a signed matching matrix.  Define
 \[
   \zeta_k \coloneq \#\{\text{isolated zero indices} \le k\},
   \qquad
-  \chi_k \coloneq \#\{\text{pairs } (i,j) \text{ of } P : i \le k < j\} .
+  \chi_k \coloneq \#\{\text{pairs } (i,j) \text{ of } P \colon i \le k < j\} .
 \]
 
 \begin{lemma}[nullities of a signed matching matrix]\label{lem:null-sym-matching}
@@ -681,7 +681,7 @@ enough of them.
   $\nu_k \le k$ for all $k$ (\Cref{lem:comb-lu}(c)).  Then there is an
   injection
   \begin{equation}\label{eq:slot-injection}
-    \sigma : \M(\Pi) \hookrightarrow \{1, \ldots, n\},
+    \sigma \colon \M(\Pi) \hookrightarrow \{1, \ldots, n\},
     \qquad
     \sigma(i,j) \le \min(i,j) \quad \text{for every } (i,j) \in \M(\Pi),
   \end{equation}
@@ -880,9 +880,9 @@ factorization.
       unpivoted factorization $A = \widetilde L \widetilde U$ and every
       $k$,
       \begin{align*}
-        \#\{t : \widetilde L[1:k, t] \neq 0\} &\ \ge\ \rk(A[1:k,:])
+        \#\{t \colon \widetilde L[1:k, t] \neq 0\} &\ \ge\ \rk(A[1:k,:])
         = k - r^0_k,\\
-        \#\{t : \widetilde U[t, 1:k] \neq 0\} &\ \ge\ \rk(A[:,1:k])
+        \#\{t \colon \widetilde U[t, 1:k] \neq 0\} &\ \ge\ \rk(A[:,1:k])
         = k - c^0_k,
       \end{align*}
       and the sorted factorization attains both bounds for every $k$
@@ -915,7 +915,7 @@ factorization.
   $A[1:k,:] = \widetilde L[1:k,:] \, \widetilde U$,
   \[
     \rk(A[1:k,:]) \le \rk(\widetilde L[1:k,:])
-    \le \#\{t : \widetilde L[1:k,t] \neq 0\},
+    \le \#\{t \colon \widetilde L[1:k,t] \neq 0\},
   \]
   and dually for $\widetilde U$.  The sorted factorization attains them:
   $L[1:k, t] \neq 0$ if and only if $i_t \le k$, and the number of matched
@@ -996,7 +996,7 @@ $k = \zeta_k + s_k + 2\iota_k + \chi_k$.
       $i$, with $D$-entries $+1$ and $-1$;
     \item for every $k$,
       \begin{equation}\label{eq:ldlt-envelope}
-        \#\{t : L[1:k, t] \neq 0\}
+        \#\{t \colon L[1:k, t] \neq 0\}
         = s_k + 2\iota_k + 2\chi_k
         = k - (\zeta_k - \chi_k) .
       \end{equation}
@@ -1036,7 +1036,7 @@ unavoidable: crossing pairs genuinely cost two columns each at the cut.
   Let $A = A^T = LDL^T$ be any unpivoted factorization.  Then for every
   $k$,
   \[
-    \#\{t : L[1:k, t] \neq 0\} \ \ge\ s_k + 2\iota_k + 2\chi_k
+    \#\{t \colon L[1:k, t] \neq 0\} \ \ge\ s_k + 2\iota_k + 2\chi_k
     = k - (\zeta_k - \chi_k),
   \]
   so the factorization of \Cref{thm:ldlt-rr} is simultaneously optimal for
@@ -1047,9 +1047,9 @@ unavoidable: crossing pairs genuinely cost two columns each at the cut.
 
 \begin{proof}
   Discarding columns with $D[t,t] = 0$ leaves $A$ unchanged and can only
-  decrease the count $\#\{t : L[1:k,t] \neq 0\}$, so a lower bound proved
+  decrease the count $\#\{t \colon L[1:k,t] \neq 0\}$, so a lower bound proved
   after discarding them holds a fortiori for the original; assume then that
-  all diagonal weights of the retained columns are nonzero.  Fix $k$, let $C = \{t : L[1:k,t] \neq 0\}$, $c = |C|$, and let
+  all diagonal weights of the retained columns are nonzero.  Fix $k$, let $C = \{t \colon L[1:k,t] \neq 0\}$, $c = |C|$, and let
   $X = L[1:k, C]$ and $X' = L[:, C]$.  Columns outside $C$ contribute
   nothing to the first $k$ rows, so
   \[
@@ -1550,8 +1550,8 @@ Combining \Cref{lem:transfer} with the reductions of \Cref{sec:normalforms}
   inertia for every $k$.  Blockwise,
   \[
     n_+\bigl(P[1:k,1:k]\bigr)
-    = \#\{\text{singletons } t \le k : \gamma_t = +1\}
-    + \#\{\text{pairs } (i,j) : j \le k\},
+    = \#\{\text{singletons } t \le k \colon \gamma_t = +1\}
+    + \#\{\text{pairs } (i,j) \colon j \le k\},
   \]
   and symmetrically for $n_-$ (a completed pair block has eigenvalues
     $\pm 1$; crossing pairs and isolated zeros contribute only to the
