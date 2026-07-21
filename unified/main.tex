@@ -478,14 +478,12 @@ This motivates the following terminology: $(i,j)$ is a \emph{rank jump} of $A$ i
 
 \section{The criteria on the normal forms are prefix conditions}\label{sec:combinatorics}
 
-On a matching matrix, all three nullities entering the criteria are counts
-of simple combinatorial objects, and the criteria collapse to conditions on
-prefixes of the index set.
+For a matching matrix, all three nullities in the criteria are counts of combinatorial objects, and the criteria can be formulated as conditions on prefixes of the index set.
 
 \subsection{The unsymmetric normal form}
 
 Let $\Pi$ be a matching matrix with matching $\M$.  Relative to the cut
-after index $k$, classify the matched pairs and define
+after index $k$, we classify the matched pairs and define
 \begin{align*}
   \iota_k &\coloneq \#\{(i,j) \in \M \colon i \le k \text{ and } j \le k\}
   && \text{(pairs inside the leading block)},\\
@@ -493,9 +491,8 @@ after index $k$, classify the matched pairs and define
   && \text{(pairs crossing the cut row-first)},\\
   \chi^C_k &\coloneq \#\{(i,j) \in \M \colon j \le k < i\}
   && \text{(pairs crossing the cut column-first)},\\
-  r^0_k &\coloneq \#\{\text{zero rows} \le k\},
-  \qquad
-  c^0_k \coloneq \#\{\text{zero columns} \le k\}. \hspace{-12em}
+  r^0_k &\coloneq \#\{\text{zero rows} \le k\},\\
+  c^0_k &\coloneq \#\{\text{zero columns} \le k\}.
 \end{align*}
 
 \begin{lemma}[nullities of a matching matrix]\label{lem:null-matching}
@@ -505,28 +502,16 @@ after index $k$, classify the matched pairs and define
     \nl(\Pi[:,1:k]) &= c^0_k,\notag\\
     \nl({\Pi[1:k,:]}^T) &= r^0_k .\notag
   \end{align}
-  In particular the \emph{bookkeeping identity}
-  $r^0_k + \chi^R_k = c^0_k + \chi^C_k$ holds.
 \end{lemma}
 
 \begin{proof}
-  The nonzero columns of the $n \by k$ block $\Pi[:,1:k]$ are the vectors
-  $e_i$ over the matched pairs with $j \le k$; they occupy distinct
-  rows and are therefore linearly independent, while the remaining $c^0_k$
-  columns vanish.  Hence $\rk(\Pi[:,1:k]) = k - c^0_k$, giving the second
-  formula, and the third follows by applying the same argument to $\Pi^T$,
-  whose matching is the transpose of $\M$.
+  The nonzero columns of the $n \by k$ block $\Pi[:,1:k]$ are the vectors $e_i$ over the matched pairs with $j \le k$; they occupy distinct rows and are therefore linearly independent, while the remaining $c^0_k$ columns vanish.  Hence $\rk(\Pi[:,1:k]) = k - c^0_k$, giving the second formula, and the third follows by applying the same argument to $\Pi^T$, whose matching is the transpose of $\M$.
 
-  The leading block $\Pi[1:k,1:k]$ is itself a matching matrix whose
-  matched pairs are the $\iota_k$ pairs inside the block, so
-  $\rk(\Pi[1:k,1:k]) = \iota_k$ (as in \Cref{prop:canonical}, its nonzero
-  columns are independent).  Classify the $k$ row indices $\le k$: each is
-  a zero row, or belongs to a pair with $j \le k$, or to a pair with
-  $j > k$; the classes are disjoint and exhaust, so
-  $k = r^0_k + \iota_k + \chi^R_k$ and
-  $\nl(\Pi[1:k,1:k]) = k - \iota_k = r^0_k + \chi^R_k$.  Classifying the
-  column indices instead gives $k = c^0_k + \iota_k + \chi^C_k$ and the
-  alternative expression, whence the bookkeeping identity.
+  The leading block $\Pi[1:k,1:k]$ is itself a matching matrix whose matched pairs are the $\iota_k$ pairs inside the block, so $\rk(\Pi[1:k,1:k]) = \iota_k$ (its nonzero columns are independent).  Classify the $k$ row indices $\le k$: each is a zero row, or belongs to a pair with $j \le k$, or to a pair with $j > k$. The classes are disjoint and exhaust, so $k = r^0_k + \iota_k + \chi^R_k$ and
+  $$
+  \nl(\Pi[1:k,1:k]) = k - \iota_k = r^0_k + \chi^R_k.
+  $$
+  Classifying the column indices instead gives $k = c^0_k + \iota_k + \chi^C_k$, which proves the first equality.
 \end{proof}
 
 \begin{lemma}[prefix form of the LU criterion]\label{lem:comb-lu}
@@ -545,8 +530,7 @@ after index $k$, classify the matched pairs and define
   Substituting \cref{eq:null-matching} into \cref{eq:lu-crit}: using the
   first expression for the leading nullity,
   $r^0_k + \chi^R_k \le c^0_k + r^0_k$, i.e.\ (a); using the second,
-  $c^0_k + \chi^C_k \le c^0_k + r^0_k$, i.e.\ (b).  By the bookkeeping
-  identity, (a) and (b) are equivalent (they have equal slack).  For (c):
+  $c^0_k + \chi^C_k \le c^0_k + r^0_k$, i.e.\ (b).  By \Cref{lem:null-matching}, (a) and (b) are equivalent (they have equal slack).  For (c):
   a pair has $\min(i,j) \le k$ iff it is counted by $\iota_k$, $\chi^R_k$,
   or $\chi^C_k$, so $\nu_k = \iota_k + \chi^R_k + \chi^C_k$; substituting
   $\iota_k = k - r^0_k - \chi^R_k$ from the proof of
