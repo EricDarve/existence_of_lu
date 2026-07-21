@@ -240,160 +240,37 @@ Necessity is a short rank argument. The normal-form reductions and invariance fa
 \section{Related work}\label{sec:related}
 
 \paragraph{Unpivoted LU for nonsingular matrices}
-The classical existence theory assumes invertibility.  If $A$ is nonsingular,
-then $A = LU$ exists if and only if all leading principal submatrices are
-nonsingular, in which case $L$ and $U$ are invertible and the factorization
-with unit lower triangular $L$ is unique; see
-Higham~\cite{higham_gaussian_2011} for a survey and
-\cite{golub_matrix_2013} for textbook treatments.  Higham notes explicitly
-that when a proper leading principal submatrix is singular a factorization
-"may exist, but if so it is not unique," without characterizing when.  Lau
-and Markham~\cite{lau_markham_1979} and Johnson, Olesky, and van den
-Driessche~\cite{johnson_inherited_1989} showed that a possibly singular $A$
-has a \emph{unique} unit LU factorization precisely when the $n-1$
-\emph{proper} leading principal minors are nonzero; the analysis
-of~\cite{johnson_inherited_1989} (inheritance of entries, fill-in) assumes
-this condition throughout and does not address existence when it fails.
+The classical existence theory assumes invertibility.  If $A$ is nonsingular, then $A = LU$ exists if and only if all leading principal submatrices are nonsingular, in which case $L$ and $U$ are invertible and the factorization with unit lower triangular $L$ is unique; see Higham~\cite{higham_gaussian_2011} for a survey and \cite{golub_matrix_2013} for textbook treatments.  Lau and Markham~\cite{lau_markham_1979} and Johnson, Olesky, and van den Driessche~\cite{johnson_inherited_1989} showed that a possibly singular $A$ has a \emph{unique} unit LU factorization precisely when the $n-1$ \emph{proper} leading principal minors are nonzero.
 
 \paragraph{Unpivoted LU for arbitrary matrices}
-The existence question for arbitrary, possibly singular $A$ was settled by
-Okunev and Johnson.  Their result, circulated as a 1997 manuscript and posted
-as~\cite{okunev_johnson_2005}, recently appeared
-as~\cite{johnson_okunev_2025}: over a field, $A$ admits $A = LU$, with no
-invertibility requirement on the factors, if and only if
+The existence question for arbitrary, possibly singular $A$ was established by Okunev and Johnson\cite{okunev_johnson_2005,johnson_okunev_2025}: over a field, $A$ admits $A = LU$, with no invertibility requirement on the factors, if and only if
 \begin{equation}\label{eq:oj}
   \rk(A[1:k,1:k]) + k \ \ge\ \rk(A[1:k,:]) + \rk(A[:,1:k]),
   \qquad k = 1, \ldots, n .
 \end{equation}
-Their sufficiency proof is an induction on "factor complements"
-(generalized Schur complements), choosing the first column of $L$ and the
-first row of $U$ case by case; the published version also develops
-"near-LU" factorizations with almost-triangular factors when \cref{eq:oj}
-fails, and re-derives $PLU$ and three-factor decompositions.
-Darve~\cite{darve_lu_2026} restates \cref{eq:oj} in the nullity form used in
-this paper, gives a different constructive proof based on \emph{restricted
-pivoting} (only rows or columns that are zero in the active Schur complement
-  are moved, so that undoing the internal permutations preserves
-triangularity), and develops rank-revealing structure, tight sparsity bounds
-for the factors, and criteria for one-sided unit-triangular factors.  The
-present paper gives a third, normal-form proof of the same criterion, whose
-main advantage is that it extends verbatim to the symmetric $LDL^T$ problem.
+Their sufficiency proof is an induction on "factor complements" (generalized Schur complements), choosing the first column of $L$ and the first row of $U$ case by case. \cite{johnson_okunev_2025} also develops "near-LU" factorizations with almost-triangular factors when \cref{eq:oj} fails, and re-derives $PLU$ and three-factor decompositions. Darve~\cite{darve_lu_2026} restates \cref{eq:oj} in the nullity form used in this paper, gives a different constructive proof based on \emph{restricted pivoting} (only rows or columns that are zero in the active Schur complement are moved, so that undoing the internal permutations preserves triangularity), and develops rank-revealing structure, tight sparsity bounds for the factors, and criteria for one-sided unit-triangular factors.  The present paper gives a third, normal-form proof of the same criterion, whose main advantage is that it extends to the symmetric $LDL^T$ problem.
 
-Dopico, Johnson, and Molera~\cite{dopico_multiple_2006} study the related
-question in which $L$ is required to be unit lower triangular (hence
-invertible): existence is characterized through a canonical form of $A$
-under left multiplication by unit lower triangular matrices (the
-rank-revealing minimal canonical form), and, importantly, all LU
-factorizations of a singular matrix are parametrized, quantifying their
-non-uniqueness.  Our normal form differs in that the reduction acts on both
-sides (or by congruence), and the middle factor --- not an upper triangular
-matrix --- carries the combinatorial obstruction.
-Nagarajan, Devasahayam, and Soundararajan~\cite{nagarajan_products_1999}
-showed that \emph{every} square matrix over a field is a product of three
-triangular matrices $LUM$; the two-factor existence question is exactly the
-question of when the third factor can be dispensed with.
-Jeffrey~\cite{jeffrey_lu_2010} standardizes full-rank LU factorings of
-rectangular and rank-deficient matrices in the form $P_r L D^{-1} U P_c$;
-since row and column permutations are built in, existence is unconditional
-and the unpivoted question does not arise.  For the structured class of
-M-matrices, McDonald and Schneider~\cite{mcdonald_schneider_1998} gave
-graph-theoretic necessary and sufficient conditions for a singular M-matrix
-to admit an unpivoted (block) LU factorization into possibly singular
-M-matrix factors.  Rank-revealing LU with pivoting chosen for numerical
-size, rather than algebraic existence, is developed by Miranian and
-Gu~\cite{miranian_gu_2003}, and the conditioning of the triangular factors
-of pivoted factorizations is analyzed by
-Stewart~\cite{stewart_triangular_1997}.  General surveys of matrix
-factorizations include~\cite{lu_numerical_2021}.
+Dopico, Johnson, and Molera~\cite{dopico_multiple_2006} study the related question in which $L$ is required to be unit lower triangular (hence invertible): existence is characterized through a canonical form of $A$ under left multiplication by unit lower triangular matrices (the rank-revealing minimal canonical form), and, importantly, all LU factorizations of a singular matrix are parametrized, quantifying their non-uniqueness.  Our normal form differs in that the reduction acts on both sides (or by congruence), and the middle factor carries the combinatorial obstruction. Nagarajan, Devasahayam, and Soundararajan~\cite{nagarajan_products_1999} showed that \emph{every} square matrix over a field is a product of three triangular matrices $LUM$; the two-factor existence question is exactly the question of when the third factor can be dispensed with. Jeffrey~\cite{jeffrey_lu_2010} standardizes full-rank LU factorings of rectangular and rank-deficient matrices in the form $P_r L D^{-1} U P_c$, using row and column permutations.  For the structured class of M-matrices, McDonald and Schneider~\cite{mcdonald_schneider_1998} gave graph-theoretic necessary and sufficient conditions for a singular M-matrix to admit an unpivoted (block) LU factorization into possibly singular M-matrix factors.  Rank-revealing LU with pivoting chosen for numerical size, rather than algebraic existence, is developed by Miranian and Gu~\cite{miranian_gu_2003}, and the conditioning of the triangular factors of pivoted factorizations is analyzed by Stewart~\cite{stewart_triangular_1997}.  General surveys of matrix factorizations include~\cite{lu_numerical_2021}.
 
 \paragraph{Symmetric factorizations}
-For symmetric positive semidefinite matrices over $\mathbb{R}$, an unpivoted
-Cholesky-type factorization always exists even in the singular case: $A =
-LL^T$ with $L$ lower triangular, possibly with zero diagonal entries; see
-Higham~\cite{higham_cholesky_1990} for a detailed treatment.  Our symmetric
-criterion is consistent with this: positive semidefiniteness forces
-$\nl(A[1:k,1:k]) = \nl(A[:,1:k])$ for all $k$, so the criterion of
-\Cref{thm:ldlt} holds automatically (\Cref{cor:psd}).  For symmetric
-\emph{indefinite} matrices the classical approach abandons the diagonal $D$:
-with symmetric pivoting, $PAP^T = LDL^T$ always exists when $D$ is allowed
-to be block diagonal with $1 \by 1$ and $2 \by 2$ blocks, as introduced by
-Bunch and Parlett~\cite{bunch_parlett_1971} and made efficient by Bunch and
-Kaufman~\cite{bunch_kaufman_1977}; a rank-profile-revealing variant over
-arbitrary fields, still with symmetric pivoting and with $2 \by 2$
-antidiagonal blocks in $D$, is given by Dumas and
-Pernet~\cite{dumas_pernet_2018}.  Closest in spirit to our symmetric
-reduction is the elegant paper of Van Dooren and
-Strang~\cite{vandooren_strang_2014}, which factors a real symmetric matrix
-as $A = L P L^T$ \emph{without pivoting}, where $P$ is a signed-matching
-middle factor built from diagonal entries $0, \pm 1$ and symmetric exchange
-blocks; our \Cref{lem:reduction-sym} can be read as a real normalized version of their reduction.  Neither
-\cite{vandooren_strang_2014} nor \cite{dumas_pernet_2018} addresses when
-the middle factor can be made \emph{truly diagonal}, which is exactly the
-step from $A = MPM^T$ to $A = LDL^T$ taken in
-\Cref{sec:combinatorics,sec:explicit}.  The $2 \by 2$ blocks of
-Bunch--Parlett reappear in our theory in a different role: they are the
-irreducible blocks of the signed matching normal form, i.e., the
-obstruction that must be routed through earlier zero indices rather than a
-device enabled by pivoting.  We are not aware of a previously published
-necessary and sufficient condition for the unpivoted diagonal-$D$ problem
-with possibly singular $L$.
+For symmetric positive semidefinite matrices over $\mathbb{R}$, an unpivoted Cholesky-type factorization always exists even in the singular case: $A = LL^T$ with $L$ lower triangular, possibly with zero diagonal entries; see Higham~\cite{higham_cholesky_1990} for a detailed treatment.  Our symmetric criterion is consistent with this: positive semidefiniteness forces $\nl(A[1:k,1:k]) = \nl(A[:,1:k])$ for all $k$, so the criterion of \Cref{thm:ldlt} holds automatically (\Cref{cor:psd}).  For symmetric \emph{indefinite} matrices the classical approach relaxes the diagonal $D$: with symmetric pivoting, $PAP^T = LDL^T$ always exists when $D$ is allowed to be block diagonal with $1 \by 1$ and $2 \by 2$ blocks, as introduced by Bunch and Parlett~\cite{bunch_parlett_1971} and made efficient by Bunch and Kaufman~\cite{bunch_kaufman_1977}; a rank-profile-revealing variant over arbitrary fields, still with symmetric pivoting and with $2 \by 2$ antidiagonal blocks in $D$, is given by Dumas and Pernet~\cite{dumas_pernet_2018}.  Closest in spirit to our symmetric reduction is the paper of Van Dooren and Strang~\cite{vandooren_strang_2014}, which factors a real symmetric matrix as $A = L P L^T$ \emph{without pivoting}, where $P$ is a signed-matching middle factor built from diagonal entries $0, \pm 1$ and symmetric exchange blocks.
+FIXME Our \Cref{lem:reduction-sym} can be read as a real normalized version of their reduction.  Neither \cite{vandooren_strang_2014} nor \cite{dumas_pernet_2018} addresses when the middle factor can be made \emph{truly diagonal}, which is exactly the step from $A = MPM^T$ to $A = LDL^T$ taken in \Cref{sec:combinatorics,sec:explicit}.  The $2 \by 2$ blocks of Bunch--Parlett reappear in our theory in a different role: they are the irreducible blocks of the signed matching normal form, i.e., the obstruction that must be routed through earlier zero indices rather than a device enabled by pivoting.  We are not aware of a previously published necessary and sufficient condition for the unpivoted diagonal-$D$ problem with possibly singular $L$.
 
 \paragraph{Triangular canonical forms and the Bruhat decomposition}
-Our reduction lemma states that every $A$ equals $M \Pi N$ with $M, N$
-invertible triangular and $\Pi$ a matching matrix, and that the matching is
-an invariant of $A$.  For invertible $A$ this is a form of the Bruhat
-decomposition $A = LPU$, whose permutation $P$ is uniquely determined by
-$A$; see Elsner~\cite{elsner_bruhat_1979} and
-Strang~\cite{strang_pnas_2010,strang_lpu_2012} for elimination-based
-accounts, and~\cite{dopico_multiple_2006} for the related one-sided
-canonical form.  For singular matrices the permutation becomes a partial
-permutation: this is the generalized Bruhat (or LEU)
-decomposition~\cite{malaschonok_2010}, and the invariant matching is the
-\emph{rank profile matrix} of Dumas, Pernet, and
-Sultan~\cite{dumas_pernet_sultan_2017}, with which part~(1) of our
-\Cref{prop:canonical} coincides.  On the symmetric side,
-Szechtman~\cite{szechtman_2007} classified symmetric matrices under
-congruence by triangular groups, and Bagno and Cherniavsky~\cite{bagno_cherniavsky_2012}
-studied the corresponding rank-control invariants of congruence $B$-orbits
-over $\mathbb{C}$.  Our
-\Cref{lem:reduction-sym,prop:canonical} thus recover known canonical forms;
-we include short elimination-style constructive proofs to keep the paper
-self-contained and to fix the normalization used in the symmetric slot assignment
-argument.
+Our reduction lemma states that every $A$ equals $M \Pi N$ with $M$, $N$ invertible triangular and $\Pi$ a matching matrix, and that the matching is an invariant of $A$.  For invertible $A$ this is a form of the Bruhat decomposition $A = LPU$, whose permutation $P$ is uniquely determined by $A$; see Elsner~\cite{elsner_bruhat_1979} and Strang~\cite{strang_pnas_2010,strang_lpu_2012} for elimination-based accounts, and~\cite{dopico_multiple_2006} for the related one-sided canonical form.  For singular matrices the permutation becomes a partial permutation: this is the generalized Bruhat (or LEU) decomposition~\cite{malaschonok_2010}, and the invariant matching is the \emph{rank profile matrix} of Dumas, Pernet, and Sultan~\cite{dumas_pernet_sultan_2017}, with which part~(1) of our \Cref{prop:canonical} coincides.  On the symmetric side, Szechtman~\cite{szechtman_2007} classified symmetric matrices under congruence by triangular groups, and Bagno and Cherniavsky~\cite{bagno_cherniavsky_2012} studied the corresponding rank-control invariants of congruence $B$-orbits over $\mathbb{C}$.  Our \Cref{lem:reduction-sym,prop:canonical} thus recover known canonical forms; we include short elimination-style constructive proofs to keep the paper self-contained and to fix the normalization used in the symmetric slot assignment argument.
 
-\paragraph{Positioning}
-In summary: the unsymmetric criterion in \Cref{thm:lu} is due to Okunev and
-Johnson~\cite{okunev_johnson_2005,johnson_okunev_2025}, with alternative
-proofs and structural refinements in~\cite{darve_lu_2026}; the triangular
-canonical forms we use connect to the generalized Bruhat decomposition
-\cite{elsner_bruhat_1979,malaschonok_2010,dumas_pernet_sultan_2017} and, in
-the symmetric case, to Van Dooren--Strang~\cite{vandooren_strang_2014} and
-Szechtman~\cite{szechtman_2007}.  The contributions of the present paper
-are the unified normal-form route to \emph{existence} theorems, the
-symmetric $LDL^T$ criterion (\Cref{thm:ldlt}) together with the equivalence
-of $LU$ and $LDL^T$ existence for symmetric matrices
-(\Cref{cor:sym-lu-ldlt}), the prefix-condition combinatorics and slot-assignment
-constructions of \Cref{sec:combinatorics,sec:explicit}.
-% ===== End inlined from sections/related.tex =====
+\paragraph{Positioning and summary}
+The unsymmetric criterion in \Cref{thm:lu} is due to Okunev and Johnson~\cite{okunev_johnson_2005,johnson_okunev_2025}, with alternative proofs and structural refinements in~\cite{darve_lu_2026}. The triangular canonical forms we use connect to the generalized Bruhat decomposition \cite{elsner_bruhat_1979,malaschonok_2010,dumas_pernet_sultan_2017} and, in the symmetric case, to Van Dooren--Strang~\cite{vandooren_strang_2014} and Szechtman~\cite{szechtman_2007}.  The contributions of the present paper are the unified normal-form route to \emph{existence} theorems, the symmetric $LDL^T$ criterion (\Cref{thm:ldlt}) together with the equivalence of $LU$ and $LDL^T$ existence for symmetric matrices (\Cref{cor:sym-lu-ldlt}), the prefix-condition combinatorics and slot-assignment constructions of \Cref{sec:combinatorics,sec:explicit}.
 
-% ===== Inlined from sections/notation.tex =====
 \section{Notation}\label{sec:notation}
 
-Throughout, matrices have real entries.  We use the slicing notation standard in
-numerical linear algebra~\cite{golub_matrix_2013}: $A[i:j, k:l]$ is the
-submatrix of $A$ with rows $i$ through $j$ and columns $k$ through $l$; a bare
-colon denotes the full range, so $A[:,1:k]$ is the block of the first $k$
-columns and $A[1:k,:]$ the block of the first $k$ rows.  We write $e_i$ for the
-$i$th standard basis vector, $I_n$ for the identity, and $u^T$ for the
-transpose.
+Throughout, matrices have real entries.  We use the slicing notation standard in numerical linear algebra~\cite{golub_matrix_2013}: $A[i:j, k:l]$ is the submatrix of $A$ with rows $i$ through $j$ and columns $k$ through $l$; a bare colon denotes the full range, so $A[:,1:k]$ is the block of the first $k$ columns and $A[1:k,:]$ the block of the first $k$ rows.  We write $e_i$ for the $i$th standard basis vector, $I_n$ for the identity, and $u^T$ for the transpose.
 
 For an $m \by p$ matrix $X$, $\rk(X)$ is its rank and
 \[
   \nl(X) = p - \rk(X)
 \]
-is the dimension of its \emph{right} null space.  In particular, for the three
-blocks entering our criteria --- each of which has exactly $k$ columns --- we
-have
+is the dimension of its right null space.  In particular, for the three blocks entering our criteria --- each of which has exactly $k$ columns --- we have
 \begin{gather*}
   \nl(A[1:k,1:k]) = k - \rk(A[1:k,1:k]),
   \qquad
