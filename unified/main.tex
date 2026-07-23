@@ -622,7 +622,7 @@ nullities for a concrete matching matrix.
     ] at (11,3.5) {%
       \begin{minipage}{7.7cm}
         \textbf{Zero-index counts:}
-        \(r_k^0=1\) and \(c_k^0=2\).
+        $r_k^0=1$ and $c_k^0=2$.
 
         \medskip
         \textbf{Nullities in this example:}\\[-2em]
@@ -746,7 +746,9 @@ This is the key theorem for unsymmetric matrices and the LU factorization.
 \end{proof}
 
 \begin{remark}[rerouting]\label{rem:rerouting}
-  Order the pairs by their bound $m(i,j)$.  A diagonal pair $(t,t)$ can take its own slot $t$; a pair $(i,j)$ with $i < j$ (an "above" pair) would naturally take slot $i$, and a "below" pair $(i,j)$ with $i > j$ slot $j$.  Conflicts occur exactly at \emph{crossing indices} $t$ that are simultaneously the row of an above pair $(t, j)$ and the column of a below pair $(i, t)$: one of the two must be rerouted to an earlier free slot, whose availability is exactly what the prefix condition guarantees --- in the leanest case the free slot comes from an index that is both a zero row and a zero column.  The exchange matrix $A_2$ of \cref{eq:swap-vs-exchange} is the minimal example: index $2$ is crossing, and the pair $(2,3)$ (or $(3,2)$) is rerouted through slot $1$, whose row and column are zero.  This is the precise sense in which zero diagonal entries are a \emph{resource} for unpivoted factorization.
+  Order the pairs by their bound $m(i,j)$.  A diagonal pair $(t,t)$ can take its own slot $t$; a pair $(i,j)$ with $i < j$ (an "above" pair) would naturally take slot $i$, and a "below" pair $(i,j)$ with $i > j$ slot $j$.  Conflicts occur exactly at \emph{crossing indices} $t$ that are simultaneously the row of an above pair $(t, j)$ and the column of a below pair $(i, t)$: one of the two must be rerouted to an earlier free slot, whose availability is exactly what the prefix condition guarantees.  The exchange matrix $A_2$ of \cref{eq:swap-vs-exchange} is the minimal example: index $2$ is crossing, and the pair $(2,3)$ (or $(3,2)$) is rerouted through slot $1$, whose row and column are zero.
+
+  This can be equivalently written as follows. For a pair $(i,j)$, let $t=\sigma(i,j)$. If $i=j$, then $t=i=j$. If $i\ne j$ and $t=\min(i,j)$, then $L[i,i]=1$ when $i<j$, while $U[j,j]=1$ when $j<i$. If $t<\min(i,j)$, then $L[t,t]=U[t,t]=0$. This case corresponds to a rerouting, which occurs when two pairs have the same bound and is guaranteed to be feasible because of the prefix condition \Cref{lem:comb-lu}.
 \end{remark}
 
 \subsection{$LDL^T$ of a signed matching matrix: pair splitting}
