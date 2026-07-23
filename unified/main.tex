@@ -746,9 +746,19 @@ This is the key theorem for unsymmetric matrices and the LU factorization.
 \end{proof}
 
 \begin{remark}[rerouting]\label{rem:rerouting}
-  Order the pairs by their bound $m(i,j)$.  A diagonal pair $(t,t)$ can take its own slot $t$; a pair $(i,j)$ with $i < j$ (an "above" pair) would naturally take slot $i$, and a "below" pair $(i,j)$ with $i > j$ slot $j$.  Conflicts occur exactly at \emph{crossing indices} $t$ that are simultaneously the row of an above pair $(t, j)$ and the column of a below pair $(i, t)$: one of the two must be rerouted to an earlier free slot, whose availability is exactly what the prefix condition guarantees.  The exchange matrix $A_2$ of \cref{eq:swap-vs-exchange} is the minimal example: index $2$ is crossing, and the pair $(2,3)$ (or $(3,2)$) is rerouted through slot $1$, whose row and column are zero.
-
-  This can be equivalently written as follows. For a pair $(i,j)$, let $t=\sigma(i,j)$. If $i=j$, then $t=i=j$. If $i\ne j$ and $t=\min(i,j)$, then $L[i,i]=1$ when $i<j$, while $U[j,j]=1$ when $j<i$. If $t<\min(i,j)$, then $L[t,t]=U[t,t]=0$. This case corresponds to a rerouting, which occurs when two pairs have the same bound and is guaranteed to be feasible because of the prefix condition \Cref{lem:comb-lu}.
+  For the greedy assignment, let $s=\sigma(i,j)$. If $i=j$, then $s=i=j$ and
+  \[
+    (L[s,s],U[s,s])=(1,1).
+  \]
+  If $i\ne j$ and $s=\min(i,j)$, then
+  \[
+    (L[s,s],U[s,s])=
+    \begin{cases}
+      (1,0), & i<j,\\
+      (0,1), & j<i.
+    \end{cases}
+  \]
+  Finally, if $s<\min(i,j)$, then $L[s,s]=U[s,s]=0$; we call this a rerouting. Under the largest-free-slot rule, rerouting occurs exactly when two pairs share the same bound $m$. Since $\Pi$ is a matching matrix, these pairs have the form $(m,q)$ and $(p,m)$ with $p,q>m$; one receives slot $m$, and the other receives an earlier free slot, whose existence is guaranteed by the prefix condition in \Cref{lem:comb-lu}. The exchange matrix $A_2$ of \cref{eq:swap-vs-exchange} is the minimal example: the two pairs have bound $2$, and one is rerouted through slot $1$; index $1$ of $A_2$ has a zero row and column.
 \end{remark}
 
 \subsection{$LDL^T$ of a signed matching matrix: pair splitting}
