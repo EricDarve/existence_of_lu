@@ -642,8 +642,7 @@ nullities for a concrete matching matrix.
 \end{figure}
 
 \begin{lemma}[prefix form of the LU criterion]\label{lem:comb-lu}
-  For a matching matrix $\Pi$, criterion \cref{eq:lu-crit} at index $k$ is
-  equivalent to each of
+  For a matching matrix $\Pi$, criterion \cref{eq:lu-crit} at index $k$ is equivalent to each of
   \[
     \text{(a) } \chi^R_k \le c^0_k,
     \qquad
@@ -666,35 +665,17 @@ Let $P$ be a signed matching matrix.  Define
   \chi_k \coloneq \#\{\text{pairs } (i,j) \text{ of } P \colon i \le k < j\} .
 \]
 
-\begin{lemma}[nullities of a signed matching matrix]\label{lem:null-sym-matching}
+\begin{corollary}[nullities of a signed matching matrix]\label{cor:null-sym-matching}
   For every $k$,
   \[
     \nl(P[1:k,1:k]) = \zeta_k + \chi_k,
     \qquad
     \nl(P[:,1:k]) = \zeta_k .
   \]
-\end{lemma}
+\end{corollary}
 
 \begin{proof}
-  The columns $t \le k$ of the $n \by k$ block $P[:,1:k]$ are: zero for
-  isolated $t$; $\gamma_t e_t$ for singletons; for a pair $(i,j)$ of $P$,
-  column $i$ of $P$ equals $e_j$ and column $j$ equals
-  $e_i$ (whichever of the two has index $\le k$ is included).
-  Distinct blocks occupy disjoint row sets, and within a pair
-  with both $i, j \le k$ the two columns $e_j$ and
-  $e_i$ are independent (restricted to rows $\{i,j\}$
-  they form the pair block, of determinant $-1$).  Hence the nonzero
-  columns of $P[:,1:k]$ are independent, exactly the isolated columns
-  vanish, and $\nl(P[:,1:k]) = \zeta_k$.
-
-  The leading block $P[1:k,1:k]$ is block diagonal (up to symmetric
-  permutation) with blocks: zeros at isolated indices ($\zeta_k$ of them);
-  $(\gamma_t)$ at singletons (rank $1$); full pair blocks when
-  $j \le k$ (rank $2$); and, for each crossing pair $i \le k < j$, the
-  single row/column $i$ whose entries within the block all vanish
-  (its only nonzero sits in column $j > k$) --- contributing one
-  null direction each.  Hence
-  $\nl(P[1:k,1:k]) = \zeta_k + \chi_k$.
+  The matrix $\Pi_P \coloneq (|P[i,j]|)_{i,j}$ is a symmetric matching matrix with $r_k^0=c_k^0=\zeta_k$ and $\chi_k^R=\chi_k^C=\chi_k$, and its relevant nullities equal those of $P$.  The result follows from \Cref{lem:null-matching}.
 \end{proof}
 
 \begin{lemma}[prefix form of the $LDL^T$ criterion]\label{lem:comb-sym}
@@ -706,110 +687,66 @@ Let $P$ be a signed matching matrix.  Define
 \end{lemma}
 
 \begin{proof}
-  Substitute \Cref{lem:null-sym-matching} into \cref{eq:ldlt-crit}:
+  Substitute \Cref{cor:null-sym-matching} into \cref{eq:ldlt-crit}:
   $\zeta_k + \chi_k \le 2 \zeta_k$.
 \end{proof}
 
 \begin{remark}\label{rem:comb-dictionary}
-  Under the rank-profile dictionary of \Cref{prop:canonical} --- a pair $(i,j)$ of
-  $P$ corresponds to the two matched pairs $(i,j)$ and $(j,i)$ of the
-  unsymmetric normal form $\Pi$ of the same symmetric $A$, an isolated zero
-  to a common zero row and column --- we have
-  $\chi^R_k = \chi^C_k = \chi_k$ and $r^0_k = c^0_k = \zeta_k$, and
-  conditions (a), (b) of \Cref{lem:comb-lu} both become
-  \cref{eq:prefix-sym}.  The combinatorial obstruction is thus literally
-  the same in the two problems.
+  From \Cref{lem:comb-lu,lem:comb-sym}, we see that the combinatorial obstruction is fundamentally the same in the two problems.
 \end{remark}
-% ===== End inlined from sections/combinatorics.tex =====
 
-% ===== Inlined from sections/explicit.tex =====
 \section{Explicit factorization of the normal forms}\label{sec:explicit}
 
-We now factor the normal forms under the prefix conditions of
-\Cref{sec:combinatorics}.  Both constructions build the factorization as a
-sum of rank-one terms indexed by \emph{slots} $t \in \{1, \ldots, n\}$: for
-$A = LU$,
+We now factor the normal forms under the prefix conditions of \Cref{sec:combinatorics}.  Both constructions build the factorization as a sum of rank-one terms indexed by \emph{slots} $t \in \{1, \ldots, n\}$: for $A = LU$,
 \begin{equation}\label{eq:rank-one-lu}
   LU = \sum_{t=1}^{n} \ell_t \, u_t^T,
 \end{equation}
-where $\ell_t$ is column $t$ of $L$ (supported on rows $\ge t$) and $u_t^T$
-is row $t$ of $U$ (supported on columns $\ge t$); for $A = LDL^T$,
+where $\ell_t$ is column $t$ of $L$ (supported on rows $\ge t$) and $u_t^T$ is row $t$ of $U$ (supported on columns $\ge t$); for $A = LDL^T$,
 \begin{equation}\label{eq:rank-one-ldlt}
   LDL^T = \sum_{t=1}^{n} d_t \, \ell_t \ell_t^T .
 \end{equation}
-The difference between the two problems is now plain: in
-\cref{eq:rank-one-lu} each term is an arbitrary rank-one matrix with the
-required support, whereas in \cref{eq:rank-one-ldlt} each term is
-\emph{symmetric} rank-one.  An off-diagonal exchange block
-$e_i e_j^T + e_j e_i^T$ has rank $2$, so no single symmetric rank-one term
-realizes it: it must be written as a cancelling combination of at least two
-such terms.  Each pair of the normal form therefore consumes \emph{two}
-slots in the symmetric problem, and the prefix condition supplies exactly
-enough of them.
+In \cref{eq:rank-one-lu} each term is an arbitrary rank-one matrix with the required support, whereas in \cref{eq:rank-one-ldlt} each term is symmetric rank-one.  An off-diagonal exchange block $e_i e_j^T + e_j e_i^T$ has rank $2$. So each pair of the normal form consumes \emph{two} slots in the symmetric problem.
 
 \subsection{LU of a matching matrix: greedy slot assignment}
 
+This is the key theorem for unsymmetric matrices and the LU factorization.
+
 \begin{theorem}\label{thm:lu-matching}
-  Let $\Pi$ be a matching matrix satisfying the prefix condition
-  $\nu_k \le k$ for all $k$ (\Cref{lem:comb-lu}(c)).  Then there is an
-  injection
+  Let $\Pi$ be a matching matrix satisfying the prefix condition $\nu_k \le k$ for all $k$ (\Cref{lem:comb-lu}(c)).  Then there is an injection
   \begin{equation}\label{eq:slot-injection}
     \sigma \colon \M(\Pi) \hookrightarrow \{1, \ldots, n\},
-    \qquad
-    \sigma(i,j) \le \min(i,j) \quad \text{for every } (i,j) \in \M(\Pi),
+    \quad
+    \sigma(i,j) \le \min(i,j) \text{ for every } (i,j) \in \M(\Pi),
   \end{equation}
-  computable by a greedy pass, and setting, for each $(i,j) \in \M$ with
-  $t = \sigma(i,j)$,
+  computable by a greedy pass, and setting, for each $(i,j) \in \M$ with $t = \sigma(i,j)$,
   \[
     \ell_t \coloneq e_i,
     \qquad
     u_t \coloneq e_j,
   \]
   and $\ell_t = u_t = 0$ for slots $t \notin \range(\sigma)$, the matrices
-  $L = (\ell_1, \ldots, \ell_n)$ and $U$ with rows $u_1^T, \ldots, u_n^T$
-  are lower and upper triangular, respectively, and $L U = \Pi$.
+  \[
+    L = (\ell_1, \ldots, \ell_n), \quad
+    \text{and} \quad
+    U =
+    \begin{pmatrix}
+      u_1^T \\ u_2^T \\ \vdots \\ u_n^T
+    \end{pmatrix}
+  \]
+  are lower and upper triangular, respectively, and
+  \[
+    L U = \Pi.
+  \]
 \end{theorem}
 
 \begin{proof}
-  \emph{The assignment suffices.}
-  Given $\sigma$ as in \cref{eq:slot-injection}, triangularity is immediate:
-  $\ell_t = e_i$ has its support at row $i \ge \min(i,j) \ge t$, and $u_t$
-  at column $j \ge t$.  Since $\sigma$ is injective, each matched pair
-  contributes its own term in \cref{eq:rank-one-lu} and empty slots
-  contribute zero, so
-  $L U = \sum_{(i,j) \in \M} e_i e_j^T = \Pi$.  Note that both
-  diagonals may carry zeros: slot $t$ has $L[t,t] = 1$ only if
-  $i = t$, and $U[t,t] \neq 0$ only if $j = t$.
+  \emph{The assignment suffices.} Given $\sigma$ as in \cref{eq:slot-injection}, triangularity is immediate: $\ell_t = e_i$ has its support at row $i \ge \min(i,j) \ge t$, and $u_t$ at column $j \ge t$.  Since $\sigma$ is injective, each matched pair contributes its own term in \cref{eq:rank-one-lu} and empty slots contribute zero, so $L U = \sum_{(i,j) \in \M} e_i e_j^T = \Pi$.  Note that both diagonals may carry zeros: slot $t$ has $L[t,t] = 1$ only if $i = t$, and $U[t,t] \neq 0$ only if $j = t$.
 
-  \emph{The assignment exists.}
-  Process the pairs in order of nondecreasing $m(i,j) \coloneq \min(i,j)$, ties
-  broken arbitrarily, maintaining the set of free slots (initially
-  $\{1, \ldots, n\}$); assign to each pair the largest free slot
-  $t \le m(i,j)$ (the argument below is valid for \emph{any} choice of
-  free slot $\le m(i,j)$; we fix the largest for definiteness).  Suppose
-  the greedy fails at a pair with bound
-  $m \coloneq m(i,j)$: all slots $1, \ldots, m$ are occupied.  Every occupied
-  slot $s \le m$ was assigned to a previously processed pair, whose bound
-  was $\le m$ (bounds are nondecreasing along the pass).  Together with the
-  current pair, this exhibits $m + 1$ pairs with $\min \le m$, i.e.\
-  $\nu_m \ge m + 1$, contradicting the prefix condition.  Hence the greedy
-  assigns every pair and produces $\sigma$.
+  \emph{The assignment exists.} Process the pairs in order of nondecreasing $m(i,j) \coloneq \min(i,j)$, ties broken arbitrarily, maintaining the set of free slots (initially $\{1, \ldots, n\}$); assign to each pair the largest free slot $t \le m(i,j)$. Note that the argument below is valid for \emph{any} choice of free slot $\le m(i,j)$, but we fix the largest for definiteness.  Suppose the greedy fails at a pair with bound $m \coloneq m(i,j)$: all slots $1, \ldots, m$ are occupied.  Every occupied slot $s \le m$ was assigned to a previously processed pair, whose bound was $\le m$ (bounds are nondecreasing along the pass).  Together with the current pair, this exhibits $m + 1$ pairs with $\min \le m$, i.e., $\nu_m \ge m + 1$, contradicting the prefix condition of \Cref{lem:comb-lu}(c).  Hence the greedy assigns every pair and produces $\sigma$.
 \end{proof}
 
-\begin{remark}[which pairs need rerouting]\label{rem:rerouting}
-  Order the pairs by their bound $m(i,j)$.  A diagonal pair $(t,t)$ can
-  take its own slot $t$; a pair $(i,j)$ with $i < j$ (an "above" pair)
-  would naturally take slot $i$, and a "below" pair $(i,j)$ with $i > j$
-  slot $j$.  Conflicts occur exactly at \emph{crossing indices} $t$ that
-  are simultaneously the row of an above pair $(t, j)$ and the column of a
-  below pair $(i, t)$: one of the two must be rerouted to an earlier free
-  slot, whose availability is exactly what the prefix condition
-  guarantees --- in the leanest case the free slot comes from an index that
-  is both a zero row and a zero column.  The exchange matrix $A_2$ of
-  \cref{eq:swap-vs-exchange} is the minimal example: index $2$ is crossing,
-  and the pair $(2,3)$ (or $(3,2)$) is rerouted through slot $1$, whose row
-  and column are zero.  This is the precise sense in which zero diagonal
-  entries are a \emph{resource} for unpivoted factorization.
+\begin{remark}[rerouting]\label{rem:rerouting}
+  Order the pairs by their bound $m(i,j)$.  A diagonal pair $(t,t)$ can take its own slot $t$; a pair $(i,j)$ with $i < j$ (an "above" pair) would naturally take slot $i$, and a "below" pair $(i,j)$ with $i > j$ slot $j$.  Conflicts occur exactly at \emph{crossing indices} $t$ that are simultaneously the row of an above pair $(t, j)$ and the column of a below pair $(i, t)$: one of the two must be rerouted to an earlier free slot, whose availability is exactly what the prefix condition guarantees --- in the leanest case the free slot comes from an index that is both a zero row and a zero column.  The exchange matrix $A_2$ of \cref{eq:swap-vs-exchange} is the minimal example: index $2$ is crossing, and the pair $(2,3)$ (or $(3,2)$) is rerouted through slot $1$, whose row and column are zero.  This is the precise sense in which zero diagonal entries are a \emph{resource} for unpivoted factorization.
 \end{remark}
 
 \subsection{$LDL^T$ of a signed matching matrix: pair splitting}
