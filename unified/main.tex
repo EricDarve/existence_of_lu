@@ -933,13 +933,15 @@ This parallels the rank-revealing and sparsity theorems of~\cite{darve_lu_2026},
 
 \subsection{The unsymmetric factors}
 
-Let $A$ satisfy \cref{eq:lu-crit}, and let $\M=\{(i_1,j_1),\ldots,(i_r,j_r)\}$ be its rank-jump matching, where $r=\rk(A)$. Order the pairs by nondecreasing bounds $m_t\coloneq\min(i_t,j_t)$, with any fixed tie-breaking rule; at most two pairs share a bound, one of the form $(m,j)$ and one of the form $(i,m)$. By \Cref{thm:lu-matching}, assigning the $t$th pair to slot $t$ is admissible and uses exactly the first $r$ slots. Applying this assignment to the matching factor in \Cref{lem:reduction-lu} and absorbing the matched scalars into the upper factor gives the \emph{sorted} factorization of $A$.
-
 \begin{theorem}[canonical sparsity of the LU factors]\label{thm:lu-sparsity}
-  Let $A$ satisfy \cref{eq:lu-crit}.  The sorted factorization $A = LU$ has the following properties.
+  Let $A$ be a matrix satisfying \cref{eq:lu-crit}, and write
+  \[
+    \M=\{(i_1,j_1),\ldots,(i_r,j_r)\}
+  \]
+  for its rank-jump matching, indexed as in \Cref{thm:lu-matching}, where $r=\rk(A)$. The corresponding sorted factorization $A = LU$ has the following properties.
   \begin{enumerate}
     \item \emph{Rank-revealing:} only the first $r$ columns of $L$ and the first $r$ rows of $U$ are nonzero: $L[:, r+1:] = 0$ and $U[r+1:, :] = 0$.
-    \item \emph{Canonical envelope:} for $t \le r$, column $t$ of $L$ vanishes above row $i_t$ and $L[i_t, t] = 1$; row $t$ of $U$ vanishes left of column $j_t$ and $U[t, j_t] \neq 0$.
+    \item \emph{Canonical envelope:} for $t \le r$, $i_t\ge t$ and $j_t\ge t$; moreover, $L[1:i_t-1,t]=0$, $L[i_t,t]=1$, $U[t,1:j_t-1]=0$, and $U[t,j_t]\neq 0$, with empty slices understood when $i_t=1$ or $j_t=1$.
     \item \emph{Diagonals:} $L[t,t] = 1$ if $i_t = t$ and $L[t,t] = 0$ otherwise; $U[t,t] \neq 0$ if and only if $j_t = t$.
     \item \emph{Simultaneous envelope optimality:} for \emph{every} unpivoted factorization $A = \widetilde L \widetilde U$ and every $k$,
       \begin{align*}
@@ -986,13 +988,13 @@ Let $A$ satisfy \cref{eq:lu-crit}, and let $\M=\{(i_1,j_1),\ldots,(i_r,j_r)\}$ b
 
 \subsection{The symmetric factors: a rank-revealing $LDL^T$}
 
-The sorted construction of \Cref{thm:ldlt-matching} is rank revealing for $P$, and the triangular-congruence reduction transfers this structure to $A$. Recall from that proof the counts $s_k$ (singletons $\le k$) and $\iota_k$ (pairs $(i,j)$ with $j\le k$), and the index identity $k=\zeta_k+s_k+2\iota_k+\chi_k$.
+The sorted construction of \Cref{thm:ldlt-matching} is rank revealing for $P$, and the triangular-congruence reduction transfers this structure to $A$. For each $k$, let $s_k$ count the singletons $q\le k$, $\iota_k$ the pairs $(i,j)$ with $j\le k$, $\zeta_k$ the isolated zero indices $\le k$, and $\chi_k$ the crossing pairs with $i\le k<j$. These classes partition the first $k$ indices, so $k=\zeta_k+s_k+2\iota_k+\chi_k$. In the sorted item list, let $b_t$ denote the bound of the item placed in slot $t$: $b_t=q$ for a singleton $q$, and $b_t=i$ for either item associated with a pair $(i,j)$, $i<j$.
 
 \begin{theorem}[rank-revealing $LDL^T$]\label{thm:ldlt-rr}
-  Let $A = A^T$ satisfy \cref{eq:ldlt-crit} and let $r = \rk(A)$. There is an unpivoted factorization $A = LDL^T$ with the following properties.
+  Let $A = A^T$ satisfy \cref{eq:ldlt-crit} and let $r = \rk(A)$. The corresponding sorted factorization $A = LDL^T$ has the following properties.
   \begin{enumerate}
     \item \emph{Rank and inertia revealing:} only the first $r$ columns of $L$ are nonzero, and $D$ has exactly $r$ nonzero entries, namely $D[t,t] \in \{\pm 1\}$ for $t \le r$, of which exactly $n_+(A)$ equal $+1$ and $n_-(A)$ equal $-1$, where $n_\pm(A)$ count the positive and negative eigenvalues of $A$.
-    \item \emph{Canonical envelope:} each singleton $t$ of the signed matching form of $A$ contributes one column with support starting at row $t$, and each pair $(i,j)$ contributes two columns with support starting at row $i$, with $D$-entries $+1$ and $-1$.
+    \item \emph{Canonical envelope:} for $t\le r$, $b_t\ge t$, $L[1:b_t-1,t]=0$, and $L[b_t,t]\neq0$, with an empty slice understood when $b_t=1$. A singleton $q$ contributes one such column with $b_t=q$, while a pair $(i,j)$ contributes two with $b_t=i$ and corresponding $D$-entries $+1$ and $-1$.
     \item \emph{Simultaneous envelope optimality:} for every unpivoted factorization $A=\widetilde L\widetilde D\widetilde L^T$ and every $k$,
       \[
         \#\{t \colon \widetilde D[t,t]\neq 0,\ \widetilde L[1:k,t]\neq 0\}
@@ -1029,10 +1031,12 @@ The sorted construction of \Cref{thm:ldlt-matching} is rank revealing for $P$, a
 \end{proof}
 
 \begin{remark}[Absence of unsymmetric inertia]\label{rem:ldu}
-  Factoring the leading entries out of the rows of $U$ in \Cref{thm:lu-sparsity} gives an unpivoted three-factor form $A = LDU$: $L$ lower triangular whose nonzero columns have unit leading entries, $U$ upper triangular whose nonzero rows have unit leading entries, and $D$ diagonal with exactly $r$ nonzero entries $w_1, \ldots, w_r$. So $D$ is rank-revealing.  It is natural to ask, by analogy with \Cref{thm:ldlt-rr}, whether $D$ can also be made inertia revealing.  For unsymmetric $A$ the question dissolves, at two levels. First, the signs in $D$ are gauge, not data: rescaling $(L, D, U) \mapsto (LS,\, S^{-1}T^{-1}D,\, TU)$ with independent invertible diagonal matrices $S$, $T$ preserves the product and the triangular supports, so every nonzero entry of $D$ can be given an arbitrary nonzero value (for instance, all $+1$).  It is precisely the symmetric tie $T = S^T$ of the $LDL^T$ problem that restricts this gauge to $d_t \mapsto s_t^2\, d_t$ and pins the signs; this is why an inertia exists there.  For unsymmetric $A$, the invariant refined by the factorization is not an inertia but the rank-jump matching of \Cref{prop:canonical}, and the invariant content of $D$ is its rank.
+  Factoring the leading entries out of the rows of $U$ in \Cref{thm:lu-sparsity} gives an unpivoted three-factor form $A = LDU$: $L$ lower triangular whose nonzero columns have unit leading entries, $U$ upper triangular whose nonzero rows have unit leading entries, and $D$ diagonal with exactly $r$ nonzero entries $w_1, \ldots, w_r$. So $D$ is rank-revealing.  It is natural to ask, by analogy with \Cref{thm:ldlt-rr}, whether $D$ can also be made inertia revealing.  For unsymmetric $A$, this is generally not possible. First, the signs in $D$ are gauge, not data: rescaling $(L, D, U) \mapsto (LS,\, S^{-1}T^{-1}D,\, TU)$ with independent invertible diagonal matrices $S$, $T$ preserves the product and the triangular supports, so every nonzero entry of $D$ can be given an arbitrary nonzero value (for instance, all $+1$).  It is precisely the symmetric tie $T = S^T$ of the $LDL^T$ problem that restricts this gauge to $d_t \mapsto s_t^2\, d_t$ and fixes the signs; this is why an inertia exists there.  For unsymmetric $A$, the invariant refined by the factorization is not an inertia but the rank-jump matching of \Cref{prop:canonical}, and the invariant content of $D$ is simply its rank.
 \end{remark}
 
 \section{Proofs of the main theorems, and a worked example}\label{sec:assembly}
+
+The theorems can now be proved by combining all the previous results. We include the proofs for completeness. We include as well a worked example illustrating the two factorizations of the exchange matrix.
 
 \begin{proof}[Proof of \Cref{thm:lu}]
   Necessity is \Cref{prop:necessity}.  For sufficiency, assume $A$ satisfies
@@ -1064,25 +1068,11 @@ The sorted construction of \Cref{thm:ldlt-matching} is rank revealing for $P$, a
 \end{proof}
 
 \begin{example}[the exchange matrix, both ways]\label{ex:exchange}
-  The matrix $A_2$ of \cref{eq:swap-vs-exchange} shows why zero diagonal
-  entries are a resource rather than a defect.  As a matching matrix,
-  $\M = \{(2,3), (3,2)\}$; row $1$ and column $1$ are zero.
-  The prefix counts are $\nu_1 = 0 \le 1$ and $\nu_2 = 2 \le 2$ (both pairs
-  have $\min = 2$), so \Cref{thm:lu-matching} applies: the greedy assignment
-  gives slot $2$ to $(2,3)$ and reroutes $(3,2)$ to slot $1$.  This is exactly
-  the LU factorization displayed in \cref{eq:exchange-factorizations}.
+  The matrix $A_2$ of \cref{eq:swap-vs-exchange} shows how an isolated zero index can supply a spare slot needed for factorization. As a matching matrix, $\M=\{(2,3),(3,2)\}$, while row $1$ and column $1$ are zero. The nontrivial prefix counts are $\nu_1=0\le1$ and $\nu_2=2\le2$ (both pairs have bound $2$), while $\nu_3=2\le3$ automatically. Thus \Cref{thm:lu-matching} applies. Using the largest-free assignment of \Cref{rem:rerouting} and processing $(2,3)$ first, that pair receives slot $2$, while $(3,2)$ is rerouted to slot $1$. This gives exactly the LU factorization displayed in \cref{eq:exchange-factorizations}.
 
-  As a signed matching matrix, $A_2$ itself has isolated zero $1$ and the
-  normalized exchange block
-  $\bigl(
+  As a signed matching matrix, $A_2$ itself has isolated zero $1$ and the normalized exchange block $\bigl(
     \begin{smallmatrix}0&1\\1&0
-  \end{smallmatrix}\bigr)$ on indices
-  $(2,3)$.  The pair splits by \cref{eq:pair-split} into two items with
-  bound $2$, placed in slots $1$ and $2$; this produces exactly the
-  $LDL^T$ factorization displayed in \cref{eq:exchange-factorizations},
-  routing the off-diagonal block through the earlier zero index: the
-  second slot exists because index $1$ is isolated.  The thread variant of
-  \Cref{rem:threads}, with the single thread $1<2<3$, gives instead
+  \end{smallmatrix}\bigr)$ on indices $(2,3)$. The pair splits by \cref{eq:pair-split} into two items with bound $2$, placed in slots $1$ and $2$; the bound supplies slot $2$, and the isolated zero index supplies the extra earlier slot $1$. This produces exactly the $LDL^T$ factorization displayed in \cref{eq:exchange-factorizations}. The thread variant of \Cref{rem:threads}, with the single thread $1<2<3$, gives instead
   \[
     S=
     \begin{pmatrix}
@@ -1100,51 +1090,17 @@ The sorted construction of \Cref{thm:ldlt-matching} is rank revealing for $P$, a
   triangular factor is singular, Sylvester's law of inertia does not
   constrain the diagonal factor.
 \end{example}
-% ===== End inlined from sections/assembly.tex =====
 
-% ===== Inlined from sections/conclusion.tex =====
 \section{Conclusion}\label{sec:conclusion}
 
-We gave a unified treatment of the existence of triangular factorizations
-without pivoting for possibly singular real matrices.  The unsymmetric
-criterion (\Cref{thm:lu}) recovers the theorem of Okunev and Johnson; the
-symmetric criterion (\Cref{thm:ldlt}) --- existence of $A = LDL^T$ with truly
-diagonal $D$ and possibly singular $L$ --- appears to be new, as does the
-corollary that for symmetric matrices unpivoted $LU$ and $LDL^T$ existence
-coincide.  The proof method is uniform: reduce to a matching normal form by
-triangular equivalence or congruence, transfer the nullity criterion to the
-normal form where it becomes a prefix condition on the matching, and factor the
-normal form explicitly by a sorted slot assignment --- with each symmetric
-off-diagonal pair split into a difference of two rank-one terms
-(\cref{eq:pair-split}), and with a division-free telescoping-thread
-alternative recorded in \Cref{rem:threads}.
+We gave a unified treatment of triangular factorizations without pivoting for possibly singular real matrices. The unsymmetric criterion (\Cref{thm:lu}) recovers the theorem of Okunev and Johnson, while the symmetric criterion (\Cref{thm:ldlt}) and the equivalence of unpivoted $LU$ and $LDL^T$ existence for symmetric matrices are new. Both sufficiency proofs reduce to a matching normal form, transfer the nullity criterion to a prefix condition, and factor the normal form by a sorted slot assignment. In the symmetric case, each off-diagonal pair splits into a difference of two rank-one terms (\cref{eq:pair-split}); \Cref{rem:threads} gives a division-free alternative.
 
 Several directions remain open.
 \begin{itemize}
-  \item \emph{Numerical stability.}  The construction selects pivots for
-    algebraic, not numerical, reasons; a backward-stable variant over
-    $\mathbb{R}$ (perhaps with size-aware choices among the admissible slot
-    assignments, which are far from unique) is an open problem, as
-    in~\cite{darve_lu_2026}.
-  \item \emph{Multiplicity.}  Dopico, Johnson, and
-    Molera~\cite{dopico_multiple_2006} parametrized all LU factorizations of a
-    singular matrix with $L$ unit lower triangular.  Parametrizing all
-    unpivoted $LDL^T$ factorizations --- equivalently, all slot assignments,
-    splittings, and diagonal choices --- would quantify the freedom our
-    constructions exploit.
-  \item \emph{Structure of the factors.}  \Cref{sec:sparsity} settles the
-    column-envelope structure: both factorizations can be made
-    rank-revealing with a canonical, simultaneously optimal envelope.  What
-    remains open is the finer structure \emph{inside} the envelope ---
-    entrywise sparsity and fill bounds analogous to those
-    of~\cite{darve_lu_2026}, and their interaction with the freedom in the
-    slot assignment.
-  \item \emph{Complex and block variants.}  A complex version with transpose,
-    or a Hermitian version with conjugate transpose, should have closely
-    related normal forms.  Rectangular and block versions of the criteria are
-    also natural.
+  \item \emph{Numerical stability.} The constructions are algebraic and do not control pivot sizes or scaling. Developing a backward-stable algorithm remains open, as in~\cite{darve_lu_2026}.
+  \item \emph{Multiplicity.} Dopico, Johnson, and Molera~\cite{dopico_multiple_2006} parametrized all LU factorizations of a singular matrix with unit lower factor. Parametrizing all unpivoted $LDL^T$ factorizations, beyond the family produced by our construction, remains open.
+  \item \emph{Structure of the factors.} \Cref{sec:sparsity} establishes canonical, simultaneously optimal support envelopes. For $LDL^T$, entrywise sparsity and fill bounds analogous to the LU results of~\cite{darve_lu_2026}, and their dependence on the normal-form reduction and pair splitting, remain open.
 \end{itemize}
-% ===== End inlined from sections/conclusion.tex =====
 
 \appendix
 % elsarticle makes \thesection print "Appendix A" in the appendix. Keep that
