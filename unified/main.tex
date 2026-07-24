@@ -707,24 +707,24 @@ where $\ell_t$ is column $t$ of $L$ (supported on rows $\ge t$) and $u_t^T$ is r
 \end{equation}
 In \cref{eq:rank-one-lu} each term is an arbitrary rank-one matrix with the required support, whereas in \cref{eq:rank-one-ldlt} each term is symmetric rank-one.  An off-diagonal exchange block $e_i e_j^T + e_j e_i^T$ has rank $2$. So each pair of the normal form consumes \emph{two} slots in the symmetric problem.
 
-\subsection{LU of a matching matrix: greedy slot assignment}
+\subsection{LU of a matching matrix: sorted slot assignment}
 
 This is the key theorem for unsymmetric matrices and the LU factorization.
 
 \begin{theorem}\label{thm:lu-matching}
-  Let $\Pi$ be a matching matrix satisfying the prefix condition $\nu_k \le k$ for all $k$ (\Cref{lem:comb-lu}(c)).  Then there is an injection
+  Let $\Pi$ be a matching matrix satisfying the prefix condition $\nu_k \le k$ for all $k$ (\Cref{lem:comb-lu}(c)). Write $\M(\Pi)=\{(i_1,j_1),\ldots,(i_r,j_r)\}$, ordered so that $m_t\coloneq\min(i_t,j_t)$ is nondecreasing, with ties broken arbitrarily. Then $m_t\ge t$ for every $t$, so
   \begin{equation}\label{eq:slot-injection}
     \sigma \colon \M(\Pi) \hookrightarrow \{1, \ldots, n\},
-    \quad
-    \sigma(i,j) \le \min(i,j) \text{ for every } (i,j) \in \M(\Pi),
-  \end{equation}
-  computable by a greedy pass, and setting, for each $(i,j) \in \M$ with $t = \sigma(i,j)$,
-  \[
-    \ell_t \coloneq e_i,
     \qquad
-    u_t \coloneq e_j,
+    \sigma(i_t,j_t)=t\le m_t
+  \end{equation}
+  is an admissible injection. Setting, for $t\le r$,
+  \[
+    \ell_t \coloneq e_{i_t},
+    \qquad
+    u_t \coloneq e_{j_t},
   \]
-  and $\ell_t = u_t = 0$ for slots $t \notin \range(\sigma)$, the matrices
+  and $\ell_t=u_t=0$ for $t>r$, the matrices
   \[
     L = (\ell_1, \ldots, \ell_n), \quad
     \text{and} \quad
@@ -737,20 +737,17 @@ This is the key theorem for unsymmetric matrices and the LU factorization.
   \[
     L U = \Pi.
   \]
+  Moreover, only the first $r=\rk(\Pi)$ columns of $L$ and rows of $U$ are nonzero.
 \end{theorem}
 
 \begin{proof}
-  \emph{The assignment suffices.} Given $\sigma$ as in \cref{eq:slot-injection}, triangularity is immediate: $\ell_t = e_i$ has its support at row $i \ge \min(i,j) \ge t$, and $u_t$ at column $j \ge t$.  Since $\sigma$ is injective, each matched pair contributes its own term in \cref{eq:rank-one-lu} and empty slots contribute zero, so $L U = \sum_{(i,j) \in \M} e_i e_j^T = \Pi$.  Note that both diagonals may carry zeros: slot $t$ has $L[t,t] = 1$ only if $i = t$, and $U[t,t] \neq 0$ only if $j = t$.
+  Suppose $m_t<t$ for some $t$. Since the bounds are nondecreasing, the first $t$ pairs all have bound at most $m_t$, so $\nu_{m_t}\ge t>m_t$, contradicting the prefix condition. Hence $t\le m_t$ for every $t$. When the pairs are processed in this order, slots $1,\ldots,t-1$ have already been used, so the first free slot is $t$; thus \cref{eq:slot-injection} is admissible.
 
-  \emph{The assignment exists.} Process the pairs in order of nondecreasing $m(i,j) \coloneq \min(i,j)$, ties broken arbitrarily, maintaining the set of free slots (initially $\{1, \ldots, n\}$); assign to each pair the largest free slot $t \le m(i,j)$. Note that the argument below is valid for \emph{any} choice of free slot $\le m(i,j)$, but we fix the largest for definiteness.  Suppose the greedy fails at a pair with bound $m \coloneq m(i,j)$: all slots $1, \ldots, m$ are occupied.  Every occupied slot $s \le m$ was assigned to a previously processed pair, whose bound was $\le m$ (bounds are nondecreasing along the pass).  Together with the current pair, this exhibits $m + 1$ pairs with $\min \le m$, i.e., $\nu_m \ge m + 1$, contradicting the prefix condition of \Cref{lem:comb-lu}(c).  Hence the greedy assigns every pair and produces $\sigma$.
+  Triangularity is immediate: $\ell_t=e_{i_t}$ has its support at row $i_t\ge m_t\ge t$, and $u_t$ at column $j_t\ge m_t\ge t$. Each matched pair contributes its own term in \cref{eq:rank-one-lu}, so $LU=\sum_{t=1}^r e_{i_t}e_{j_t}^T=\Pi$. A matching matrix has rank equal to its number $r$ of matched pairs, and the construction uses exactly the first $r$ slots, proving the last assertion.
 \end{proof}
 
-% We could assign the t-th pair (i,j) to slot t. Slot t must be <= m(i,j). If not, all slots up to m=m(i,j) are occupied. So we have m+1 pairs with min <= m. Contradiction. Moreover since the rank r is the number of m(i,j) pairs, the assignment stops after exactly r steps and the factorization is rank revealing. This is the rank revealing assignment algorithm.
-% Or other possible canonical assignment:
-% Assign (i,j) to slot m(i,j). If taken, assign to the smallest free slot (which is < m(i,j)). This is not rank revealing. But we can then prove that if there is a t such that A[t,t:] = 0 and A[t:,t] = 0 then L[t,t]=U[t,t]=0. This slot can be used for rerouting. This is the rerouting assignment algorithm.
-
 \begin{remark}[rerouting]\label{rem:rerouting}
-  For the greedy assignment, let $s=\sigma(i,j)$. If $i=j$, then $s=i=j$ and
+  The sorted assignment is rank revealing. A different admissible rule makes the diagonal behavior more transparent: set $m(i,j)\coloneq\min(i,j)$, process the pairs in the same order, and assign each pair $(i,j)$ to the largest free slot $s\le m(i,j)$. Such a slot always exists by the same prefix-count contradiction used in the proof. For this largest-free assignment, if $i=j$, then $s=i=j$ and
   \[
     (L[s,s],U[s,s])=(1,1).
   \]
@@ -765,7 +762,7 @@ This is the key theorem for unsymmetric matrices and the LU factorization.
   Finally, if $s<\min(i,j)$, then $L[s,s]=U[s,s]=0$; we call this a rerouting. Under the largest-free-slot rule, rerouting occurs exactly when two pairs share the same bound $m$. Since $\Pi$ is a matching matrix, these pairs have the form $(m,q)$ and $(p,m)$ with $p,q>m$; one receives slot $m$, and the other receives an earlier free slot, whose existence is guaranteed by the prefix condition in \Cref{lem:comb-lu}. The exchange matrix $A_2$ of \cref{eq:swap-vs-exchange} is the minimal example: the two pairs have bound $2$, and one is rerouted through slot $1$; index $1$ of $A_2$ has a zero row and column.
 \end{remark}
 
-\Cref{fig:lu-slot-cases} illustrates the greedy assignment and rerouting for a size 5 matching matrix.
+\Cref{fig:lu-slot-cases} illustrates the largest-free assignment and rerouting for a size 5 matching matrix.
 
 \begin{figure}[htbp]
   \centering
@@ -889,63 +886,35 @@ both terms supported on $\{i, j\}$.
 This theorem is one of the key novel results of this paper.
 
 \begin{theorem}\label{thm:ldlt-matching}
-  Let $P$ be a signed matching matrix with $\chi_k \le \zeta_k$ for all
-  $k$.  Then there are a lower triangular $S$ and a diagonal $E$ with
+  Let $P$ be a signed matching matrix with $\chi_k \le \zeta_k$ for all $k$. Then there are a lower triangular $S$ and a diagonal $E$ with
   \[
     P = S E S^T .
   \]
+  Moreover, if $r=\rk(P)$, only the first $r$ columns of $S$ and the first $r$ diagonal entries of $E$ are nonzero.
 \end{theorem}
 
 \begin{proof}
-  Form a list of \emph{items}: each singleton $t$ is one item with
-  \emph{bound} $t$, carrying the column $e_t$ and the weight
-  $\gamma_t$; each pair $(i,j)$ is two items with bound $i$, carrying the
-  columns $u, v$ of \cref{eq:pair-split} and the weights $+1$, $-1$.
-  Suppose the items are placed in pairwise distinct slots, each item in a
-  slot $\le$ its bound; let $\ell_t$ and $d_t$ be the column and weight of
-  the item in slot $t$ (with $\ell_t = 0$, $d_t = 0$ for unused slots), and
-  set $S = (\ell_1, \ldots, \ell_n)$, $E = \operatorname{diag}(d_1, \ldots,
-  d_n)$.  Every item's column is supported on rows $\ge$ its bound $\ge$
-  its slot, so $S$ is lower triangular, and
+  Form a list of \emph{items}: each singleton $q$ is one item with bound $q$, column $e_q$, and weight $\gamma_q$; each pair $(i,j)$, with $i<j$, is two items with bound $i$, columns $u,v$ from \cref{eq:pair-split}, and weights $+1,-1$. For a fixed $k$, let $s_k$ be the number of singletons $\le k$ and $\iota_k$ the number of pairs $(i,j)$ with $j\le k$. The indices $\le k$ consist of $\zeta_k$ isolated zero indices, $s_k$ singleton indices, $2\iota_k$ indices belonging to pairs with $j\le k$, and $\chi_k$ indices belonging to crossing pairs with $i\le k<j$. Therefore $k=\zeta_k+s_k+2\iota_k+\chi_k$, and hence
   \[
-    S E S^T
-    = \sum_{\text{singletons } t} \gamma_t \, e_t e_t^T
-    + \sum_{\text{pairs } (i,j)} \bigl( u u^T - v v^T \bigr)
-    = P ,
-  \]
-  since each block of $P$ is reproduced exactly once by
-  \cref{eq:pair-split}.
-
-  Such a placement exists.  With $s_k$ the number of singletons $\le k$ and
-  $\iota_k$ the number of pairs $(i,j)$ with $j \le k$, classifying the
-  indices $\le k$ into isolated zeros, singletons, pair indices with
-  $j \le k$, and pair indices with $i \le k < j$ gives
-  $k = \zeta_k + s_k + 2\iota_k + \chi_k$, so
-  \[
-    \#\{\text{items with bound} \le k\}
+    N_k\coloneq\#\{\text{items with bound}\le k\}
     = s_k + 2(\iota_k + \chi_k)
     = k - (\zeta_k - \chi_k)
-    \ \le\ k
-    \iff
-    \chi_k \le \zeta_k .
+    \le k .
   \]
-  Order the items by nondecreasing bound and place the $t$th item in slot
-  $t$: if some item's bound were smaller than its slot $t$, the items with
-  bound $\le t - 1$ would number at least $t$, contradicting the count just
-  displayed at $k = t - 1$.
+  Order the items by nondecreasing bound, with ties broken arbitrarily, and let $b_t$ be the bound of the $t$th item. Suppose $b_t<t$ for some $t$. The first $t$ items all have bound at most $b_t$, so $N_{b_t}\ge t>b_t$, contradicting the displayed count. Hence $t\le b_t$ for every $t$. When the items are processed in this order, slots $1,\ldots,t-1$ have already been used, so the first free slot is $t$.
+
+  Let $\ell_t$ and $d_t$ be the column and weight of the $t$th item, and set $\ell_t=0$, $d_t=0$ after the last item. Since every item column is supported on rows at least $b_t\ge t$, the matrix $S=(\ell_1,\ldots,\ell_n)$ is lower triangular. With $E=\operatorname{diag}(d_1,\ldots,d_n)$, each singleton and pair contributes its corresponding block, so
+  \[
+    S E S^T
+    = \sum_{\text{singletons } q} \gamma_q e_q e_q^T
+    + \sum_{\text{pairs } (i,j)} \bigl(uu^T-vv^T\bigr)
+    = P ,
+  \]
+  by \cref{eq:pair-split}. Finally, the number of items is the number of singletons plus twice the number of pairs, which equals $\rk(P)$; therefore the construction uses exactly the first $r$ slots, proving the last assertion.
 \end{proof}
 
 \begin{remark}[threads: a division-free alternative]\label{rem:threads}
-  The split \cref{eq:pair-split} divides by $2$.  An alternative
-  construction avoids all division and realizes each pair by a single
-  column, at the price of one extra column per group: partition the pairs
-  into \emph{threads}
-  $r < i_1 < j_1 < i_2 < j_2 < \cdots < i_m < j_m$, with $r$ an isolated
-  zero index and $(i_q, j_q)$ pairs of $P$ --- a left-to-right scan that
-  attaches each pair to a free thread and roots new threads at isolated
-  zeros succeeds under $\chi_k \le \zeta_k$ --- and, with the partial sums
-  $s_q = -(e_{i_q} + e_{i_{q+1}} + \cdots + e_{i_m})$ (so $s_{m+1} = 0$),
-  take the columns and alternating weights
+  The split \cref{eq:pair-split} divides by $2$.  An alternative construction avoids all division and realizes each pair by a single column, at the price of one extra column per group. We can partition the pairs into \emph{threads} $r < i_1 < j_1 < i_2 < j_2 < \cdots < i_m < j_m$, with $r$ an isolated zero index and $(i_q, j_q)$ pairs of $P$. This is achieved using a left-to-right scan that attaches each pair to a free thread and roots new threads at isolated zeros; this step succeeds under $\chi_k \le \zeta_k$. W ith the partial sums $s_q = -(e_{i_q} + e_{i_{q+1}} + \cdots + e_{i_m})$ (so $s_{m+1} = 0$), take the columns and alternating weights
   \[
     \ell_r = s_1, \; d_r = 1;
     \qquad
@@ -953,12 +922,8 @@ This theorem is one of the key novel results of this paper.
     \qquad
     \ell_{j_q} = s_{q+1} + e_{j_q}, \; d_{j_q} = 1 .
   \]
-  The sum $\sum_t d_t \ell_t \ell_t^T$ telescopes to the thread's pair
-  blocks.  This variant uses only the values $0, \pm 1$ and keeps each
-  column inside its thread, but it spends one column on every root, so it
-  is not column-minimal; see \Cref{sec:sparsity}.
+  The sum $\sum_t d_t \ell_t \ell_t^T$ telescopes to the thread's pair blocks.  This variant uses only the values $0, \pm 1$ and keeps each column inside its thread, but it spends one column on every root, so it is not column-minimal; see \Cref{sec:sparsity}.
 \end{remark}
-% ===== End inlined from sections/explicit.tex =====
 
 \section{Sparsity and rank-revealing structure}\label{sec:sparsity}
 
@@ -978,18 +943,7 @@ the rank functions $k \mapsto \rk(A[1:k,:])$ and $k \mapsto \rk(A[:,1:k])$).
 
 \subsection{The unsymmetric factors}
 
-Let $A$ satisfy \cref{eq:lu-crit}, let
-$\M = \{(i_1,j_1), \ldots, (i_r,j_r)\}$ be its rank-jump matching, and note
-$r = \rk(A)$.  Order the pairs so that the bounds $m_t \coloneq \min(i_t, j_t)$
-are nondecreasing, with any fixed tie-breaking rule (at most two jumps share
-a bound: one of the form $(m, j)$ and one of the form $(i, m)$).  The prefix
-condition of \Cref{lem:comb-lu}(c) states $\nu_k \le k$ for all $k$, which
-is equivalent to $m_t \ge t$ for all $t$: if $m_t < t$ then
-$\nu_{m_t} \ge t > m_t$, and if $\nu_k > k$ then $m_{k+1} \le k$.  Hence
-assigning the $t$th pair to slot $t$ is an admissible assignment in
-\Cref{thm:lu-matching}; we call the resulting factorization, with all
-matched scalars absorbed into the upper factor, the \emph{sorted}
-factorization.
+Let $A$ satisfy \cref{eq:lu-crit}, let $\M=\{(i_1,j_1),\ldots,(i_r,j_r)\}$ be its rank-jump matching, and note that $r=\rk(A)$. Order the pairs so that the bounds $m_t\coloneq\min(i_t,j_t)$ are nondecreasing, with any fixed tie-breaking rule (at most two jumps share a bound: one of the form $(m,j)$ and one of the form $(i,m)$). By the proof of \Cref{thm:lu-matching}, $m_t\ge t$, and assigning the $t$th pair to slot $t$ is admissible. We call the resulting factorization, with all matched scalars absorbed into the upper factor, the \emph{sorted} factorization.
 
 \begin{theorem}[canonical sparsity of the LU factors]\label{thm:lu-sparsity}
   Let $A$ satisfy \cref{eq:lu-crit}.  The sorted factorization $A = LU$
@@ -1101,11 +1055,7 @@ factorization.
 
 \subsection{The symmetric factors: a rank-revealing $LDL^T$}
 
-The construction of \Cref{thm:ldlt-matching} becomes rank-revealing when
-its items are placed by the sorted assignment used in its proof.  Recall
-from that proof the counts $s_k$ (singletons $\le k$) and $\iota_k$ (pairs
-$(i,j)$ with $j \le k$), and the index identity
-$k = \zeta_k + s_k + 2\iota_k + \chi_k$.
+The sorted construction of \Cref{thm:ldlt-matching} is rank revealing for $P$, and the triangular-congruence reduction transfers this structure to $A$. Recall from that proof the counts $s_k$ (singletons $\le k$) and $\iota_k$ (pairs $(i,j)$ with $j\le k$), and the index identity $k=\zeta_k+s_k+2\iota_k+\chi_k$.
 
 \begin{theorem}[rank-revealing $LDL^T$]\label{thm:ldlt-rr}
   Let $A = A^T$ satisfy \cref{eq:ldlt-crit} and let $r = \rk(A)$.  There
