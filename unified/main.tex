@@ -242,7 +242,7 @@ Necessity is a short rank argument. The normal-form reductions and invariance fa
   \item A novel normal-form proof of unpivoted $LU$ existence and unpivoted $LDL^T$ existence for real matrices with possibly singular triangular factors.
   \item A necessary and sufficient condition for the existence of an unpivoted $LDL^T$ factorization with a diagonal $D$ and possibly singular $L$, together with the corollary that for symmetric matrices unpivoted $LU$ and $LDL^T$ existence are equivalent.
   \item An explicit combinatorial mechanism for the symmetric problem: the prefix condition supplies, for every off-diagonal pair, the two earlier slots required by its rank-one splitting, with isolated zero indices acting as the spare slots.
-  \item Canonical support envelopes and rank-revealing structure (\Cref{sec:sparsity}): for matrices satisfying the corresponding existence criteria, the sorted $LU$ factorization has exactly $r=\rk(A)$ nonzero columns for $L$ and nonzero rows for $U$, while the sorted $LDL^T$ factorization has exactly $r$ nonzero columns for $L$ and nonzero entries for $D$. Their leading support indices are determined by the rank-jump matching of $A$, up to the stated tie-breaking, and their prefix support counts simultaneously attain, for every $k$, the lower bounds valid for all unpivoted factorizations (\Cref{thm:lu-sparsity,thm:ldlt-rr,prop:ldlt-lower}).
+  \item Canonical support envelopes and rank-revealing structure (\Cref{sec:sparsity}): for matrices satisfying the corresponding existence criteria, the sorted $LU$ factorization has exactly $r=\rk(A)$ nonzero columns for $L$ and nonzero rows for $U$, while the sorted $LDL^T$ factorization has exactly $r$ nonzero columns for $L$ and nonzero entries for $D$. Their leading support indices are determined by the rank-jump matching of $A$, up to the stated tie-breaking, and their prefix support counts simultaneously attain, for every $k$, the lower bounds valid for all unpivoted factorizations (\Cref{thm:lu-sparsity,thm:ldlt-rr}).
 \end{itemize}
 
 \paragraph{Organization} \Cref{sec:related} positions the paper.  \Cref{sec:notation} fixes notation, and \Cref{sec:results} states the main theorems.  \Cref{sec:normalforms} states the matching normal forms.  \Cref{sec:combinatorics} converts the criteria into prefix conditions. \Cref{sec:explicit} factors the normal forms. \Cref{sec:sparsity} develops the sparsity and rank-revealing structure of the factors, and \Cref{sec:assembly} includes the remaining proofs.  The appendices contain standard rank facts, necessity and transfer arguments, normal-form proofs, and an additional example.
@@ -927,50 +927,30 @@ This theorem is one of the key novel results of this paper.
 
 \section{Sparsity and rank-revealing structure}\label{sec:sparsity}
 
-Unpivoted factorizations of a singular matrix are far from unique, so no
-sparsity pattern can be forced on \emph{every} factorization.  Nevertheless,
-the normal-form construction can be steered to a factorization whose
-sparsity pattern is canonical: its envelope is read off the rank-jump
-matching of $A$, which by \Cref{prop:canonical} is an invariant of $A$, and
-it is optimal among all factorizations in a precise leading-block sense.
-This parallels the rank-revealing and sparsity theorems
-of~\cite{darve_lu_2026}, with two differences: no internal permutations
-appear, and the envelope is expressed directly through the rank jumps.  The
-dictionary between the two formulations is that the matched rows of $\Pi$
-are exactly the rows of $A$ that are linearly independent of their
-predecessors, and likewise for columns (specialize \Cref{prop:canonical} to
-the rank functions $k \mapsto \rk(A[1:k,:])$ and $k \mapsto \rk(A[:,1:k])$).
+Unpivoted factorizations of a singular matrix are far from unique, so no sparsity pattern can be forced on \emph{every} factorization. Nevertheless, the sorted assignments of \Cref{thm:lu-matching,thm:ldlt-matching} already place all nonzero rank-one terms of the normal forms in the first $r$ slots, where $r$ is the rank. Transporting these assignments through the triangular equivalence or congruence reductions preserves the rank-revealing structure and produces canonical support envelopes determined by the rank-jump matching of $A$, which is an invariant by \Cref{prop:canonical}. These envelopes are optimal among all factorizations in a precise leading-block sense.
+
+This parallels the rank-revealing and sparsity theorems of~\cite{darve_lu_2026}, with two differences: no internal permutations appear, and the envelope is expressed directly through the rank jumps. The matched rows of $\Pi$ are exactly the rows of $A$ that are linearly independent of their predecessors, and likewise for columns; this follows by specializing \Cref{prop:canonical} to the rank functions $k\mapsto\rk(A[1:k,:])$ and $k\mapsto\rk(A[:,1:k])$.
 
 \subsection{The unsymmetric factors}
 
-Let $A$ satisfy \cref{eq:lu-crit}, let $\M=\{(i_1,j_1),\ldots,(i_r,j_r)\}$ be its rank-jump matching, and note that $r=\rk(A)$. Order the pairs so that the bounds $m_t\coloneq\min(i_t,j_t)$ are nondecreasing, with any fixed tie-breaking rule (at most two jumps share a bound: one of the form $(m,j)$ and one of the form $(i,m)$). By the proof of \Cref{thm:lu-matching}, $m_t\ge t$, and assigning the $t$th pair to slot $t$ is admissible. We call the resulting factorization, with all matched scalars absorbed into the upper factor, the \emph{sorted} factorization.
+Let $A$ satisfy \cref{eq:lu-crit}, and let $\M=\{(i_1,j_1),\ldots,(i_r,j_r)\}$ be its rank-jump matching, where $r=\rk(A)$. Order the pairs by nondecreasing bounds $m_t\coloneq\min(i_t,j_t)$, with any fixed tie-breaking rule; at most two pairs share a bound, one of the form $(m,j)$ and one of the form $(i,m)$. By \Cref{thm:lu-matching}, assigning the $t$th pair to slot $t$ is admissible and uses exactly the first $r$ slots. Applying this assignment to the matching factor in \Cref{lem:reduction-lu} and absorbing the matched scalars into the upper factor gives the \emph{sorted} factorization of $A$.
 
 \begin{theorem}[canonical sparsity of the LU factors]\label{thm:lu-sparsity}
-  Let $A$ satisfy \cref{eq:lu-crit}.  The sorted factorization $A = LU$
-  has the following properties.
+  Let $A$ satisfy \cref{eq:lu-crit}.  The sorted factorization $A = LU$ has the following properties.
   \begin{enumerate}
-    \item \emph{Rank-revealing:} only the first $r$ columns of $L$ and the
-      first $r$ rows of $U$ are nonzero: $L[:, r+1:] = 0$ and
-      $U[r+1:, :] = 0$.
-    \item \emph{Canonical envelope:} for $t \le r$, column $t$ of $L$
-      vanishes above row $i_t$ and $L[i_t, t] = 1$; row $t$ of $U$ vanishes
-      left of column $j_t$ and $U[t, j_t] \neq 0$.
-    \item \emph{Diagonals:} $L[t,t] = 1$ if $i_t = t$ and $L[t,t] = 0$
-      otherwise; $U[t,t] \neq 0$ if and only if $j_t = t$.
-    \item \emph{Simultaneous envelope optimality:} for \emph{every}
-      unpivoted factorization $A = \widetilde L \widetilde U$ and every
-      $k$,
+    \item \emph{Rank-revealing:} only the first $r$ columns of $L$ and the first $r$ rows of $U$ are nonzero: $L[:, r+1:] = 0$ and $U[r+1:, :] = 0$.
+    \item \emph{Canonical envelope:} for $t \le r$, column $t$ of $L$ vanishes above row $i_t$ and $L[i_t, t] = 1$; row $t$ of $U$ vanishes left of column $j_t$ and $U[t, j_t] \neq 0$.
+    \item \emph{Diagonals:} $L[t,t] = 1$ if $i_t = t$ and $L[t,t] = 0$ otherwise; $U[t,t] \neq 0$ if and only if $j_t = t$.
+    \item \emph{Simultaneous envelope optimality:} for \emph{every} unpivoted factorization $A = \widetilde L \widetilde U$ and every $k$,
       \begin{align*}
         \#\{t \colon \widetilde L[1:k, t] \neq 0\} &\ \ge\ \rk(A[1:k,:])
         = k - r^0_k,\\
         \#\{t \colon \widetilde U[t, 1:k] \neq 0\} &\ \ge\ \rk(A[:,1:k])
         = k - c^0_k,
       \end{align*}
-      and the sorted factorization attains both bounds for every $k$
-      simultaneously.
+      and the sorted factorization attains both bounds for every $k$ simultaneously.
   \end{enumerate}
-  The data $(i_t, j_t)_{t \le r}$ --- hence the entire envelope pattern ---
-  is uniquely determined by $A$, up to the tie-breaking rule.
+  The data $(i_t, j_t)_{t \le r}$ (hence the entire envelope pattern) is uniquely determined by $A$, up to the tie-breaking rule.
 \end{theorem}
 
 \begin{proof}
@@ -1004,169 +984,54 @@ Let $A$ satisfy \cref{eq:lu-crit}, let $\M=\{(i_1,j_1),\ldots,(i_r,j_r)\}$ be it
   \Cref{lem:null-matching}, transported to $A$ by \Cref{lem:transfer}).
 \end{proof}
 
-\begin{remark}[LDU form, and the absence of an unsymmetric inertia]\label{rem:ldu}
-  Factoring the leading entries out of the rows of $U$ in
-  \Cref{thm:lu-sparsity} gives an unpivoted three-factor form $A = LDU$:
-  $L$ lower triangular whose nonzero columns have unit leading entries, $U$
-  upper triangular whose nonzero rows have unit leading entries, and $D$
-  diagonal with exactly $r$ nonzero entries $w_1, \ldots, w_r$ --- so $D$
-  is rank-revealing.  It is natural to ask, by analogy with
-  \Cref{thm:ldlt-rr}, whether $D$ can also be made \emph{inertia}
-  revealing.  For unsymmetric $A$ the question dissolves, at two levels.
-  First, the signs in $D$ are gauge, not data: rescaling
-  $(L, D, U) \mapsto (LS,\, S^{-1}T^{-1}D,\, TU)$ with \emph{independent}
-  invertible diagonal matrices $S, T$ preserves the product and the
-  triangular supports, so every nonzero entry of $D$ can be given an
-  arbitrary nonzero value --- for instance, all $+1$.  It is precisely the
-  symmetric tie $T = S^T$ of the $LDL^T$ problem that restricts this gauge
-  to $d_t \mapsto s_t^2\, d_t$ and pins the signs; this is why an inertia
-  exists there and not here.  Second, even after fixing the normalization
-  above --- which makes $D$ canonical in the strongly nonsingular case,
-  where $w_t = \det A[1:t,1:t] / \det A[1:t-1,1:t-1]$ --- the pivot signs
-  carry no spectral information:
-  \[
-    A =
-    \begin{pmatrix}
-      -1 & 2\\
-      -4 & 5
-    \end{pmatrix}
-    =
-    \begin{pmatrix}
-      1 & 0\\
-      4 & 1
-    \end{pmatrix}
-    \begin{pmatrix}
-      -1 & 0\\
-      0 & -3
-    \end{pmatrix}
-    \begin{pmatrix}
-      1 & -2\\
-      0 & 1
-    \end{pmatrix}
-  \]
-  has eigenvalues $1$ and $3$, both positive, while both pivots are
-  negative.  The classical fact that pivot signs count negative
-  eigenvalues (Jacobi's theorem) is a statement about \emph{symmetric
-  congruence}, and it is exactly what \Cref{thm:ldlt-rr} extends to the
-  singular unpivoted case.  For unsymmetric $A$, the invariant refined by
-  the factorization is not an inertia but the rank-jump matching of
-  \Cref{prop:canonical}, and the invariant content of $D$ is its rank.
-\end{remark}
-
 \subsection{The symmetric factors: a rank-revealing $LDL^T$}
 
 The sorted construction of \Cref{thm:ldlt-matching} is rank revealing for $P$, and the triangular-congruence reduction transfers this structure to $A$. Recall from that proof the counts $s_k$ (singletons $\le k$) and $\iota_k$ (pairs $(i,j)$ with $j\le k$), and the index identity $k=\zeta_k+s_k+2\iota_k+\chi_k$.
 
 \begin{theorem}[rank-revealing $LDL^T$]\label{thm:ldlt-rr}
-  Let $A = A^T$ satisfy \cref{eq:ldlt-crit} and let $r = \rk(A)$.  There
-  is an unpivoted factorization $A = LDL^T$ such that:
+  Let $A = A^T$ satisfy \cref{eq:ldlt-crit} and let $r = \rk(A)$. There is an unpivoted factorization $A = LDL^T$ with the following properties.
   \begin{enumerate}
-    \item only the first $r$ columns of $L$ are nonzero, and $D$ has
-      exactly $r$ nonzero entries, namely $D[t,t] \in \{\pm 1\}$ for
-      $t \le r$, of which exactly $n_+(A)$ equal $+1$ and $n_-(A)$ equal
-      $-1$, where $n_\pm(A)$ count the positive and negative eigenvalues
-      of $A$: the diagonal factor reveals both the rank and the inertia
-      of $A$;
-    \item each singleton $t$ of the signed matching form of $A$
-      contributes one column with support starting at row $t$, and each
-      pair $(i,j)$ contributes two columns with support starting at row
-      $i$, with $D$-entries $+1$ and $-1$;
-    \item for every $k$,
-      \begin{equation}\label{eq:ldlt-envelope}
-        \#\{t \colon L[1:k, t] \neq 0\}
-        = s_k + 2\iota_k + 2\chi_k
-        = k - (\zeta_k - \chi_k) .
-      \end{equation}
+    \item \emph{Rank and inertia revealing:} only the first $r$ columns of $L$ are nonzero, and $D$ has exactly $r$ nonzero entries, namely $D[t,t] \in \{\pm 1\}$ for $t \le r$, of which exactly $n_+(A)$ equal $+1$ and $n_-(A)$ equal $-1$, where $n_\pm(A)$ count the positive and negative eigenvalues of $A$.
+    \item \emph{Canonical envelope:} each singleton $t$ of the signed matching form of $A$ contributes one column with support starting at row $t$, and each pair $(i,j)$ contributes two columns with support starting at row $i$, with $D$-entries $+1$ and $-1$.
+    \item \emph{Simultaneous envelope optimality:} for every unpivoted factorization $A=\widetilde L\widetilde D\widetilde L^T$ and every $k$,
+      \[
+        \#\{t \colon \widetilde D[t,t]\neq 0,\ \widetilde L[1:k,t]\neq 0\}
+        \ \ge\ s_k+2\iota_k+2\chi_k
+        = k-(\zeta_k-\chi_k).
+      \]
+      The sorted factorization attains this bound for every $k$ simultaneously.
   \end{enumerate}
 \end{theorem}
 
 \begin{proof}
-  By \Cref{lem:reduction-sym}, $A = M P M^T$; let $P = S E S^T$ be the
-  factorization constructed in the proof of \Cref{thm:ldlt-matching}, with
-  the items sorted by nondecreasing bound and the $t$th item placed in slot
-  $t$, and set $L = MS$, $D = E$.  The items number $s + 2p$ in total ($s$
-  singletons, $p$ pairs), and $s + 2p = \rk(P) = \rk(A) = r$, since each
-  singleton block has rank $1$ and each pair block rank $2$.  Hence exactly
-  the slots $1, \ldots, r$ are used, and $D$ carries the item weights,
-  which lie in $\{\pm 1\}$: $\gamma_t = \pm 1$ for singletons, $+1$ and
-  $-1$ for the two halves of each pair.  Since $M$ is invertible lower
-  triangular, multiplication by $M$ preserves column supports and their
-  leading rows, giving (1) and (2), except for the inertia claim, which
-  follows from Sylvester's law: $A = MPM^T$ with $M$ invertible, so $A$
-  and $P$ have the same inertia; up to a symmetric permutation, $P$ is the
-  direct sum of its blocks, whose inertias are $(\sgn \gamma_t)$ for
-  singletons and one positive, one negative eigenvalue ($\pm 1$) for each
-  pair block; and the weights placed in $D$ --- $\gamma_t$ per singleton,
-  $+1$ and $-1$ per pair --- match these counts exactly.  For
-  \cref{eq:ldlt-envelope}: the
-  columns of $L$ meeting rows $1, \ldots, k$ are exactly the items with
-  bound $\le k$, which number $s_k + 2(\iota_k + \chi_k) =
-  k - (\zeta_k - \chi_k)$, as counted in the proof of
-  \Cref{thm:ldlt-matching}.
-\end{proof}
+  By \Cref{lem:reduction-sym}, $A = M P M^T$; let $P = S E S^T$ be the factorization constructed in the proof of \Cref{thm:ldlt-matching}, with the items sorted by nondecreasing bound and the $t$th item placed in slot $t$, and set $L = MS$, $D = E$. The items number $s + 2p$ in total ($s$ singletons, $p$ pairs), and $s + 2p = \rk(P) = \rk(A) = r$, since each singleton block has rank $1$ and each pair block rank $2$. Hence exactly the slots $1, \ldots, r$ are used, and $D$ carries the item weights, which lie in $\{\pm 1\}$: $\gamma_t = \pm 1$ for singletons, $+1$ and $-1$ for the two halves of each pair. Since $M$ is invertible lower triangular, multiplication by $M$ preserves the leading row of each column, giving the support statements in (1) and (2). The inertia claim follows from Sylvester's law: $A = MPM^T$ with $M$ invertible, so $A$ and $P$ have the same inertia; up to a symmetric permutation, $P$ is the direct sum of its blocks, whose inertias are $(\sgn \gamma_t)$ for singletons and one positive and one negative eigenvalue for each pair block. The weights placed in $D$ ($\gamma_t$ per singleton and $+1,-1$ per pair) therefore match these counts exactly. Finally, the columns of $L$ meeting rows $1,\ldots,k$ are exactly the items with bound at most $k$, which number $s_k+2(\iota_k+\chi_k)=k-(\zeta_k-\chi_k)$, as counted in the proof of \Cref{thm:ldlt-matching}. Thus the sorted factorization attains the envelope bound.
 
-The count \cref{eq:ldlt-envelope} exceeds the naive bound
-$\rk(A[1:k,:]) = s_k + 2\iota_k + \chi_k$ by $\chi_k$, and this excess is
-unavoidable: crossing pairs genuinely cost two columns each at the cut.
-
-\begin{proposition}[envelope lower bound for $LDL^T$]\label{prop:ldlt-lower}
-  Let $A = A^T = LDL^T$ be any unpivoted factorization.  Then for every
-  $k$,
+  It remains to prove the lower bound in (3). Fix an arbitrary unpivoted factorization $A=\widetilde L\widetilde D\widetilde L^T$ and $k$, and let $C=\{t\colon \widetilde D[t,t]\neq0,\ \widetilde L[1:k,t]\neq0\}$, $c=|C|$, $X=\widetilde L[1:k,C]$, and $X'=\widetilde L[:,C]$. Columns outside $C$ contribute nothing to the first $k$ rows, so
   \[
-    \#\{t \colon L[1:k, t] \neq 0\} \ \ge\ s_k + 2\iota_k + 2\chi_k
-    = k - (\zeta_k - \chi_k),
-  \]
-  so the factorization of \Cref{thm:ldlt-rr} is simultaneously optimal for
-  every $k$.  In particular ($k = n$) every factorization has at least $r$
-  nonzero columns with nonzero diagonal weight, and \Cref{thm:ldlt-rr}
-  attains $r$.
-\end{proposition}
-
-\begin{proof}
-  Discarding columns with $D[t,t] = 0$ leaves $A$ unchanged and can only
-  decrease the count $\#\{t \colon L[1:k,t] \neq 0\}$, so a lower bound proved
-  after discarding them holds a fortiori for the original; assume then that
-  all diagonal weights of the retained columns are nonzero.  Fix $k$, let $C = \{t \colon L[1:k,t] \neq 0\}$, $c = |C|$, and let
-  $X = L[1:k, C]$ and $X' = L[:, C]$.  Columns outside $C$ contribute
-  nothing to the first $k$ rows, so
-  \[
-    A[1:k, 1:k] = X D_C X^T,
+    A[1:k, 1:k] = X \widetilde D_C X^T,
     \qquad
-    A[1:k, :] = X D_C X'^T .
+    A[1:k, :] = X \widetilde D_C X'^T .
   \]
-  Equip $\mathbb{R}^c$ with the nondegenerate symmetric bilinear form
-  $\langle u, v \rangle = u^T D_C v$, and let
-  $Z \subseteq \mathbb{R}^c$ be the row space of $X$, of dimension
-  $\rho = \rk(X)$.  From the second identity,
-  $\rho \ge \rk(A[1:k,:]) = s_k + 2\iota_k + \chi_k$.  The Gram matrix of
-  the rows of $X$ is $X D_C X^T = A[1:k,1:k]$, so the form restricted to
-  $Z$ has rank $\rk(A[1:k,1:k]) = s_k + 2\iota_k$, and the radical
-  $Z \cap Z^\perp$ has dimension $\rho - (s_k + 2\iota_k)$.  Since the
-  form on $\mathbb{R}^c$ is nondegenerate, $\dim Z^\perp = c - \rho$, and
-  the radical is contained in $Z^\perp$, whence
+  Let $\rho=\rk(X)$. The second identity gives $\rho\ge\rk(A[1:k,:])$. Since $\widetilde D_C$ is invertible, Sylvester's rank inequality (\Cref{lem:sylvester}) applied to the first identity gives
   \[
-    c - \rho \ \ge\ \rho - (s_k + 2\iota_k),
-    \qquad\text{i.e.}\qquad
-    c \ \ge\ 2\rho - (s_k + 2\iota_k)
-    \ \ge\ s_k + 2\iota_k + 2\chi_k .
+    \rk(A[1:k,1:k])
+    =\rk(X\widetilde D_CX^T)
+    \ge \rk(X\widetilde D_C)+\rk(X^T)-c
+    =2\rho-c.
   \]
+  Therefore
+  \[
+    c\ge 2\rho-\rk(A[1:k,1:k])
+    \ge 2\rk(A[1:k,:])-\rk(A[1:k,1:k])
+    =s_k+2\iota_k+2\chi_k,
+  \]
+  where the last equality uses $\rk(A[1:k,:])=s_k+2\iota_k+\chi_k$ and $\rk(A[1:k,1:k])=s_k+2\iota_k$.
 \end{proof}
 
-\begin{remark}\label{rem:inertia-revealing}
-  The thread variant of \Cref{rem:threads} is not column-minimal --- it
-  spends one column on the root of each thread, for
-  $r + (\#\text{threads})$ nonzero columns in total --- and its diagonal
-  need not reveal the inertia: when $L$ is singular, Sylvester's law of
-  inertia does not constrain $D$.  \Cref{ex:exchange} illustrates both
-  phenomena: the split factorization, displayed in
-  \cref{eq:exchange-factorizations}, uses two columns and the diagonal
-  $\operatorname{diag}(1,-1,0)$, attaining \cref{eq:ldlt-envelope} at
-  every $k$, while the thread variant uses three columns and the diagonal
-  $\operatorname{diag}(1,-1,1)$, whose inertia differs from that of
-  $A_2$.
+\begin{remark}[Absence of unsymmetric inertia]\label{rem:ldu}
+  Factoring the leading entries out of the rows of $U$ in \Cref{thm:lu-sparsity} gives an unpivoted three-factor form $A = LDU$: $L$ lower triangular whose nonzero columns have unit leading entries, $U$ upper triangular whose nonzero rows have unit leading entries, and $D$ diagonal with exactly $r$ nonzero entries $w_1, \ldots, w_r$. So $D$ is rank-revealing.  It is natural to ask, by analogy with \Cref{thm:ldlt-rr}, whether $D$ can also be made inertia revealing.  For unsymmetric $A$ the question dissolves, at two levels. First, the signs in $D$ are gauge, not data: rescaling $(L, D, U) \mapsto (LS,\, S^{-1}T^{-1}D,\, TU)$ with independent invertible diagonal matrices $S$, $T$ preserves the product and the triangular supports, so every nonzero entry of $D$ can be given an arbitrary nonzero value (for instance, all $+1$).  It is precisely the symmetric tie $T = S^T$ of the $LDL^T$ problem that restricts this gauge to $d_t \mapsto s_t^2\, d_t$ and pins the signs; this is why an inertia exists there.  For unsymmetric $A$, the invariant refined by the factorization is not an inertia but the rank-jump matching of \Cref{prop:canonical}, and the invariant content of $D$ is its rank.
 \end{remark}
 
-% ===== Inlined from sections/assembly.tex =====
 \section{Proofs of the main theorems, and a worked example}\label{sec:assembly}
 
 \begin{proof}[Proof of \Cref{thm:lu}]
@@ -1282,6 +1147,10 @@ Several directions remain open.
 % ===== End inlined from sections/conclusion.tex =====
 
 \appendix
+% elsarticle makes \thesection print "Appendix A" in the appendix. Keep that
+% form for section headings and references, but omit "Appendix" from the
+% shared theorem-like counter so that, e.g., lemmas are numbered A.1, A.2, ...
+\renewcommand{\thetheorem}{\Alph{section}.\arabic{theorem}}
 
 % ===== Inlined from sections/appendix_standard.tex =====
 \section{Standard rank facts, necessity, and transfer}\label[appendix]{app:standard-proofs}
