@@ -46,6 +46,7 @@
   \theoremsymbol{}%
   \newtheorem{#1}{#2}%
   \expandafter\def\csname the#1\endcsname{\thetheorem}%
+  \expandafter\def\csname theH#1\endcsname{\theHtheorem}%
 }
 \thmalias{property}{Property}
 \thmalias{lemma}{Lemma}
@@ -122,6 +123,9 @@
 \Crefformat{equation}{(#2#1#3)}
 
 \numberwithin{theorem}{section}
+% Include the section in PDF destinations when the shared theorem counter
+% restarts, and let every aliased theorem environment inherit this anchor.
+\renewcommand{\theHtheorem}{\arabic{section}.\arabic{theorem}}
 
 \journal{Linear Algebra and its Applications}
 
@@ -1093,7 +1097,7 @@ The theorems can now be proved by combining all the previous results. We include
 
 \section{Conclusion}\label{sec:conclusion}
 
-We gave a unified treatment of triangular factorizations without pivoting for possibly singular real matrices. The unsymmetric criterion (\Cref{thm:lu}) recovers the theorem of Okunev and Johnson, while the symmetric criterion (\Cref{thm:ldlt}) and the equivalence of unpivoted $LU$ and $LDL^T$ existence for symmetric matrices are new. Both sufficiency proofs reduce to a matching normal form, transfer the nullity criterion to a prefix condition, and factor the normal form by a sorted slot assignment. In the symmetric case, each off-diagonal pair splits into a difference of two rank-one terms (\cref{eq:pair-split}); \Cref{rem:threads} gives a division-free alternative.
+We gave a unified treatment of triangular factorizations without pivoting for possibly singular real matrices. The unsymmetric criterion (\Cref{thm:lu}) recovers the theorem of Okunev and Johnson, while the symmetric criterion (\Cref{thm:ldlt}) and the equivalence of unpivoted $LU$ and $LDL^T$ existence for symmetric matrices are new. Both sufficiency proofs reduce to a matching normal form, transfer the nullity criterion to a prefix condition, and factor the normal form by a sorted slot assignment. In the symmetric case, each off-diagonal pair splits into a difference of two rank-one terms \cref{eq:pair-split}. \Cref{rem:threads} gives a division-free alternative.
 
 Several directions remain open.
 \begin{itemize}
@@ -1107,6 +1111,7 @@ Several directions remain open.
 % form for section headings and references, but omit "Appendix" from the
 % shared theorem-like counter so that, e.g., lemmas are numbered A.1, A.2, ...
 \renewcommand{\thetheorem}{\Alph{section}.\arabic{theorem}}
+\renewcommand{\theHtheorem}{appendix.\Alph{section}.\arabic{theorem}}
 
 % ===== Inlined from sections/appendix_standard.tex =====
 \section{Standard rank facts, necessity, and transfer}\label[appendix]{app:standard-proofs}
