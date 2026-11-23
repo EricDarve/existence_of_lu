@@ -1,78 +1,56 @@
-\documentclass[10pt,twoside]{siamart1116}
+% Keep the LaTeX kernel's reference commands for the 2016 class on
+% current TeX distributions, where hyperref uses their built-in hooks.
+\makeatletter
+\ifdefined\AddToHook
+  \let\siam@kernel@refstepcounter\refstepcounter
+  \let\siam@kernel@label\label
+  \AddToHook{package/hyperref/before}{%
+    \let\refstepcounter\siam@kernel@refstepcounter
+    \let\label\siam@kernel@label
+  }
+\fi
+\makeatother
+\documentclass[final]{siamart1116}
 
 \usepackage[english]{babel}
-\usepackage{fancyhdr,amsfonts,amssymb}
-\usepackage{array}
-
+\usepackage{amssymb}
+\usepackage{booktabs,tabularx,listings,needspace}
+\usepackage{csquotes}
 \usepackage{tikz}
-\usepackage{xcolor}
 \usetikzlibrary{calc,patterns,decorations.pathreplacing,arrows.meta,positioning}
 
-\setlength{\textheight}{210mm}
-\setlength{\textwidth}{165mm}
-\topmargin = -10mm
-\renewcommand{\baselinestretch}{1.1}
-\setlength{\parskip}{.1in}
+\newcommand{\TheTitle}{Necessary and Sufficient Conditions for the Existence of an LU Factorization for General Rank Deficient Matrices}
+\newcommand{\TheAuthors}{Eric Darve}
+\headers{Existence of an LU Factorization}{\TheAuthors}
+\title{\TheTitle}
+\author{\TheAuthors\thanks{Institute for Computational and Mathematical Engineering,
+    Mechanical Engineering Department, Stanford University,
+    Stanford, CA 94305, USA (\email{darve@stanford.edu}).}}
 
-% Box for end of proof outside environment
-\def\cvd{~\vbox{\hrule\hbox{%
-\vrule height1.3ex\hskip0.8ex\vrule}\hrule } }
+\ifpdf
+  \hypersetup{hidelinks,pdftitle={\TheTitle},pdfauthor={\TheAuthors}}
+\fi
 
-\newcommand{\SP}{1}
-% Ending page
-\newcommand{\EP}{10}
-% Publication month
-\newcommand{\PMonth}{Month}
-% Handling Editor
-\newcommand{\HE}{Name of Handling Editor}
-% Date of Submission
-\newcommand{\DoS}{Month/Day/Year}
-% Date of Acceptance
-\newcommand{\DoA}{Month/Day/Year}
+\numberwithin{theorem}{section}
+\newsiamthm{property}{Property}
+\Crefname{property}{Property}{Properties}
+\crefname{property}{Property}{Properties}
 
-\newcommand{\CA}{Eric Darve}
-
-\newcommand{\Names}{Eric Darve}
-\newcommand{\Title}{Necessary and Sufficient Conditions for the Existence of an LU Factorization for General Rank Deficient Matrices}
-
-\renewcommand{\theequation}{\thesection.\arabic{equation}}
-
-\usepackage{aliascnt}
-% \siamthmalias{<env>}{<Name>}{<\newtheorem or \renewtheorem>}
-\newcommand{\siamthmalias}[3]{%
-  \newaliascnt{#1}{theorem}%
-  \theoremstyle{plain}%
-  \theoremheaderfont{\normalfont\sc}%
-  \theorembodyfont{\normalfont\itshape}%
-  \theoremseparator{.}%
-  \theoremsymbol{}%
-  #3{#1}{#2}%
-  % Display the number like the theorem number, tracking
-  % \numberwithin{theorem}{section} applied later in the preamble.
-  \expandafter\def\csname the#1\endcsname{\thetheorem}%
-}
-% property is new; the others are redefined (already created by the class).
-\siamthmalias{property}{Property}{\newtheorem}
-\siamthmalias{lemma}{Lemma}{\renewtheorem}
-\siamthmalias{corollary}{Corollary}{\renewtheorem}
-\siamthmalias{proposition}{Proposition}{\renewtheorem}
-\siamthmalias{definition}{Definition}{\renewtheorem}
-
-\usepackage{booktabs,listings}
-\usepackage{csquotes}
 \MakeOuterQuote{"}
 
 \lstdefinestyle{PythonStyle}{
   language=Python,
   basicstyle=\ttfamily\fontsize{7pt}{8pt}\selectfont, % Font and size for the code
-  keywordstyle=\color{blue}\bfseries, % Style for keywords
-  stringstyle=\color{red}, % Style for strings
-  commentstyle=\color{green}\itshape, % Style for comments
+  keywordstyle=\color{blue!65!black}\bfseries,
+  stringstyle=\color{red!65!black},
+  commentstyle=\color{green!40!black}\itshape,
+  columns=fullflexible,
+  keepspaces=true,
   showstringspaces=false, % Do not show spaces in strings
   numbers=left, % Line numbers on the left
-  numberstyle=\tiny\color{gray}, % Style for line numbers
+  numberstyle=\tiny\color{black!65},
   breaklines=true, % Allow lines to break
-  captionpos=b, % Caption position at the bottom
+  captionpos=t,
   escapeinside={(*@}{@*)}, % Defines the start and end sequences
 }
 
@@ -88,49 +66,12 @@
 % a relation (\mathrel), inserting \thickmuskip on both sides.
 \mathcode`\:="003A
 
-\Crefname{property}{Property}{Properties}
-\crefname{property}{property}{properties}
-\Crefname{corollary}{Corollary}{Corollaries}
-\crefname{corollary}{corollary}{corollaries}
-\Crefname{lemma}{Lemma}{Lemmas}
-\crefname{lemma}{lemma}{lemmas}
-\Crefname{proposition}{Proposition}{Propositions}
-\crefname{proposition}{proposition}{propositions}
-\Crefname{theorem}{Theorem}{Theorems}
-\crefname{theorem}{theorem}{theorems}
 \Crefname{lstlisting}{Algorithm}{Algorithms}
-\crefname{lstlisting}{algorithm}{algorithms}
+\crefname{lstlisting}{Algorithm}{Algorithms}
 \addto\captionsenglish{\renewcommand{\lstlistingname}{Algorithm}}
 \addto\captionsenglish{\renewcommand{\lstlistlistingname}{List of Algorithms}}
 
-\numberwithin{theorem}{section}
-
 \begin{document}
-
-% \bibliographystyle{plain}
-
-% Leave these commented lines here
-%\input{ELAheader-template.tex}
-% ELA insert correct page number
-\setcounter{page}{1}
-
-\thispagestyle{empty}
-
-\title{\Title\thanks{Received
-    by the editors on \DoS.
-    Accepted for publication on \DoA.
-Handling Editor: \HE. Corresponding Author: \CA}}
-
-\author{
-  Eric Darve\thanks{Institute for Computational and Mathematical Engineering,
-    Mechanical Engineering Department,
-    Stanford University,
-    Stanford, CA 94305, USA
-  (darve@stanford.edu).}
-}
-
-% \pagestyle{myheadings}
-% \markboth{\Names}{\Title}
 
 \maketitle
 
@@ -139,12 +80,13 @@ Handling Editor: \HE. Corresponding Author: \CA}}
 \end{abstract}
 
 \begin{keywords}
-  LU factorization, Rank-deficient matrices, Singular matrices, Rank-revealing factorization, Nullity, Sparsity.
+  LU factorization, rank-deficient matrices, singular matrices, rank-revealing factorization, nullity, sparsity
 \end{keywords}
 \begin{AMS}
-  15A23, 15A03, 65F05.
+  15A23, 15A03, 65F05
 \end{AMS}
 
+\section{Introduction}
 It is well known that for any square matrix $A$, there exists a permutation of rows (and potentially columns) such that an LU factorization exists. Specifically, there exist a permutation matrix $P$, a unit lower triangular matrix $L$, and an upper triangular matrix $U$ such that $PA = LU$~\cite{higham_gaussian_2011,lu_numerical_2021}.
 
 However, the existence of an LU factorization for a matrix $A$ \emph{without} permutations (that is, $A = LU$) is not guaranteed. A classical result states that for a non-singular matrix, such a factorization exists if and only if all its leading principal minors are non-zero. When the matrix is rank-deficient or when leading principal minors vanish, the situation becomes significantly more complex. The standard conditions involving determinants are no longer sufficient to characterize the existence of the factorization.
@@ -168,8 +110,10 @@ whose leading \(r \times r\) principal blocks are strongly non-singular, then fo
 See also~\cite{dopico_multiple_2006} for a discussion on multiple factorizations of rank-deficient matrices. Other perspectives on factorizations and their existence in general algebraic structures or specific contexts can be found in~\cite{nagarajan_products_1999,johnson_inherited_1989,jeffrey_lu_2010,higham_gaussian_2011}.
 
 \begin{table}[htbp]
+  \caption{Notations used in the paper. We use the colon (slicing) notation standard in numerical linear algebra~\cite{golub_matrix_2013}: a colon denotes an index range, and a trailing colon extends the range to the last index, so $A[i,k:]$ means columns $k, k+1, \ldots, n$ of the $i$th row.}
+  \label{tab:notations}
   \centering
-  \begin{tabular}{ll}
+  \begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}X@{}}
     \toprule
     $F$          & An arbitrary field; all matrices have entries in $F$ \\
     $\rk(A)$     & Rank of matrix $A$ \\
@@ -184,9 +128,7 @@ See also~\cite{dopico_multiple_2006} for a discussion on multiple factorizations
     $e_i$        & $i$-th vector of the standard basis \\
     $I_n$        & Identity matrix of size $n$ \\
     \bottomrule
-  \end{tabular}
-  \vspace{5pt}
-  \caption{\label{tab:notations} Notations used in the paper. We use the colon (slicing) notation standard in numerical linear algebra~\cite{golub_matrix_2013}: a colon denotes an index range, and a trailing colon extends the range to the last index, so $A[i,k:]$ means columns $k, k+1, \ldots, n$ of the $i$th row.}
+  \end{tabularx}
 \end{table}
 
 \paragraph{Triangular factorizations and causal systems} Before presenting the technical results, we motivate the study of LU factorizations without permutations by considering their interpretation in causal systems and their computational advantages.
@@ -320,7 +262,7 @@ Alternatively, if $C = LU$:
 
 These examples demonstrate that the existence of a factorization is linked to the relationship between the ranks (or nullities) of specific sub-blocks. We formalize this observation in \Cref{prop:rank}. We will show that \Cref{prop:rank} below is a necessary and sufficient condition for the existence of an LU factorization.
 
-\begin{property}\label{prop:rank}
+\begin{property}\label[property]{prop:rank}
   Matrix $A$ is square of size $n$. For all $k = 1, \ldots, n$:
   \begin{equation}
     \label{eq:cond1}
@@ -354,8 +296,10 @@ A symmetric logic applies to the rows of $A$.
 The main existence results are summarized in \Cref{tab:main}.
 
 \begin{table}[htbp]
+  \caption{Summary of the main factorization types and their conditions for existence.}
+  \label{tab:main}
   \centering
-  \begin{tabular}{ll>{\raggedright\arraybackslash}p{4cm}>{\raggedright\arraybackslash}p{6cm}}
+  \begin{tabularx}{\linewidth}{@{}ll*{2}{>{\raggedright\arraybackslash}X}@{}}
     \toprule
     Factorization Type & Equation & Conditions for Existence & Limitations \\
     \midrule
@@ -364,15 +308,14 @@ The main existence results are summarized in \Cref{tab:main}.
     Full Pivoting & $PAQ=LU$ & Always exists; rank-revealing. & Permutes rows and columns, destroying all index structure. \\
     Generalized LU & $A=LU$ & Subject of this work. & Handles rank-deficient cases without $P$, $Q$. \\
     \bottomrule
-  \end{tabular}
-  \caption{Summary of the main factorization types and their conditions for existence.}\label{tab:main}
+  \end{tabularx}
 \end{table}
 
 \subsubsection*{Informal description: producer-sensor duality}
 
 We can form a mental model of \Cref{prop:rank} by considering the following scenario which represents the class of matrices that have an LU factorization. Assume the columns of $A$ correspond to producer points $j$ and the rows of $A$ correspond to sensor points $i$.
 
-We say the producer $j$ is \emph{observable} by the current sensor network $1:i$ if $A[1:i,j]$ adds new information (is linearly independent) relative to previous producers $A[1:i,1:j-1]$. Conversely, we say the sensor $i$ is \emph{informative} regarding the current producers $1:j$ if its measurement $A[i,1:j]$ is linearly independent of previous measurements $A[1:i-1,1:j]$.
+We say the producer $j$ is \emph{observable} by the current sensor network $1:i$ if $A[1:i,j]$ is linearly independent of the columns of $A[1:i,1:j-1]$, which represent the previous producers. Conversely, we say the sensor $i$ is \emph{informative} regarding the current producers $1:j$ if its measurement $A[i,1:j]$ is linearly independent of previous measurements $A[1:i-1,1:j]$.
 
 The existence of an LU factorization implies a compatibility between observability and informativeness. $A$ admits a factorization if and only if every "blind spot" (rank deficiency) in a leading block corresponds to a global redundancy. Specifically, if the interaction between the first $k$ sensors and $k$ producers is rank-deficient, this deficiency must be fully accounted for by producers that are globally redundant (dependent on previous columns) or sensors that are globally redundant (dependent on previous rows). The factorization is impossible only in the "crossed" scenario, or "deadlock": where producer $k$ carries a novel signal that current sensors miss (but future sensors see), while sensor $k$ performs a novel measurement that misses current signals (but sees future ones).
 
@@ -382,7 +325,7 @@ We now provide the formal proof of the main results, \Cref{thm:main,thm:main2}. 
 
 The construction below repeatedly removes a zero pivot by interchanging a zero row or column with a later one. We first record a general preservation lemma, then recover the two forms needed below as corollaries.
 
-\begin{lemma}\label{lem:zero-column-swap}
+\begin{lemma}\label[lemma]{lem:zero-column-swap}
   Let $A$ satisfy \Cref{prop:rank} with column $1$ of $A$ equal to zero, and let $B = A\Pi_j$ interchange columns $1$ and $j$ (with $\Pi_j^2 = I$). For $1 \le k < j$, define the slack
   \[
     s_k =
@@ -435,7 +378,7 @@ The construction below repeatedly removes a zero pivot by interchanging a zero r
   The transposed statement follows because \Cref{prop:rank} is invariant under transposition: its right-hand side is symmetric in $\nl(A[:,1:k])$ and $\nl({A[1:k,:]}^T)$, while $\nl((A[1:k,1:k])^T) = \nl(A[1:k,1:k])$.
 \end{proof}
 
-\begin{corollary}\label{lem:zero-line-indep}
+\begin{corollary}\label[corollary]{lem:zero-line-indep}
   Let $A$ satisfy \Cref{prop:rank} with column $1$ of $A$ equal to zero, and let $B = A\Pi_j$ interchange columns $1$ and $j$ (with $\Pi_j^2 = I$). If, for every $k = 1, \ldots, j-1$, the truncated column $A[1:k,j]$ does not lie in the span of the columns of the leading block $A[1:k,1:k]$, then $B$ satisfies \Cref{prop:rank}. By transposition, the corresponding statement holds with the roles of rows and columns exchanged.
 \end{corollary}
 
@@ -443,7 +386,7 @@ The construction below repeatedly removes a zero pivot by interchanging a zero r
   For each $k < j$, column $1$ of $A$ is zero, so the columns of $A[1:k,1:k]$ span the same space as those of $A[1:k,2:k]$. Hence the hypothesis says that $A[1:k,j] \notin \operatorname{span} A[1:k,2:k]$ for every $k < j$. The unmatched case in \Cref{lem:zero-column-swap} cannot occur, so $B$ satisfies \Cref{prop:rank}. The row statement follows from the transposed form of \Cref{lem:zero-column-swap}.
 \end{proof}
 
-\begin{corollary}\label{lem:zero-line-both}
+\begin{corollary}\label[corollary]{lem:zero-line-both}
   Let $A \neq 0$ satisfy \Cref{prop:rank} with column $1$ and row 1 of $A$ equal to zero, and let $B = A\Pi_j$ interchange columns $1$ and $j$ (with $\Pi_j^2 = I$). If $j$ is the smallest index whose column is nonzero, then $B$ satisfies \Cref{prop:rank}. By transposition, the corresponding statement holds with the roles of rows and columns exchanged.
 \end{corollary}
 
@@ -506,7 +449,7 @@ We will now prove the main theorem:
   \end{align*}
   for every $k$. Hence the three terms of \Cref{prop:rank} coincide for $A$ and for $D$, which proves the claim. Furthermore, $D = \operatorname{diag}(a_{11}^{-1}, S)$ has a non-singular leading $1 \times 1$ block, so \Cref{prop:rank} for $D$ at index $k$ reduces to \Cref{prop:rank} for $S$ at index $k-1$; thus $D$ satisfies \Cref{prop:rank} if and only if $S$ does. Consequently, $S$ satisfies \Cref{prop:rank} and is of size $n-1$. Moreover $S$ has rank $r-1$ if $r = \rk(A)$. By the induction hypothesis, $S$ has an LU factorization. The result for $A$ follows.
 
-  Assume now $a_{11} = 0$. Evaluating \Cref{prop:rank} at $k = 1$ and using $\nl(A[1:1,1:1]) = 1$,
+  Assume now $a_{11} = 0$, so $\nl(A[1:1,1:1]) = 1$. Evaluating \Cref{prop:rank} at $k = 1$ gives
   \begin{equation}\label{eq:deadlock}
     1 \le \nl(A[:,1]) + \nl({A[1:1,:]}^T),
   \end{equation}
@@ -568,7 +511,8 @@ The sparsity pattern of the $L$ factor in \Cref{thm:main2} is illustrated in \Cr
 \begin{figure}
   \centering
   \input{sparsity_figure.tex}
-  \caption{\label{fig:sparsity} Figure illustrating the sparsity pattern of the $L$ factor; the three cases A, B, and C classify the \emph{rows} of $L$. Case A corresponds to independent rows, $i \le r$ and $i_0 \ge i$, with $L[i_0, i+1:] = 0$. Case B represents dependent rows, $i > r$ and $i_0 \le r$. Then $L[i_0, i_0:] = 0$. Case C represents $i > r$ and $i_0 > r$ (which from the proof implies $i_0 = i$) for dependent rows. The case labels are specific to this figure.}
+  \caption{Figure illustrating the sparsity pattern of the $L$ factor; the three cases A, B, and C classify the \emph{rows} of $L$. Case A corresponds to independent rows, $i \le r$ and $i_0 \ge i$, with $L[i_0, i+1:] = 0$. Case B represents dependent rows, $i > r$ and $i_0 \le r$. Then $L[i_0, i_0:] = 0$. Case C represents $i > r$ and $i_0 > r$ (which from the proof implies $i_0 = i$) for dependent rows. The case labels are specific to this figure.}
+  \label{fig:sparsity}
 \end{figure}
 
 \begin{proof}
@@ -683,8 +627,10 @@ No column pivoting works. However, row pivoting is sufficient to get a unit lowe
 \Cref{tab:constraints} summarizes the constraints on the factorization, the condition (for all $k$), and the stringency of the condition.
 
 \begin{table}[htbp]
+  \caption{Constraints on the factorization, the condition (required for all $k$), and its stringency. Each condition compares the nullities of three submatrices of $A$: the leading $k \times k$ block $A_{11} = A[1:k,1:k]$, the first $k$ columns $A_{\mathrm{col}} = A[:,1:k]$, and the first $k$ rows $A_{\mathrm{row}} = A[1:k,:]$. Here $\nl(\cdot)$ is the nullity (\Cref{tab:notations}), and $A_{\mathrm{row}}^{T}$ is the transpose of the row block, so that $\nl(A_{\mathrm{row}}^{T}) = k - \rk(A_{\mathrm{row}})$.}
+  \label{tab:constraints}
   \centering
-  \begin{tabular}{l l p{6.5cm}}
+  \begin{tabularx}{\linewidth}{@{}ll>{\raggedright\arraybackslash}X@{}}
     \toprule
     Constraint & Condition (for all $k$) & Stringency \\
     \midrule
@@ -693,9 +639,7 @@ No column pivoting works. However, row pivoting is sufficient to get a unit lowe
     Unit upper $U$        & $\nl(A_{11}) = \nl(A_{\mathrm{row}}^{T})$                            & Moderate (requires row dependencies) \\
     Unit $L$ and unit $U$ & $A$ strongly non-singular                                            & Most stringent (impossible for rank-deficient $A$) \\
     \bottomrule
-  \end{tabular}
-  \vspace{5pt}
-  \caption{Constraints on the factorization, the condition (required for all $k$), and its stringency. Each condition compares the nullities of three submatrices of $A$: the leading $k \times k$ block $A_{11} = A[1:k,1:k]$, the first $k$ columns $A_{\mathrm{col}} = A[:,1:k]$, and the first $k$ rows $A_{\mathrm{row}} = A[1:k,:]$. Here $\nl(\cdot)$ is the nullity (\Cref{tab:notations}), and $A_{\mathrm{row}}^{T}$ is the transpose of the row block, so that $\nl(A_{\mathrm{row}}^{T}) = k - \rk(A_{\mathrm{row}})$.}\label{tab:constraints}
+  \end{tabularx}
 \end{table}
 
 The theorem below should be compared with \Cref{thm:row_permutation}.
@@ -830,7 +774,7 @@ The theorem below should be compared with \Cref{thm:row_permutation}.
 
 We now state the corresponding result where $U$ is unit upper triangular. Please compare the result below with \Cref{cor:col_permutation}.
 
-\begin{corollary}\label{corr:main_unit_upper}
+\begin{corollary}\label[corollary]{corr:main_unit_upper}
   Let $A$ be a matrix of size $n$ and rank $r \le n$. $A$ has an LU factorization $A = LU$ where $U$ is unit upper triangular if and only if for all $k = 1, \ldots, n$:
   \begin{equation}
     \label{eq:cond_unit_upper}
@@ -870,8 +814,7 @@ Furthermore, we defined and characterized rank-revealing LU factorizations witho
 
 \appendix
 
-\section{Classical results on the existence of LU factorizations}\label{sec:classical}
-
+\section{Classical results on the existence of LU factorizations}\label[appendix]{sec:classical}
 We recall standard existence results involving permutations. These theorems correspond to Gaussian elimination with partial and full pivoting.
 
 We work over the arbitrary field $F$. Since $F$ need not carry an inner product, we use $Y^T$ purely as the transpose, and for a matrix $Y \in F^{n \by k}$ we write
@@ -982,7 +925,7 @@ This is a purely algebraic construction (the annihilator of the row space under 
   which is an LU factorization. Hence $P = \widehat{P}_s$ proves the result for $A$.
 \end{proof}
 
-\begin{corollary}\label{cor:col_permutation}
+\begin{corollary}\label[corollary]{cor:col_permutation}
   For any square matrix $A$ of size $n$, there exists a permutation matrix $Q$ such that $AQ = LU$, where $L$ is lower triangular and $U$ is unit upper triangular.
 \end{corollary}
 
@@ -992,7 +935,7 @@ This is a purely algebraic construction (the annihilator of the row space under 
 
 In the definition below, a trapezoidal matrix is a matrix that is either lower or upper triangular, but not necessarily square. Precisely, a matrix $A = (a_{ij})$ of size $m \by n$ is \emph{lower trapezoidal} if $a_{ij} = 0$ whenever $i < j$, and \emph{upper trapezoidal} if $a_{ij} = 0$ whenever $i > j$. When $m = n$ these reduce to the usual lower and upper triangular matrices.
 
-\begin{definition}\label{def:rank_revealing}
+\begin{definition}\label[definition]{def:rank_revealing}
   A matrix $A$ of size $m \by n$ is said to have a \emph{rank revealing LU factorization} if it can be written as $A = LU$, where $L$ is a lower trapezoidal matrix of size $m \by r$, $U$ is an upper trapezoidal matrix of size $r \by n$, and $r = \rk(A)$.
 \end{definition}
 
@@ -1078,7 +1021,7 @@ If we allow both row and column permutations, we can always obtain such a factor
 
 We now consider LU factorizations without permutations. The fundamental result states that factorization is possible if and only if the matrix is \emph{strongly non-singular} (i.e., all leading principal minors are non-zero).
 
-\begin{proposition}\label{prop:sufficient}
+\begin{proposition}\label[proposition]{prop:sufficient}
   Let $A$ be a non-singular matrix of size $n$. $A$ has an LU factorization if and only if all its leading principal submatrices are non-singular:
   \[
     \rk(A[1:k,1:k]) = k, \quad k = 1, \ldots, n.
@@ -1117,7 +1060,7 @@ We now consider LU factorizations without permutations. The fundamental result s
   and $S = A_{22} - A_{21} a_{11}^{-1} A_{12}$ is the Schur complement. $L$ and $U$ are full rank. So $D$ satisfies the condition of the theorem. Consequently, $S$ also satisfies the condition of the theorem and is of size $n-1$. By the induction hypothesis, $S$ has an LU factorization. Therefore $A$ also has an LU factorization.
 \end{proof}
 
-\section{Rank theorems} \label{sec:rank}
+\section{Rank theorems}\label[appendix]{sec:rank}
 
 We recall rank theorems that will be useful in the proof of \Cref{thm:main}.
 
@@ -1130,7 +1073,7 @@ We recall rank theorems that will be useful in the proof of \Cref{thm:main}.
 
 We now state Sylvester's inequality for the rank of a product of matrices.
 
-\begin{lemma}\label{lem:rank}
+\begin{lemma}\label[lemma]{lem:rank}
   Consider $A = BC$. Then:
   \[
     \rk(A) \le \min(\rk(B), \rk(C)), \quad
@@ -1139,7 +1082,7 @@ We now state Sylvester's inequality for the rank of a product of matrices.
   where $k$ is the number of columns of $B$ and rows of $C$.
 \end{lemma}
 
-\begin{corollary}\label{cor:nullity}
+\begin{corollary}\label[corollary]{cor:nullity}
   If $A$, $B$, and $C$ are square matrices then:
   \[
     \nl(A) \le \nl(B) + \nl(C) \,.
@@ -1154,7 +1097,7 @@ We now state Sylvester's inequality for the rank of a product of matrices.
   Simplifying: $\nl(A) \le \nl(B) + \nl(C)$.
 \end{proof}
 
-\section{Necessary condition} \label{sec:necessary}
+\section{Necessary condition}\label[appendix]{sec:necessary}
 
 We show that \Cref{prop:rank} is a necessary condition for the existence of an LU factorization.
 
@@ -1178,11 +1121,11 @@ Using \Cref{thm:rank-nullity}, we get:
 \]
 So \Cref{prop:rank} is a necessary condition for the existence of an LU factorization.
 
-\section{Oblique projections}\label{sec:appendix}
+\section{Oblique projections}\label[appendix]{sec:appendix}
 
 We recall a few standard results, included to keep the paper self-contained, that are used in the main proofs. This material is classical: the oblique projectors below are treated in~\cite{Stewart_2011,Kayalar_1989}, and their connection to the LU factorization and Schur complements in~\cite{Cottle_1974,Ouellette_1981,Zhang_2006,Householder_2013}.
 
-\begin{lemma}\label{lem:oblique_projection}
+\begin{lemma}\label[lemma]{lem:oblique_projection}
   Denote by $X$ and $Y$ two matrices of size $n \by k$. Assume that $X$ is full rank and that $Y^T X$ is non-singular. Define:
   \[ P = X {(Y^T X)}^{-1} Y^T. \]
   Then $P$ is the oblique projection onto the range of $X$ along $Y^\perp = \ker(Y^T)$. In particular, $\range(X) \oplus \ker(Y^T) = F^n$.
@@ -1198,7 +1141,7 @@ We recall a few standard results, included to keep the paper self-contained, tha
   Thus, the null space of $P$ contains $\ker(Y^T)$. By the rank-nullity theorem, the dimensions match, so the null space of $P$ is exactly $\ker(Y^T)$.
 \end{proof}
 
-\begin{lemma}\label{lem:oblique_projection_specific}
+\begin{lemma}\label[lemma]{lem:oblique_projection_specific}
   Denote by $X = [x_1, \ldots, x_k]$ a rank $k$ matrix. Consider the oblique projection $P_o(X)$ onto
   \[ S = \spn\{ x_1,\dots,x_k \} \] % chktex 21
   along the subspace of vectors with the first $k$ entries equal to zero. Assume that $X[1:k,:]$ is non-singular. Then:
@@ -1238,7 +1181,7 @@ where $0_k$ is the $k \times k$ zero block.
 
 This identity makes the link between the projection and Gaussian elimination explicit: the single factor $Q_o(A[:,1:k])$ realizes the first $k$ elimination steps. Its range is the subspace of vectors whose first $k$ entries are zero, so every column of $Q_o(A[:,1:k])\,A$ has zero first $k$ entries; moreover, the first $k$ columns of $A$ are annihilated because they span the range of $P_o(A[:,1:k])$. The first $k$ rows and columns therefore vanish, leaving the $(n-k) \times (n-k)$ Schur complement $S_k$ on which the elimination continues.
 
-\begin{lemma}\label{lem:oblique}
+\begin{lemma}\label[lemma]{lem:oblique}
   If the $j$th column of $A$ (where $j > k$) is linearly dependent on columns $1$ to $k$ of $A$, then column $j - k$ of $S^o_k$ is zero.
 \end{lemma}
 
@@ -1255,6 +1198,7 @@ This identity makes the link between the projection and Gaussian elimination exp
 
 The vanishing of dependent columns in the Schur complement is a classical property. When $A[1:k,1:k]$ is non-singular, it underlies the rank formula $\rk(A) = \rk(A[1:k,1:k]) + \rk(S_k)$; see~\cite{Marsaglia_1974,Carlson_1986,Cottle_1974}.
 
+\Needspace{7\baselineskip}
 \section{Reference Python code}
 
 \subsection{Classical LU with full pivoting}\label{sec:python_full_pivoting}
@@ -1270,6 +1214,7 @@ See \Cref{lst:lu_full_pivoting}.
   % Do not include the marker lines themselves in the output
 includerangemarker=false]{lu_pivoting.py}
 
+\Needspace{7\baselineskip}
 \subsection{LU factorization}\label{sec:python_restricted_pivoting}
 
 See \Cref{lst:lu_restricted_pivoting}.
@@ -1284,6 +1229,7 @@ See \Cref{lst:lu_restricted_pivoting}.
   % Do not include the marker lines themselves in the output
 includerangemarker=false]{lu_factorization.py}
 
+\Needspace{7\baselineskip}
 \subsection{Unit lower triangular LU factorization}\label{sec:python_unit_lower}
 
 See \Cref{lst:unit_lower_lu}.
@@ -1298,8 +1244,7 @@ See \Cref{lst:unit_lower_lu}.
   % Do not include the marker lines themselves in the output
 includerangemarker=false]{unit_lower.py}
 
-\clearpage
-\phantomsection % This forces hyperref to create a new, correct anchor
+\phantomsection
 \bibliographystyle{siamplain}
 \bibliography{ref}
 
