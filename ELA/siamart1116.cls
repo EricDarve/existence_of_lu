@@ -1170,26 +1170,26 @@ Vol.\ #3, No.\ #4, pp.\ #5
    }{#2}%
 }
 
-%%%% NEW -- causes multiply defined labels to generate errors
-%\def\@newl@bel#1#2#3{%
-%  \@ifundefined{#1@#2}%
-%    \relax
-%    {\gdef \@multiplelabels {%
-%      \@latex@warning@no@line{Label `#2' multiply defined}}%
-%      \@siamlabel@error{There were multiply-defined labels}{}}%
-%  \global\@namedef{#1@#2}{#3}}
-%\def\newlabel{\@newl@bel r}
-%\@onlypreamble\@newl@bel
-%\let \@multiplelabels \relax
-%\def\label#1{\@bsphack
-%  \protected@write\@auxout{}%
-%         {\string\newlabel{#1}{{\@currentlabel}{\thepage}}}%
-%  \@esphack}
-%\def\refstepcounter#1{\stepcounter{#1}%
-%    \protected@edef\@currentlabel
-%       {\csname p@#1\endcsname\csname the#1\endcsname}%
-%}
-%%%%
+%%% NEW -- causes multiply defined labels to generate errors
+\def\@newl@bel#1#2#3{%
+  \@ifundefined{#1@#2}%
+    \relax
+    {\gdef \@multiplelabels {%
+      \@latex@warning@no@line{Label `#2' multiply defined}}%
+      \@siamlabel@error{There were multiply-defined labels}{}}%
+  \global\@namedef{#1@#2}{#3}}
+\def\newlabel{\@newl@bel r}
+\@onlypreamble\@newl@bel
+\let \@multiplelabels \relax
+\def\label#1{\@bsphack
+  \protected@write\@auxout{}%
+         {\string\newlabel{#1}{{\@currentlabel}{\thepage}}}%
+  \@esphack}
+\def\refstepcounter#1{\stepcounter{#1}%
+    \protected@edef\@currentlabel
+       {\csname p@#1\endcsname\csname the#1\endcsname}%
+}
+%%%
 
 
 
